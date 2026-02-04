@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-church-primary: #1a365d;
+  --color-church-secondary: #2c5282;
+  --color-church-accent: #ecc94b;
+  --color-church-light: #f7fafc;
+  --color-church-dark: #171923;
+
+  --font-sans: "Inter", sans-serif;
+
+  --animate-fade-in: fadeIn 0.5s ease-out forwards;
+  --animate-slide-up: slideUp 0.6s ease-out forwards;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+}
+
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white dark:bg-church-dark text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300;
+}
+
+.section-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20;
+}
+
+.btn-primary {
+  @apply bg-church-primary text-white px-8 py-3 rounded-full font-semibold transition-all hover:bg-church-secondary hover:shadow-lg active:scale-95;
+}
+
+.card {
+  @apply bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow;
+}
+
+.bg-radial-glow {
+  background-image: radial-gradient(circle at center, var(--tw-gradient-stops));
+}
