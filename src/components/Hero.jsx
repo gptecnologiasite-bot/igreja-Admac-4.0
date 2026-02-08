@@ -35,7 +35,7 @@ const Hero = () => {
             return (
                 <>
                     {parts[0]}
-                    <span className="text-church-accent">Pertencer</span>
+                    {' '}<span className="text-church-accent">Pertencer</span>
                     {parts[1]}
                 </>
             );

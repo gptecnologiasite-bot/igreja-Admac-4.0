@@ -765,7 +765,7 @@ const PageEditor = () => {
                                 </div>
                             </div>
 
-                            {formData.slug === 'ministerios/lideranca' && (
+                            {formData?.slug === 'ministerios/lideranca' && (
                                 <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
                                     <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
                                         <MessageCircle size={20} />
@@ -838,7 +838,7 @@ const PageEditor = () => {
                             )}
 
                             {/* EBD Specific: Classes */}
-                            {formData.slug === 'ministerios/ebd' && (
+                            {formData?.slug === 'ministerios/ebd' && (
                                 <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
@@ -943,7 +943,7 @@ const PageEditor = () => {
                     )}
 
                     {/* Media Specific Section */}
-                    {formData.slug === 'midia' && (
+                    {formData?.slug === 'midia' && (
                         <div className="space-y-6">
                             {/* Social Links Editor */}
                             <div className="p-6 rounded-2xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 space-y-6">
@@ -1063,7 +1063,7 @@ const PageEditor = () => {
                             </div>
                         </div>
                     )}
-                    {(formData.slug === 'inicio' || formData.slug === 'contato') && (
+                    {(formData?.slug === 'inicio' || formData?.slug === 'contato') && (
                         <div className="space-y-6">
                             <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
                                 <Activity size={20} />
