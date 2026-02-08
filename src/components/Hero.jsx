@@ -31,10 +31,12 @@ const Hero = () => {
     // Helper to render title with colored span
     const renderTitle = (title) => {
         if (title.includes('Pertencer')) {
+            const parts = title.split('Pertencer');
             return (
                 <>
-                    {title.replace('Pertencer', '')}
+                    {parts[0]}
                     <span className="text-church-accent">Pertencer</span>
+                    {parts[1]}
                 </>
             );
         }

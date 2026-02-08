@@ -14,10 +14,35 @@ const Navbar = ({ isDark, toggleTheme }) => {
         siteName: 'ADMAC',
         logoUrl: ''
     });
+    const [ministries, setMinistries] = useState([]);
     const navRef = useRef(null);
     const location = useLocation();
 
     const isHomePage = location.pathname === '/';
+
+    const loadMinistries = () => {
+        const pages = dbService.getPages();
+        const ministryPages = pages
+            .filter(p => p.slug && p.slug.startsWith('ministerios/'))
+            .map(p => ({
+                name: p.title,
+                href: `/${p.slug}`
+            }));
+
+        // Fallback to defaults if empty
+        if (ministryPages.length === 0) {
+            setMinistries([
+                { name: 'Liderança', href: '/ministerios/lideranca' },
+                { name: 'Casais', href: '/ministerios/casais' },
+                { name: 'Infantil', href: '/ministerios/infantil' },
+                { name: 'Louvor', href: '/ministerios/louvor' },
+                { name: 'Intercessão', href: '/ministerios/intercessao' },
+                { name: 'Escola Bíblica', href: '/ministerios/ebd' }
+            ]);
+        } else {
+            setMinistries(ministryPages);
+        }
+    };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -42,11 +67,16 @@ const Navbar = ({ isDark, toggleTheme }) => {
 
         window.addEventListener('scroll', handleScroll);
         window.addEventListener('settingsUpdated', loadSettings);
+        window.addEventListener('contentUpdated', () => {
+            loadMinistries();
+        });
         loadSettings();
+        loadMinistries();
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('settingsUpdated', loadSettings);
+            window.removeEventListener('contentUpdated', loadMinistries);
         };
     }, []);
 
@@ -55,14 +85,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
         {
             name: 'Ministérios',
             href: isHomePage ? '#ministries' : '/#ministries',
-            submenu: [
-                { name: 'Liderança', href: '/ministerios/lideranca' },
-                { name: 'Casais', href: '/ministerios/casais' },
-                { name: 'Infantil', href: '/ministerios/infantil' },
-                { name: 'Louvor', href: '/ministerios/louvor' },
-                { name: 'Intercessão', href: '/ministerios/intercessao' },
-                { name: 'Escola Bíblica', href: '/ministerios/ebd' },
-            ]
+            submenu: ministries
         },
         {
             name: 'Revista',
@@ -91,13 +114,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
         },
         {
             name: 'Mídia',
-            href: isHomePage ? '#media' : '/#media',
-            submenu: [
-                { name: 'YouTube', href: isHomePage ? '#media' : '/#media' },
-                { name: 'Instagram', href: isHomePage ? '#media' : '/#media' },
-                { name: 'Facebook', href: isHomePage ? '#media' : '/#media' },
-                { name: 'Vídeos', href: isHomePage ? '#media' : '/#media' },
-            ]
+            href: '/midia'
         },
         { name: 'Contato', href: isHomePage ? '#contact' : '/#contact' },
     ];

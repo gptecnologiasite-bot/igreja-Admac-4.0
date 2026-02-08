@@ -130,7 +130,7 @@ const Kids = () => {
         if (page && page.content) {
             try {
                 const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
-                if (content.articles) {
+                if (content.articles && content.articles.length > 0) {
                     // Map back the icons which are lost in JSON
                     const articlesWithIcons = content.articles.map((art, index) => ({
                         ...art,
@@ -142,6 +142,28 @@ const Kids = () => {
                 console.error("Error parsing kids articles", e);
             }
         }
+
+        // Listen for changes
+        const handleUpdate = () => {
+            const updatedPage = dbService.getPages().find(p => p.slug === 'revista/kids');
+            if (updatedPage && updatedPage.content) {
+                try {
+                    const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
+                    if (content.articles && content.articles.length > 0) {
+                        const articlesWithIcons = content.articles.map((art, index) => ({
+                            ...art,
+                            icon: index === 0 ? <Star className="w-6 h-6" /> : (index === 1 ? <Heart className="w-6 h-6" /> : <BookOpen className="w-6 h-6" />)
+                        }));
+                        setArticles(articlesWithIcons);
+                    }
+                } catch (e) {
+                    console.error("Error parsing kids articles", e);
+                }
+            }
+        };
+
+        window.addEventListener('contentUpdated', handleUpdate);
+        return () => window.removeEventListener('contentUpdated', handleUpdate);
     }, []);
 
     const scroll = (direction) => {

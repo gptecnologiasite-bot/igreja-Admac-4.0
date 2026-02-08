@@ -16,14 +16,41 @@ const INITIAL_USERS = [
 ];
 
 const dbService = {
-  // Initialize DB if not exists
+  // Initialize DB if not exists or merge new defaults
   init: () => {
-    if (!localStorage.getItem(STORAGE_KEY)) {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(initialPages));
+    } else {
+      // Smart check: if specific important slugs are missing, add them from initialPages
+      try {
+        const pages = JSON.parse(stored);
+        let updated = false;
+        initialPages.forEach(defaultPage => {
+          if (!pages.find(p => p.slug === defaultPage.slug)) {
+            pages.push(defaultPage);
+            updated = true;
+          }
+        });
+        if (updated) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(pages));
+        }
+      } catch (e) {
+        console.error("Error merging defaults", e);
+      }
     }
+    
     if (!localStorage.getItem(USERS_KEY)) {
       localStorage.setItem(USERS_KEY, JSON.stringify(INITIAL_USERS));
     }
+  },
+
+  // RESET DATABASE TO DEFAULTS (Requested by user for "deleta e cria outro")
+  resetToDefaults: () => {
+     localStorage.setItem(STORAGE_KEY, JSON.stringify(initialPages));
+     localStorage.setItem(USERS_KEY, JSON.stringify(INITIAL_USERS));
+     window.dispatchEvent(new CustomEvent("contentUpdated"));
+     return initialPages;
   },
 
   // Get all pages

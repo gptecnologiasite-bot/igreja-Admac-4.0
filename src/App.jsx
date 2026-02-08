@@ -26,6 +26,9 @@ import LouvorMinisterio from './pages/ministerios/Louvor';
 import Intercessao from './pages/ministerios/Intercessao';
 import EscolaBiblica from './pages/ministerios/EscolaBiblica';
 
+// Media
+import Media from './pages/Media';
+
 // Admin Panel
 import PainelRoutes from './painel/PainelRoutes';
 import Login from './painel/pages/Login';
@@ -92,6 +95,9 @@ const AppContent = ({ isDark, toggleTheme }) => {
           <Route path="/ministerios/louvor" element={<PageGuard slug="ministerios/louvor"><LouvorMinisterio /></PageGuard>} />
           <Route path="/ministerios/intercessao" element={<PageGuard slug="ministerios/intercessao"><Intercessao /></PageGuard>} />
           <Route path="/ministerios/ebd" element={<PageGuard slug="ministerios/ebd"><EscolaBiblica /></PageGuard>} />
+
+          {/* Media Page */}
+          <Route path="/midia" element={<Media />} />
 
           {/* Direct Login and Panel Routes */}
           <Route path="/painel/login" element={<Login />} />

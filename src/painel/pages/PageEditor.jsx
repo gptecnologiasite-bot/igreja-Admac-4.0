@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Save, Activity, Calendar, Users, Heart, Star, Music, Book, Camera, MapPin, Phone, Mail, Clock, Baby, Trash2, Plus, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Save, Activity, Calendar, Users, Heart, Star, Music, Book, Camera, MapPin, Phone, Mail, Clock, Baby, Trash2, Plus, MessageCircle, Share2, Video } from 'lucide-react';
 import dbService from '../../services/dbService';
 
 const PageEditor = () => {
@@ -39,6 +39,8 @@ const PageEditor = () => {
     });
 
     const [testimonials, setTestimonials] = useState([]);
+    const [classes, setClasses] = useState([]);
+    const [magazineArticles, setMagazineArticles] = useState([]);
 
     const [leadershipContent, setLeadershipContent] = useState({
         leaders: [],
@@ -144,6 +146,12 @@ const PageEditor = () => {
         hours: 'Segunda a Sexta\n09:00 - 17:00'
     });
 
+    // Media Page State
+    const [mediaPageContent, setMediaPageContent] = useState({
+        social: [],
+        gallery: []
+    });
+
     useEffect(() => {
         if (isEditing) {
             const page = dbService.getPageById(id);
@@ -166,6 +174,9 @@ const PageEditor = () => {
                         if (parsedContent.testimonials) {
                             setTestimonials(parsedContent.testimonials);
                         }
+                        if (parsedContent.classes) {
+                            setClasses(parsedContent.classes);
+                        }
                         if (parsedContent.leaders || parsedContent.obreiros || parsedContent.chamado) {
                             setLeadershipContent({
                                 leaders: parsedContent.leaders || [],
@@ -178,7 +189,7 @@ const PageEditor = () => {
                     }
                 }
 
-                if (page.slug === 'inicio' && content) {
+                if ((page.slug === 'inicio' || page.slug === 'contato') && content) {
                     try {
                         const parsedContent = typeof content === 'string' ? JSON.parse(content) : content;
                         if (parsedContent.hero) {
@@ -213,6 +224,31 @@ const PageEditor = () => {
                     }
                 }
 
+                // Magazine pages
+                if (page.slug.startsWith('revista/') && content) {
+                    try {
+                        const parsedContent = typeof content === 'string' ? JSON.parse(content) : content;
+                        if (parsedContent.articles) {
+                            setMagazineArticles(parsedContent.articles);
+                        }
+                    } catch (e) {
+                        console.error("Error parsing magazine content", e);
+                    }
+                }
+
+                // Media page
+                if (page.slug === 'midia' && content) {
+                    try {
+                        const parsedContent = typeof content === 'string' ? JSON.parse(content) : content;
+                        setMediaPageContent({
+                            social: parsedContent.social || [],
+                            gallery: parsedContent.gallery || []
+                        });
+                    } catch (e) {
+                        console.error("Error parsing media content", e);
+                    }
+                }
+
                 setFormData({
                     title: page.title,
                     slug: page.slug || page.title.toLowerCase().replace(/ /g, '-'),
@@ -240,50 +276,58 @@ const PageEditor = () => {
                 pastoralMessage: pastoralMessage,
                 raffle: raffle,
                 productPromotion: productPromotion,
-                testimonials: testimonials
+                testimonials: testimonials,
+                leaders: leadershipContent.leaders, // Include leaders for all ministries
+                classes: formData.slug === 'ministerios/ebd' ? classes : undefined
             };
-        }
 
-        if (formData.slug === 'inicio') {
+            // Additional fields for the main leadership page
+            if (formData.slug === 'ministerios/lideranca') {
+                finalContent = {
+                    ...finalContent,
+                    obreiros: leadershipContent.obreiros,
+                    chamado: leadershipContent.chamado
+                };
+            }
+        } else if (formData.slug === 'inicio' || formData.slug === 'contato') {
             let existingContent = {};
             try {
                 existingContent = typeof formData.content === 'string' && formData.content ? JSON.parse(formData.content) : (typeof formData.content === 'object' ? formData.content : {});
             } catch (e) { }
 
-            let contentData = { ...existingContent }; // Initialize contentData with existingContent
+            finalContent = {
+                ...existingContent,
+                hero: homeHero,
+                about: homeAbout,
+                agenda: homeAgenda,
+                ministries: homeMinistries,
+                activities: homeActivities,
+                podcast: homePodcast,
+                magazines: homeMagazines,
+                media: homeMedia,
+                contact: homeContact
+            };
+        } else if (formData.slug === 'midia') {
+            let existingContent = {};
+            try {
+                existingContent = typeof formData.content === 'string' && formData.content ? JSON.parse(formData.content) : (typeof formData.content === 'object' ? formData.content : {});
+            } catch (e) { }
 
-            if (formData.slug === 'inicio') {
-                contentData = {
-                    ...contentData,
-                    hero: homeHero,
-                    about: homeAbout,
-                    agenda: homeAgenda,
-                    ministries: homeMinistries,
-                    activities: homeActivities,
-                    podcast: homePodcast,
-                    magazines: homeMagazines,
-                    media: homeMedia,
-                    contact: homeContact
-                };
-            } else if (formData.slug === 'ministerios/lideranca') {
-                contentData = {
-                    ...contentData,
-                    pastoralMessage,
-                    raffle,
-                    productPromotion,
-                    testimonials,
-                    ...leadershipContent
-                };
-            } else if (formData.slug.includes('ministerios/')) {
-                contentData = {
-                    ...contentData,
-                    pastoralMessage,
-                    raffle,
-                    productPromotion,
-                    testimonials
-                };
-            }
-            finalContent = contentData; // Assign contentData to finalContent
+            finalContent = {
+                ...existingContent,
+                social: mediaPageContent.social,
+                gallery: mediaPageContent.gallery
+            };
+        } else if (formData.slug?.startsWith('revista/')) {
+            let existingContent = {};
+            try {
+                existingContent = typeof formData.content === 'string' && formData.content ? JSON.parse(formData.content) : (typeof formData.content === 'object' ? formData.content : {});
+            } catch (e) { }
+
+            finalContent = {
+                ...existingContent,
+                articles: magazineArticles
+            };
         }
 
         dbService.upsertPage({
@@ -606,12 +650,421 @@ const PageEditor = () => {
                                     ))}
                                 </div>
                             </div>
+
+                            {/* Gestão de Equipe / Líderes */}
+                            <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                                        <Users size={20} />
+                                        <h3 className="font-bold">Equipe / Líderes do Ministério</h3>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setLeadershipContent({
+                                            ...leadershipContent,
+                                            leaders: [...leadershipContent.leaders, { name: '', role: '', image: '' }]
+                                        })}
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-sm font-bold hover:bg-emerald-600 transition-all"
+                                    >
+                                        <Plus size={16} />
+                                        Adicionar Líder
+                                    </button>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {leadershipContent.leaders.length === 0 && (
+                                        <div className="col-span-full text-sm text-slate-500 dark:text-slate-400 text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                                            Nenhum líder cadastrado. Use o botão acima para adicionar.
+                                        </div>
+                                    )}
+                                    {leadershipContent.leaders.map((leader, index) => (
+                                        <div key={index} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm relative group">
+                                            <div className="flex gap-4">
+                                                <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border-2 border-emerald-500/20">
+                                                    {leader.image ? (
+                                                        <img src={leader.image} alt={leader.name} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-slate-400">
+                                                            <Users size={24} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="flex-1 space-y-3">
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase">Nome Completo</label>
+                                                        <input
+                                                            type="text"
+                                                            value={leader.name}
+                                                            onChange={(e) => {
+                                                                const newLeaders = [...leadershipContent.leaders];
+                                                                newLeaders[index].name = e.target.value;
+                                                                setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
+                                                            }}
+                                                            className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                            placeholder="Ex: Pra. Ana Oliveira"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase">Cargo / Função</label>
+                                                        <input
+                                                            type="text"
+                                                            value={leader.role}
+                                                            onChange={(e) => {
+                                                                const newLeaders = [...leadershipContent.leaders];
+                                                                newLeaders[index].role = e.target.value;
+                                                                setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
+                                                            }}
+                                                            className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                            placeholder="Ex: Coordenação Geral"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase">URL da Imagem</label>
+                                                        <input
+                                                            type="text"
+                                                            value={leader.image}
+                                                            onChange={(e) => {
+                                                                const newLeaders = [...leadershipContent.leaders];
+                                                                newLeaders[index].image = e.target.value;
+                                                                setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
+                                                            }}
+                                                            className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-[10px] transition-all"
+                                                            placeholder="https://images.unsplash.com/..."
+                                                        />
+                                                    </div>
+
+                                                    <div className="flex gap-2 pt-2">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                const newLeaders = [...leadershipContent.leaders];
+                                                                newLeaders.splice(index + 1, 0, { ...leader });
+                                                                setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
+                                                            }}
+                                                            className="flex-1 flex items-center justify-center gap-1 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg border border-blue-100 dark:border-blue-900/30 hover:bg-blue-600 hover:text-white transition-all"
+                                                        >
+                                                            <Save size={12} />
+                                                            Duplicar
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                const newLeaders = [...leadershipContent.leaders];
+                                                                newLeaders.splice(index, 1);
+                                                                setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
+                                                            }}
+                                                            className="px-3 py-1 bg-red-50 dark:bg-red-500/10 text-red-500 text-xs font-bold rounded-lg border border-red-100 dark:border-red-900/30 hover:bg-red-600 hover:text-white transition-all"
+                                                        >
+                                                            <Trash2 size={12} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {formData.slug === 'ministerios/lideranca' && (
+                                <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
+                                    <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                                        <MessageCircle size={20} />
+                                        <h3 className="font-bold">Conteúdo Extra: Liderança Geral</h3>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título Obreiros</label>
+                                        <input
+                                            type="text"
+                                            value={leadershipContent.obreiros.title}
+                                            onChange={(e) => setLeadershipContent({
+                                                ...leadershipContent,
+                                                obreiros: { ...leadershipContent.obreiros, title: e.target.value }
+                                            })}
+                                            className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 transition-all dark:text-white"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Texto Obreiros</label>
+                                        <textarea
+                                            value={leadershipContent.obreiros.text}
+                                            onChange={(e) => setLeadershipContent({
+                                                ...leadershipContent,
+                                                obreiros: { ...leadershipContent.obreiros, text: e.target.value }
+                                            })}
+                                            className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 transition-all dark:text-white"
+                                            rows={3}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título Chamado</label>
+                                            <input
+                                                type="text"
+                                                value={leadershipContent.chamado.title}
+                                                onChange={(e) => setLeadershipContent({
+                                                    ...leadershipContent,
+                                                    chamado: { ...leadershipContent.chamado, title: e.target.value }
+                                                })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 transition-all dark:text-white"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Referência Bíblica</label>
+                                            <input
+                                                type="text"
+                                                value={leadershipContent.chamado.reference}
+                                                onChange={(e) => setLeadershipContent({
+                                                    ...leadershipContent,
+                                                    chamado: { ...leadershipContent.chamado, reference: e.target.value }
+                                                })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 transition-all dark:text-white"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Texto Chamado</label>
+                                        <textarea
+                                            value={leadershipContent.chamado.text}
+                                            onChange={(e) => setLeadershipContent({
+                                                ...leadershipContent,
+                                                chamado: { ...leadershipContent.chamado, text: e.target.value }
+                                            })}
+                                            className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 transition-all dark:text-white"
+                                            rows={2}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* EBD Specific: Classes */}
+                            {formData.slug === 'ministerios/ebd' && (
+                                <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                                            <Book size={20} />
+                                            <h3 className="font-bold">Classes da EBD</h3>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setClasses([...classes, { title: '', theme: '', teacher: '', time: '09:00' }])}
+                                            className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-sm font-bold hover:bg-emerald-600 transition-all"
+                                        >
+                                            <Plus size={16} />
+                                            Adicionar Classe
+                                        </button>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 gap-4">
+                                        {classes.length === 0 && (
+                                            <div className="text-sm text-slate-500 dark:text-slate-400 text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                                                Nenhuma classe cadastrada. Use o botão acima para adicionar.
+                                            </div>
+                                        )}
+                                        {classes.map((cls, index) => (
+                                            <div key={index} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm space-y-4">
+                                                <div className="flex items-start justify-between gap-4">
+                                                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                                        <div className="space-y-1">
+                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Título da Classe</label>
+                                                            <input
+                                                                type="text"
+                                                                value={cls.title}
+                                                                onChange={(e) => {
+                                                                    const newClasses = [...classes];
+                                                                    newClasses[index].title = e.target.value;
+                                                                    setClasses(newClasses);
+                                                                }}
+                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                placeholder="Ex: Classe Adultos"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Tema Atual</label>
+                                                            <input
+                                                                type="text"
+                                                                value={cls.theme}
+                                                                onChange={(e) => {
+                                                                    const newClasses = [...classes];
+                                                                    newClasses[index].theme = e.target.value;
+                                                                    setClasses(newClasses);
+                                                                }}
+                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                placeholder="Ex: As Epístolas de Paulo"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Professor(a)</label>
+                                                            <input
+                                                                type="text"
+                                                                value={cls.teacher}
+                                                                onChange={(e) => {
+                                                                    const newClasses = [...classes];
+                                                                    newClasses[index].teacher = e.target.value;
+                                                                    setClasses(newClasses);
+                                                                }}
+                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                placeholder="Ex: Prof. Cláudio Santos"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Horário</label>
+                                                            <input
+                                                                type="text"
+                                                                value={cls.time}
+                                                                onChange={(e) => {
+                                                                    const newClasses = [...classes];
+                                                                    newClasses[index].time = e.target.value;
+                                                                    setClasses(newClasses);
+                                                                }}
+                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                placeholder="Ex: Domingo, 09:00"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const newClasses = [...classes];
+                                                            newClasses.splice(index, 1);
+                                                            setClasses(newClasses);
+                                                        }}
+                                                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
+                                                    >
+                                                        <Trash2 size={20} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 
-                    {/* Home Specific Section */}
-                    {formData.slug === 'inicio' && (
-                        <div className="p-6 rounded-2xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 space-y-6">
+                    {/* Media Specific Section */}
+                    {formData.slug === 'midia' && (
+                        <div className="space-y-6">
+                            {/* Social Links Editor */}
+                            <div className="p-6 rounded-2xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 space-y-6">
+                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
+                                    <Share2 size={20} />
+                                    <h3 className="font-bold">Redes Sociais</h3>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {mediaPageContent?.social?.map((link, index) => (
+                                        <div key={index} className="space-y-2">
+                                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                {link.platform} URL
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={link.url}
+                                                onChange={(e) => {
+                                                    const newSocial = [...mediaPageContent.social];
+                                                    newSocial[index] = { ...newSocial[index], url: e.target.value };
+                                                    setMediaPageContent({ ...mediaPageContent, social: newSocial });
+                                                }}
+                                                className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Video Gallery Editor */}
+                            <div className="p-6 rounded-2xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-800/30 space-y-6">
+                                <div className="flex items-center justify-between text-red-700 dark:text-red-400">
+                                    <div className="flex items-center gap-2">
+                                        <Video size={20} />
+                                        <h3 className="font-bold">Galeria de Vídeos</h3>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const newVideo = {
+                                                id: Date.now(),
+                                                title: 'Novo Vídeo',
+                                                url: '',
+                                                thumbnail: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38'
+                                            };
+                                            setMediaPageContent({
+                                                ...mediaPageContent,
+                                                gallery: [...mediaPageContent.gallery, newVideo]
+                                            });
+                                        }}
+                                        className="px-3 py-1 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700"
+                                    >
+                                        + Adicionar Vídeo
+                                    </button>
+                                </div>
+
+                                <div className="space-y-4">
+                                    {mediaPageContent?.gallery?.map((video, index) => (
+                                        <div key={video.id || index} className="p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 space-y-4">
+                                            <div className="flex justify-between items-start">
+                                                <h4 className="font-medium">Vídeo #{index + 1}</h4>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newGallery = mediaPageContent.gallery.filter((_, i) => i !== index);
+                                                        setMediaPageContent({ ...mediaPageContent, gallery: newGallery });
+                                                    }}
+                                                    className="text-red-500 hover:text-red-700"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <label className="text-xs uppercase text-gray-500">Título</label>
+                                                    <input
+                                                        type="text"
+                                                        value={video.title}
+                                                        onChange={(e) => {
+                                                            const newGallery = [...mediaPageContent.gallery];
+                                                            newGallery[index] = { ...newGallery[index], title: e.target.value };
+                                                            setMediaPageContent({ ...mediaPageContent, gallery: newGallery });
+                                                        }}
+                                                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-xs uppercase text-gray-500">URL do Vídeo</label>
+                                                    <input
+                                                        type="text"
+                                                        value={video.url}
+                                                        onChange={(e) => {
+                                                            const newGallery = [...mediaPageContent.gallery];
+                                                            newGallery[index] = { ...newGallery[index], url: e.target.value };
+                                                            setMediaPageContent({ ...mediaPageContent, gallery: newGallery });
+                                                        }}
+                                                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
+                                                    />
+                                                </div>
+                                                <div className="space-y-2 md:col-span-2">
+                                                    <label className="text-xs uppercase text-gray-500">Thumbnail URL</label>
+                                                    <input
+                                                        type="text"
+                                                        value={video.thumbnail}
+                                                        onChange={(e) => {
+                                                            const newGallery = [...mediaPageContent.gallery];
+                                                            newGallery[index] = { ...newGallery[index], thumbnail: e.target.value };
+                                                            setMediaPageContent({ ...mediaPageContent, gallery: newGallery });
+                                                        }}
+                                                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {(formData.slug === 'inicio' || formData.slug === 'contato') && (
+                        <div className="space-y-6">
                             <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
                                 <Activity size={20} />
                                 <h3 className="font-bold">Conteúdo da Home: Destaque (Hero)</h3>
@@ -1447,6 +1900,139 @@ const PageEditor = () => {
                         </div>
                     </div>
 
+                    {/* Magazine Articles Editor */}
+                    {formData.slug?.startsWith('revista/') && (
+                        <div className="pt-6 border-t border-purple-100 dark:border-purple-800/20">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-2 text-purple-700 dark:text-purple-400">
+                                    <Book size={20} />
+                                    <h3 className="font-bold">Artigos da Revista</h3>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setMagazineArticles([...magazineArticles, {
+                                        id: Date.now(),
+                                        title: 'Novo Artigo',
+                                        excerpt: '',
+                                        author: '',
+                                        date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }),
+                                        image: '',
+                                        content: '',
+                                        iconColor: 'bg-blue-500/10 text-blue-500'
+                                    }])}
+                                    className="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-600 px-3 py-1 rounded-full hover:bg-purple-600 hover:text-white transition-all flex items-center gap-1"
+                                >
+                                    <Plus size={14} />
+                                    Adicionar Artigo
+                                </button>
+                            </div>
+
+                            <div className="space-y-4">
+                                {magazineArticles.map((article, idx) => (
+                                    <div key={article.id || idx} className="p-6 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <input
+                                                type="text"
+                                                value={article.title}
+                                                onChange={(e) => {
+                                                    const newArticles = [...magazineArticles];
+                                                    newArticles[idx].title = e.target.value;
+                                                    setMagazineArticles(newArticles);
+                                                }}
+                                                className="bg-transparent font-bold text-lg text-slate-800 dark:text-white outline-none flex-1"
+                                                placeholder="Título do Artigo"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setMagazineArticles(magazineArticles.filter((_, i) => i !== idx))}
+                                                className="text-red-400 hover:text-red-600 transition-colors p-2"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-slate-500 uppercase">Autor</label>
+                                                <input
+                                                    type="text"
+                                                    value={article.author}
+                                                    onChange={(e) => {
+                                                        const newArticles = [...magazineArticles];
+                                                        newArticles[idx].author = e.target.value;
+                                                        setMagazineArticles(newArticles);
+                                                    }}
+                                                    className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                    placeholder="Nome do Autor"
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-slate-500 uppercase">Data</label>
+                                                <input
+                                                    type="text"
+                                                    value={article.date}
+                                                    onChange={(e) => {
+                                                        const newArticles = [...magazineArticles];
+                                                        newArticles[idx].date = e.target.value;
+                                                        setMagazineArticles(newArticles);
+                                                    }}
+                                                    className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                    placeholder="15 Jan 2026"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-500 uppercase">Resumo</label>
+                                            <textarea
+                                                value={article.excerpt}
+                                                onChange={(e) => {
+                                                    const newArticles = [...magazineArticles];
+                                                    newArticles[idx].excerpt = e.target.value;
+                                                    setMagazineArticles(newArticles);
+                                                }}
+                                                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none"
+                                                placeholder="Breve resumo do artigo..."
+                                                rows="2"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-500 uppercase">URL da Imagem</label>
+                                            <input
+                                                type="text"
+                                                value={article.image}
+                                                onChange={(e) => {
+                                                    const newArticles = [...magazineArticles];
+                                                    newArticles[idx].image = e.target.value;
+                                                    setMagazineArticles(newArticles);
+                                                }}
+                                                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                placeholder="https://..."
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-500 uppercase">Conteúdo HTML</label>
+                                            <textarea
+                                                value={article.content}
+                                                onChange={(e) => {
+                                                    const newArticles = [...magazineArticles];
+                                                    newArticles[idx].content = e.target.value;
+                                                    setMagazineArticles(newArticles);
+                                                }}
+                                                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none font-mono"
+                                                placeholder="<h2>Título</h2><p>Conteúdo...</p>"
+                                                rows="4"
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Raw JSON Content (Avançado)</label>
                         <textarea
@@ -1473,4 +2059,6 @@ const PageEditor = () => {
     );
 };
 
+
 export default PageEditor;
+// Syntax check pass

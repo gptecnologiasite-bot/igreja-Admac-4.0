@@ -1,16 +1,37 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Flower, Coffee, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import dbService from '../../services/dbService';
 
 const Mulheres = () => {
     const carouselRef = useRef(null);
-
-    const items = [
+    const [items, setItems] = useState([
         { icon: <Heart />, title: "Família", desc: "Equilíbrio emocional no lar." },
         { icon: <Users />, title: "Comunhão", desc: "O valor da amizade cristã." },
         { icon: <Coffee />, title: "Devocional", desc: "Sua hora especial com Deus." },
         { icon: <Flower />, title: "Propósito", desc: "Descobrindo o plano divino." }
-    ];
+    ]);
+
+    useEffect(() => {
+        const page = dbService.getPages().find(p => p.slug === 'revista/mulheres');
+        if (page && page.content) {
+            try {
+                const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
+                if (content.articles && content.articles.length > 0) setItems(content.articles);
+            } catch (e) { }
+        }
+        const handleUpdate = () => {
+            const updatedPage = dbService.getPages().find(p => p.slug === 'revista/mulheres');
+            if (updatedPage && updatedPage.content) {
+                try {
+                    const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
+                    if (content.articles && content.articles.length > 0) setItems(content.articles);
+                } catch (e) { }
+            }
+        };
+        window.addEventListener('contentUpdated', handleUpdate);
+        return () => window.removeEventListener('contentUpdated', handleUpdate);
+    }, []);
 
     const scroll = (direction) => {
         if (carouselRef.current) {

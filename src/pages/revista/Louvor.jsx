@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Music, Mic2, Star, Play, ChevronLeft, ChevronRight } from 'lucide-react';
+import dbService from '../../services/dbService';
 
 const Louvor = () => {
     const carouselRef = useRef(null);
-
-    const items = [
+    const [items, setItems] = useState([
         {
             icon: <Mic2 className="w-8 h-8 text-church-primary dark:text-church-accent mb-4" />,
             title: "Técnica Vocal",
@@ -16,7 +16,28 @@ const Louvor = () => {
             title: "Novos Acordes",
             desc: "Harmonias e arranjos para as músicas mais tocadas."
         }
-    ];
+    ]);
+
+    useEffect(() => {
+        const page = dbService.getPages().find(p => p.slug === 'revista/louvor');
+        if (page && page.content) {
+            try {
+                const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
+                if (content.articles && content.articles.length > 0) setItems(content.articles);
+            } catch (e) { }
+        }
+        const handleUpdate = () => {
+            const updatedPage = dbService.getPages().find(p => p.slug === 'revista/louvor');
+            if (updatedPage && updatedPage.content) {
+                try {
+                    const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
+                    if (content.articles && content.articles.length > 0) setItems(content.articles);
+                } catch (e) { }
+            }
+        };
+        window.addEventListener('contentUpdated', handleUpdate);
+        return () => window.removeEventListener('contentUpdated', handleUpdate);
+    }, []);
 
     const scroll = (direction) => {
         if (carouselRef.current) {

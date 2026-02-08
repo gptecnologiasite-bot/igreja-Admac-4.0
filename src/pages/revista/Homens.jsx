@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Target, Anchor, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import dbService from '../../services/dbService';
 
 const Homens = () => {
     const carouselRef = useRef(null);
-
-    const items = [
+    const [items, setItems] = useState([
         {
             icon: <Shield className="w-10 h-10 text-church-accent" />,
             title: "O Sacerdote do Lar",
@@ -24,7 +24,28 @@ const Homens = () => {
             desc: "O valor do discipulado e da troca de experiências entre diferentes gerações de homens.",
             className: "bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10"
         }
-    ];
+    ]);
+
+    useEffect(() => {
+        const page = dbService.getPages().find(p => p.slug === 'revista/homens');
+        if (page && page.content) {
+            try {
+                const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
+                if (content.articles && content.articles.length > 0) setItems(content.articles);
+            } catch (e) { }
+        }
+        const handleUpdate = () => {
+            const updatedPage = dbService.getPages().find(p => p.slug === 'revista/homens');
+            if (updatedPage && updatedPage.content) {
+                try {
+                    const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
+                    if (content.articles && content.articles.length > 0) setItems(content.articles);
+                } catch (e) { }
+            }
+        };
+        window.addEventListener('contentUpdated', handleUpdate);
+        return () => window.removeEventListener('contentUpdated', handleUpdate);
+    }, []);
 
     const scroll = (direction) => {
         if (carouselRef.current) {

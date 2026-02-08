@@ -33,7 +33,7 @@ const EscolaBiblica = () => {
     // Temporary state while editing
     const [tempMessage, setTempMessage] = useState(pastoralMessage);
 
-    const classes = [
+    const fallBackClasses = [
         {
             title: "Classe Adultos",
             theme: "As Epístolas de Paulo",
@@ -41,6 +41,7 @@ const EscolaBiblica = () => {
             time: "Domingo, 09:00",
             icon: <Book className="w-6 h-6 text-emerald-500" />
         },
+        // ... (truncated for brevity, I'll keep the others too)
         {
             title: "Classe Casais",
             theme: "Fundamentos do Lar Cristão",
@@ -64,12 +65,19 @@ const EscolaBiblica = () => {
         }
     ];
 
-    const professors = [
+    const classes = (pageData?.content?.classes || fallBackClasses).map(cls => ({
+        ...cls,
+        icon: cls.icon || <Book className="w-6 h-6 text-emerald-500" />
+    }));
+
+    const fallBackProfessors = [
         { name: 'Presb. Marcos André', role: 'Superintendente', bio: 'Especialista em Teologia Bíblica e Liderança.', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Prof. Cláudio Santos', role: 'Classe Adultos', bio: 'Bacharel em Teologia com foco em Novos Testamento.', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Prof. Débora Lima', role: 'Classe Juvenis', bio: 'Pedagoga e entusiasta do ensino criativo.', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Tia Rose', role: 'Classe Infantil', bio: 'Dedicação ao ensino lúdico para crianças.', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&h=400&auto=format&fit=crop' },
     ];
+
+    const professors = pageData?.content?.leaders || fallBackProfessors;
 
     const scroll = (direction) => {
         if (carouselRef.current) {
@@ -82,10 +90,16 @@ const EscolaBiblica = () => {
     const handleSave = () => {
         setPastoralMessage(tempMessage);
 
+        const currentContent = typeof pageData?.content === 'string'
+            ? JSON.parse(pageData.content)
+            : (pageData?.content || {});
+
         // Update central DB
         const updatedContent = {
-            ...(pageData?.content || {}),
-            pastoralMessage: tempMessage
+            ...currentContent,
+            pastoralMessage: tempMessage,
+            leaders: professors,
+            classes: classes
         };
 
         dbService.upsertPage({

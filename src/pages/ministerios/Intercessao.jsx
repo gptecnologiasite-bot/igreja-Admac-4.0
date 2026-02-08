@@ -33,12 +33,33 @@ const Intercessao = () => {
     // Temporary state while editing
     const [tempMessage, setTempMessage] = useState(pastoralMessage);
 
-    const leaders = [
+    const fallBackLeaders = [
         { name: 'Ev. Roberto Silva', role: 'Líder Geral', image: 'https://images.unsplash.com/photo-1540331547168-8b63109225b7?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Maria Helena', role: 'Líder de Sentinelas', image: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Antônio Santos', role: 'Líder de Vigílias', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Lucinha Souza', role: 'Clamor por Saúde', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&h=400&auto=format&fit=crop' },
     ];
+
+    const fallBackTestimonials = [
+        {
+            text: "Pedi oração em um momento de doença grave na minha família e creio que as orações desse ministério foram fundamentais para a cura milagrosa que recebemos.",
+            author: "Beatriz Oliveira",
+            role: "Membro ADMAC"
+        },
+        {
+            text: "As sentinelas de oração são um refrigério. Saber que existem pessoas clamando por nós a todo tempo traz uma paz indescritível.",
+            author: "João Mendes",
+            role: "Pastor Visitante"
+        },
+        {
+            text: "Vim em busca de libertação e encontrei um grupo que lutou ao meu lado em oração. Hoje sou livre para servir ao Senhor!",
+            author: "Carla Ferreira",
+            role: "Membro da Igreja"
+        }
+    ];
+
+    const leaders = pageData?.content?.leaders || fallBackLeaders;
+    const testimonials = pageData?.content?.testimonials || fallBackTestimonials;
 
     const scroll = (direction) => {
         if (carouselRef.current) {
@@ -51,10 +72,16 @@ const Intercessao = () => {
     const handleSave = () => {
         setPastoralMessage(tempMessage);
 
+        const currentContent = typeof pageData?.content === 'string'
+            ? JSON.parse(pageData.content)
+            : (pageData?.content || {});
+
         // Update central DB
         const updatedContent = {
-            ...(pageData?.content || {}),
-            pastoralMessage: tempMessage
+            ...currentContent,
+            pastoralMessage: tempMessage,
+            leaders: leaders,
+            testimonials: testimonials
         };
 
         dbService.upsertPage({
@@ -260,23 +287,7 @@ const Intercessao = () => {
                             Respostas de Oração
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {[
-                                {
-                                    text: "Pedi oração em um momento de doença grave na minha família e creio que as orações desse ministério foram fundamentais para a cura milagrosa que recebemos.",
-                                    author: "Beatriz Oliveira",
-                                    role: "Membro ADMAC"
-                                },
-                                {
-                                    text: "As sentinelas de oração são um refrigério. Saber que existem pessoas clamando por nós a todo tempo traz uma paz indescritível.",
-                                    author: "João Mendes",
-                                    role: "Pastor Visitante"
-                                },
-                                {
-                                    text: "Vim em busca de libertação e encontrei um grupo que lutou ao meu lado em oração. Hoje sou livre para servir ao Senhor!",
-                                    author: "Carla Ferreira",
-                                    role: "Membro da Igreja"
-                                }
-                            ].map((testimony, index) => (
+                            {testimonials.map((testimony, index) => (
                                 <motion.div
                                     key={index}
                                     initial={{ opacity: 0, y: 20 }}

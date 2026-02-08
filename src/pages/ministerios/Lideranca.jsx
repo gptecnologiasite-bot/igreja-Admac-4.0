@@ -33,27 +33,7 @@ const Lideranca = () => {
     // Temporary state while editing
     const [tempMessage, setTempMessage] = useState(pastoralMessage);
 
-    const handleSave = () => {
-        setPastoralMessage(tempMessage);
-
-        // Update central DB
-        const updatedContent = {
-            ...(pageData?.content || {}),
-            pastoralMessage: tempMessage
-        };
-
-        dbService.upsertPage({
-            ...pageData,
-            slug: 'ministerios/lideranca',
-            title: 'Liderança',
-            content: updatedContent
-        });
-
-        setIsEditing(false);
-    };
-
-    // Use dynamic data or fallback
-    const leaders = pageData?.content?.leaders || [
+    const fallBackLeaders = [
         { name: 'Pr. João Silva', role: 'Pastor Presidente', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Pra. Maria Silva', role: 'Pastora Vice-Presidente', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Pr. Carlos Oliveira', role: 'Pastor Auxiliar', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=400&auto=format&fit=crop' },
@@ -62,7 +42,7 @@ const Lideranca = () => {
         { name: 'Pra. Ana Oliveira', role: 'Líder de Mulheres', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&h=400&auto=format&fit=crop' },
     ];
 
-    const testimonials = pageData?.content?.testimonials || [
+    const fallBackTestimonials = [
         {
             text: "A liderança desta igreja tem sido um exemplo de integridade e amor. Sinto-me cuidado e pastoreado de verdade.",
             author: "Carlos Mendes",
@@ -79,6 +59,34 @@ const Lideranca = () => {
             role: "Membro há 2 anos"
         }
     ];
+
+    const leaders = pageData?.content?.leaders || fallBackLeaders;
+    const testimonials = pageData?.content?.testimonials || fallBackTestimonials;
+
+    const handleSave = () => {
+        setPastoralMessage(tempMessage);
+
+        const currentContent = typeof pageData?.content === 'string'
+            ? JSON.parse(pageData.content)
+            : (pageData?.content || {});
+
+        // Update central DB
+        const updatedContent = {
+            ...currentContent,
+            pastoralMessage: tempMessage,
+            leaders: leaders,
+            testimonials: testimonials
+        };
+
+        dbService.upsertPage({
+            ...pageData,
+            slug: 'ministerios/lideranca',
+            title: 'Liderança',
+            content: updatedContent
+        });
+
+        setIsEditing(false);
+    };
 
     const obreiros = pageData?.content?.obreiros || {
         title: "Corpo de Obreiros",

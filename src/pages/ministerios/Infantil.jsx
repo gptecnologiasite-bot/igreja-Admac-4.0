@@ -33,11 +33,30 @@ const Infantil = () => {
     // Temporary state while editing
     const [tempMessage, setTempMessage] = useState(pastoralMessage);
 
-    const leaders = [
+    // Use dynamic data or fallback
+    const leaders = pageData?.content?.leaders || [
         { name: 'Pra. Ana Oliveira', role: 'Coordenação Geral', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Tia Bete', role: 'Líder Berçário', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Tio Paulo', role: 'Musicalização', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Tia Carla', role: 'Ensino Bíblico', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400&h=400&auto=format&fit=crop' },
+    ];
+
+    const testimonials = pageData?.content?.testimonials || [
+        {
+            text: "Meus filhos amam vir para a igreja por causa do ministério infantil. Eles aprendem a Bíblia de um jeito que realmente entendem.",
+            author: "Fernanda Lima",
+            role: "Mãe do Theo e da Alice"
+        },
+        {
+            text: "Excelente equipe e ambiente extremamente seguro. Posso participar do culto tranquila sabendo que eles estão sendo bem cuidados.",
+            author: "Juliana Silva",
+            role: "Mãe da Sofia"
+        },
+        {
+            text: "O material didático é incrível. Eles chegam em casa contando as histórias e cantando as músicas o dia todo!",
+            author: "Roberto Junior",
+            role: "Pai do Lucas"
+        }
     ];
 
     const scroll = (direction) => {
@@ -54,7 +73,9 @@ const Infantil = () => {
         // Update central DB
         const updatedContent = {
             ...(pageData?.content || {}),
-            pastoralMessage: tempMessage
+            pastoralMessage: tempMessage,
+            leaders: leaders,
+            testimonials: testimonials
         };
 
         dbService.upsertPage({
@@ -261,23 +282,7 @@ const Infantil = () => {
                             O Que os Pais Dizem
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {[
-                                {
-                                    text: "Meus filhos amam vir para a igreja por causa do ministério infantil. Eles aprendem a Bíblia de um jeito que realmente entendem.",
-                                    author: "Fernanda Lima",
-                                    role: "Mãe do Theo e da Alice"
-                                },
-                                {
-                                    text: "Excelente equipe e ambiente extremamente seguro. Posso participar do culto tranquila sabendo que eles estão sendo bem cuidados.",
-                                    author: "Juliana Silva",
-                                    role: "Mãe da Sofia"
-                                },
-                                {
-                                    text: "O material didático é incrível. Eles chegam em casa contando as histórias e cantando as músicas o dia todo!",
-                                    author: "Roberto Junior",
-                                    role: "Pai do Lucas"
-                                }
-                            ].map((testimony, index) => (
+                            {testimonials.map((testimony, index) => (
                                 <motion.div
                                     key={index}
                                     initial={{ opacity: 0, y: 20 }}

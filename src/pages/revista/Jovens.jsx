@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Zap, Headphones, MessageSquare, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
+import dbService from '../../services/dbService';
 
 const Jovens = () => {
     const carouselRef = useRef(null);
-
-    const items = [
+    const [items, setItems] = useState([
         {
             icon: <Globe className="w-5 h-5 text-church-accent" />,
             subtitle: "TENDÊNCIAS",
@@ -27,7 +27,32 @@ const Jovens = () => {
             desc: "Envie sua dúvida para a próxima edição.",
             className: "bg-church-light/50 dark:bg-white/5 border border-gray-100 dark:border-white/10"
         }
-    ];
+    ]);
+
+    useEffect(() => {
+        const page = dbService.getPages().find(p => p.slug === 'revista/jovens');
+        if (page && page.content) {
+            try {
+                const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
+                if (content.articles && content.articles.length > 0) {
+                    setItems(content.articles);
+                }
+            } catch (e) {
+                console.error("Error loading Jovens articles", e);
+            }
+        }
+        const handleUpdate = () => {
+            const updatedPage = dbService.getPages().find(p => p.slug === 'revista/jovens');
+            if (updatedPage && updatedPage.content) {
+                try {
+                    const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
+                    if (content.articles && content.articles.length > 0) setItems(content.articles);
+                } catch (e) { }
+            }
+        };
+        window.addEventListener('contentUpdated', handleUpdate);
+        return () => window.removeEventListener('contentUpdated', handleUpdate);
+    }, []);
 
     const scroll = (direction) => {
         if (carouselRef.current) {

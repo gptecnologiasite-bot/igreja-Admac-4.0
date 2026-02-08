@@ -64,12 +64,33 @@ const Casais = () => {
     // Temporary state while editing
     const [tempMessage, setTempMessage] = useState(pastoralMessage);
 
-    const leaders = [
+    const fallBackLeaders = [
         { name: 'Pr. João & Pra. Maria', role: 'Coordenação Geral', image: 'https://images.unsplash.com/photo-1516589174184-c68526674fd6?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Carlos & Ana', role: 'Líderes de Recepção', image: 'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Ricardo & Sandra', role: 'Líderes de Eventos', image: 'https://images.unsplash.com/photo-1517841905240-472988bad197?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'André & Roberta', role: 'Aconselhamento', image: 'https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?q=80&w=400&h=400&auto=format&fit=crop' },
     ];
+
+    const fallBackTestimonials = [
+        {
+            text: "Participar do ministério de casais salvou nosso casamento. Encontramos amigos e mentores que nos guiaram no caminho de Deus.",
+            author: "Marcos & Fernanda",
+            role: "Casados há 12 anos"
+        },
+        {
+            text: "Os retiros são momentos inesquecíveis. É quando paramos tudo para focar apenas no nosso relacionamento e em Deus.",
+            author: "Julio & Patrícia",
+            role: "Casados há 4 anos"
+        },
+        {
+            text: "Aprender sobre finanças e educação de filhos sob a ótica bíblica transformou nosso lar. Somos muito gratos!",
+            author: "Ricardo & Aline",
+            role: "Membros da ADMAC"
+        }
+    ];
+
+    const leaders = pageData?.content?.leaders || fallBackLeaders;
+    const testimonials = pageData?.content?.testimonials || fallBackTestimonials;
 
     const scroll = (direction) => {
         if (carouselRef.current) {
@@ -87,7 +108,9 @@ const Casais = () => {
             ...(pageData?.content || {}),
             pastoralMessage: tempMessage,
             raffle: raffle,
-            productPromotion: productPromotion
+            productPromotion: productPromotion,
+            leaders: leaders,
+            testimonials: testimonials
         };
 
         dbService.upsertPage({
@@ -499,23 +522,7 @@ const Casais = () => {
                             Depoimentos de Famílias
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {[
-                                {
-                                    text: "Participar do ministério de casais salvou nosso casamento. Encontramos amigos e mentores que nos guiaram no caminho de Deus.",
-                                    author: "Marcos & Fernanda",
-                                    role: "Casados há 12 anos"
-                                },
-                                {
-                                    text: "Os retiros são momentos inesquecíveis. É quando paramos tudo para focar apenas no nosso relacionamento e em Deus.",
-                                    author: "Julio & Patrícia",
-                                    role: "Casados há 4 anos"
-                                },
-                                {
-                                    text: "Aprender sobre finanças e educação de filhos sob a ótica bíblica transformou nosso lar. Somos muito gratos!",
-                                    author: "Ricardo & Aline",
-                                    role: "Membros da ADMAC"
-                                }
-                            ].map((testimony, index) => (
+                            {testimonials.map((testimony, index) => (
                                 <motion.div
                                     key={index}
                                     initial={{ opacity: 0, y: 20 }}

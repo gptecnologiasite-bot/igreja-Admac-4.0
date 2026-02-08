@@ -43,13 +43,28 @@ const PageList = () => {
                     <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Gerenciar Páginas</h1>
                     <p className="text-slate-500 dark:text-slate-400">Crie, edite e gerencie as páginas do site</p>
                 </div>
-                <Link
-                    to="/painel/paginas/nova"
-                    className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg transition-colors shadow-lg shadow-blue-600/20"
-                >
-                    <Plus size={20} />
-                    <span>Nova Página</span>
-                </Link>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => {
+                            if (window.confirm('ATENÇÃO: Isso excluirá todas as alterações e restaurará as páginas originais. Deseja continuar?')) {
+                                const defaults = dbService.resetToDefaults();
+                                setPages(defaults);
+                                alert('Banco de dados restaurado com sucesso!');
+                            }
+                        }}
+                        className="flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-lg transition-colors border border-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200 dark:border-slate-600"
+                    >
+                        <Trash2 size={20} />
+                        <span>Redefinir Tudo</span>
+                    </button>
+                    <Link
+                        to="/painel/paginas/nova"
+                        className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg transition-colors shadow-lg shadow-blue-600/20"
+                    >
+                        <Plus size={20} />
+                        <span>Nova Página</span>
+                    </Link>
+                </div>
             </div>
 
             {/* Filters and Search */}

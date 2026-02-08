@@ -65,12 +65,32 @@ const Louvor = () => {
     // Temporary state while editing
     const [tempMessage, setTempMessage] = useState(pastoralMessage);
 
-    const leaders = [
+    const fallBackLeaders = [
         { name: 'Pr. Carlos Oliveira', role: 'Ministro de Louvor', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Sandra Santos', role: 'Líder de Backing', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Ricardo Lima', role: 'Diretor Musical', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Daniel Souza', role: 'Líder de Sonoplastia', image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&h=400&auto=format&fit=crop' },
     ];
+
+    const fallBackTestimonials = [
+        {
+            text: "O louvor da ADMAC me ajuda a focar inteiramente em Deus. É um momento de entrega genuína e profunda.",
+            author: "Fabio Mendes",
+            role: "Membro da Igreja"
+        },
+        {
+            text: "Excelência técnica e espiritualidade andam juntas nesse ministério. Sinto-me edificado a cada culto.",
+            author: "Lucia Ferreira",
+            role: "Líder de Pequeno Grupo"
+        },
+        {
+            text: "Minha família foi impactada pelas ministrações. Os cânticos ficam em nossa mente durante toda a semana.",
+            author: "Mateus Castro",
+            role: "Membro da Igreja"
+        }
+    ];
+
+    const leaders = pageData?.content?.leaders || fallBackLeaders;
 
     const scroll = (direction) => {
         if (carouselRef.current) {
@@ -92,7 +112,9 @@ const Louvor = () => {
             ...currentContent,
             pastoralMessage: tempMessage,
             raffle: raffle,
-            productPromotion: productPromotion
+            productPromotion: productPromotion,
+            leaders: leaders,
+            testimonials: testimonials
         };
 
         dbService.upsertPage({
