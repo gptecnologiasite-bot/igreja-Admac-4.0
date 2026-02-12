@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, Users, Star, Quote, MessageCircle, Edit2, Check, GraduationCap, Bookmark, Book, Library, Award, Download, FileText, Presentation, X, ExternalLink } from 'lucide-react';
+import { BookOpen, Users, Star, Quote, MessageCircle, Edit2, Check, GraduationCap, Bookmark, Book, Library, Award, Download, FileText, Presentation, X, ExternalLink, Video, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
@@ -15,17 +15,21 @@ const EscolaBiblica = () => {
 
     useEffect(() => {
         const page = dbService.getPages().find(p => p.slug === 'ministerios/ebd');
-        if (page && page.content) {
-            try {
-                const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
-                if (content.pastoralMessage) {
-                    setPastoralMessage(content.pastoralMessage);
+        if (page) {
+            let processedPage = { ...page };
+            if (page.content && typeof page.content === 'string') {
+                try {
+                    processedPage.content = JSON.parse(page.content);
+                } catch (e) {
+                    console.error("Error parsing page content", e);
                 }
-            } catch (e) {
-                console.error("Error parsing page content", e);
             }
+
+            if (processedPage.content?.pastoralMessage) {
+                setPastoralMessage(processedPage.content.pastoralMessage);
+            }
+            setPageData(processedPage);
         }
-        setPageData(page);
     }, []);
 
     // Temporary state while editing
@@ -77,6 +81,15 @@ const EscolaBiblica = () => {
 
     const professors = pageData?.content?.leaders || fallBackProfessors;
 
+    const fallBackVideos = [
+        { title: 'Doutrina de Deus - Aula 01', url: 'https://www.youtube.com/watch?v=kYI9g82P8f0', date: '2024-03-10' },
+        { title: 'Bibliologia - Aula 02', url: 'https://www.youtube.com/watch?v=kYI9g82P8f0', date: '2024-03-17' }
+    ];
+
+    const lessonVideos = (pageData?.content?.lessonVideos && pageData.content.lessonVideos.length > 0)
+        ? pageData.content.lessonVideos
+        : fallBackVideos;
+
     const scroll = (direction) => {
         if (carouselRef.current) {
             const { current } = carouselRef;
@@ -97,7 +110,8 @@ const EscolaBiblica = () => {
             ...currentContent,
             pastoralMessage: tempMessage,
             leaders: professors,
-            classes: classes
+            classes: classes,
+            lessonVideos: lessonVideos
         };
 
         dbService.upsertPage({
@@ -244,6 +258,66 @@ const EscolaBiblica = () => {
                             ))}
                         </div>
                     </section>
+
+                    {/* Vídeos das Lições - NEW VIDEO SECTION */}
+                    <div className="mb-32">
+                        <div className="flex items-center gap-3 mb-10">
+                            <Video className="text-emerald-500 w-8 h-8" />
+                            <h2 className="text-4xl font-black text-church-primary dark:text-white uppercase tracking-tighter">Vídeos das Lições</h2>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {lessonVideos.map((video, idx) => {
+                                // Extract youtube ID for thumbnail
+                                const videoId = video.url.includes('v=') ? video.url.split('v=')[1]?.split('&')[0] : video.url.split('/').pop();
+
+                                return (
+                                    <motion.div
+                                        key={idx}
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true }}
+                                        className="rounded-3xl overflow-hidden bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-emerald-500/30 transition-all group"
+                                    >
+                                        <div className="relative aspect-video">
+                                            <img
+                                                src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+                                                alt={video.title}
+                                                className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    e.target.src = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop';
+                                                }}
+                                            />
+                                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <a
+                                                    href={video.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="p-4 rounded-full bg-emerald-500 text-white shadow-xl hover:scale-110 transition-transform"
+                                                >
+                                                    <ExternalLink size={24} />
+                                                </a>
+                                            </div>
+                                            <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                                                <Calendar size={12} className="text-emerald-400" />
+                                                {video.date ? new Date(video.date).toLocaleDateString('pt-BR') : 'Data Indisponível'}
+                                            </div>
+                                        </div>
+                                        <div className="p-6">
+                                            <h3 className="text-xl font-bold text-church-primary dark:text-white mb-4 line-clamp-1">{video.title}</h3>
+                                            <a
+                                                href={video.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 font-bold hover:bg-emerald-500 hover:text-white transition-all group-hover:shadow-lg"
+                                            >
+                                                <Video size={18} /> Assistir Aula
+                                            </a>
+                                        </div>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+                    </div>
 
                     {/* Biblioteca de Recursos - NEW DOWNLOAD SECTION */}
                     <div className="mb-24">

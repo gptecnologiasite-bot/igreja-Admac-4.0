@@ -61,6 +61,9 @@ const PageEditor = () => {
     const [testimonials, setTestimonials] = useState([]);
     const [classes, setClasses] = useState([]);
     const [magazineArticles, setMagazineArticles] = useState([]);
+    const [teachers, setTeachers] = useState([]);
+    const [kidsStaff, setKidsStaff] = useState([]);
+    const [lessonVideos, setLessonVideos] = useState([]);
 
     const [leadershipContent, setLeadershipContent] = useState({
         leaders: [],
@@ -194,12 +197,37 @@ const PageEditor = () => {
                         if (parsedContent.classes) {
                             setClasses(parsedContent.classes);
                         }
+                        if (parsedContent.lessonVideos) {
+                            setLessonVideos(parsedContent.lessonVideos);
+                        } else if (page.slug === 'ministerios/ebd') {
+                            setLessonVideos([
+                                { title: 'Doutrina de Deus - Aula 01', url: 'https://www.youtube.com/watch?v=kYI9g82P8f0', date: '2024-03-10' },
+                                { title: 'Bibliologia - Aula 02', url: 'https://www.youtube.com/watch?v=kYI9g82P8f0', date: '2024-03-17' }
+                            ]);
+                        }
                         if (parsedContent.leaders || parsedContent.obreiros || parsedContent.chamado) {
                             setLeadershipContent({
                                 leaders: parsedContent.leaders || [],
                                 obreiros: parsedContent.obreiros || leadershipContent.obreiros,
                                 chamado: parsedContent.chamado || leadershipContent.chamado
                             });
+                        }
+                        if (parsedContent.teachers && parsedContent.teachers.length > 0) {
+                            setTeachers(parsedContent.teachers);
+                        } else if (page.slug === 'ministerios/infantil') {
+                            setTeachers([
+                                { name: 'Pra. Ana Oliveira', role: 'Coordenação Geral', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&h=400&auto=format&fit=crop' },
+                                { name: 'Tia Carla', role: 'Ensino Bíblico', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400&h=400&auto=format&fit=crop' },
+                            ]);
+                        }
+
+                        if (parsedContent.kidsStaff && parsedContent.kidsStaff.length > 0) {
+                            setKidsStaff(parsedContent.kidsStaff);
+                        } else if (page.slug === 'ministerios/infantil') {
+                            setKidsStaff([
+                                { name: 'Tia Bete', role: 'Líder Berçário', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&h=400&auto=format&fit=crop' },
+                                { name: 'Tio Paulo', role: 'Musicalização', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=400&auto=format&fit=crop' },
+                            ]);
                         }
                     } catch (e) {
                         console.error("Error parsing ministry content", e);
@@ -293,8 +321,11 @@ const PageEditor = () => {
                 ...existingContent,
                 pastoralMessage: pastoralMessage,
                 leaders: leadershipContent.leaders,
+                teachers: checkSlug === 'ministerios/infantil' ? teachers : existingContent.teachers,
+                kidsStaff: checkSlug === 'ministerios/infantil' ? kidsStaff : existingContent.kidsStaff,
                 testimonials: testimonials,
-                classes: checkSlug === 'ministerios/ebd' ? classes : undefined
+                classes: checkSlug === 'ministerios/ebd' ? classes : undefined,
+                lessonVideos: checkSlug === 'ministerios/ebd' ? lessonVideos : undefined
             };
 
             if (checkSlug === 'ministerios/lideranca') {
@@ -698,118 +729,315 @@ const PageEditor = () => {
                             </div>
 
                             {/* Gestão de Equipe / Líderes */}
-                            <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
-                                        <Users size={20} />
-                                        <h3 className="font-bold">Equipe / Líderes do Ministério</h3>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => setLeadershipContent({
-                                            ...leadershipContent,
-                                            leaders: [...leadershipContent.leaders, { name: '', role: '', image: '' }]
-                                        })}
-                                        className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-sm font-bold hover:bg-emerald-600 transition-all"
-                                    >
-                                        <Plus size={16} />
-                                        Adicionar Líder
-                                    </button>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {leadershipContent.leaders.length === 0 && (
-                                        <div className="col-span-full text-sm text-slate-500 dark:text-slate-400 text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
-                                            Nenhum líder cadastrado. Use o botão acima para adicionar.
+                            {formData?.slug !== 'ministerios/infantil' && (
+                                <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                                            <Users size={20} />
+                                            <h3 className="font-bold">Equipe / Líderes do Ministério</h3>
                                         </div>
-                                    )}
-                                    {leadershipContent.leaders.map((leader, index) => (
-                                        <div key={index} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm relative group">
-                                            <div className="flex gap-4">
-                                                <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border-2 border-emerald-500/20">
-                                                    {leader.image ? (
-                                                        <img src={leader.image} alt={leader.name} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-slate-400">
-                                                            <Users size={24} />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div className="flex-1 space-y-3">
-                                                    <div className="space-y-1">
-                                                        <label className="text-[10px] font-bold text-slate-500 uppercase">Nome Completo</label>
-                                                        <input
-                                                            type="text"
-                                                            value={leader.name}
-                                                            onChange={(e) => {
-                                                                const newLeaders = [...leadershipContent.leaders];
-                                                                newLeaders[index].name = e.target.value;
-                                                                setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
-                                                            }}
-                                                            className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
-                                                            placeholder="Ex: Pra. Ana Oliveira"
-                                                        />
-                                                    </div>
-                                                    <div className="space-y-1">
-                                                        <label className="text-[10px] font-bold text-slate-500 uppercase">Cargo / Função</label>
-                                                        <input
-                                                            type="text"
-                                                            value={leader.role}
-                                                            onChange={(e) => {
-                                                                const newLeaders = [...leadershipContent.leaders];
-                                                                newLeaders[index].role = e.target.value;
-                                                                setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
-                                                            }}
-                                                            className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
-                                                            placeholder="Ex: Coordenação Geral"
-                                                        />
-                                                    </div>
-                                                    <div className="space-y-1">
-                                                        <label className="text-[10px] font-bold text-slate-500 uppercase">URL da Imagem</label>
-                                                        <input
-                                                            type="text"
-                                                            value={leader.image}
-                                                            onChange={(e) => {
-                                                                const newLeaders = [...leadershipContent.leaders];
-                                                                newLeaders[index].image = e.target.value;
-                                                                setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
-                                                            }}
-                                                            className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-[10px] transition-all"
-                                                            placeholder="https://images.unsplash.com/..."
-                                                        />
-                                                    </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setLeadershipContent({
+                                                ...leadershipContent,
+                                                leaders: [...leadershipContent.leaders, { name: '', role: '', image: '' }]
+                                            })}
+                                            className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-sm font-bold hover:bg-emerald-600 transition-all"
+                                        >
+                                            <Plus size={16} />
+                                            Adicionar Líder
+                                        </button>
+                                    </div>
 
-                                                    <div className="flex gap-2 pt-2">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-                                                                const newLeaders = [...leadershipContent.leaders];
-                                                                newLeaders.splice(index + 1, 0, { ...leader });
-                                                                setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
-                                                            }}
-                                                            className="flex-1 flex items-center justify-center gap-1 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg border border-blue-100 dark:border-blue-900/30 hover:bg-blue-600 hover:text-white transition-all"
-                                                        >
-                                                            <Save size={12} />
-                                                            Duplicar
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-                                                                const newLeaders = [...leadershipContent.leaders];
-                                                                newLeaders.splice(index, 1);
-                                                                setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
-                                                            }}
-                                                            className="px-3 py-1 bg-red-50 dark:bg-red-500/10 text-red-500 text-xs font-bold rounded-lg border border-red-100 dark:border-red-900/30 hover:bg-red-600 hover:text-white transition-all"
-                                                        >
-                                                            <Trash2 size={12} />
-                                                        </button>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {leadershipContent.leaders.length === 0 && (
+                                            <div className="col-span-full text-sm text-slate-500 dark:text-slate-400 text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                                                Nenhum líder cadastrado. Use o botão acima para adicionar.
+                                            </div>
+                                        )}
+                                        {leadershipContent.leaders.map((leader, index) => (
+                                            <div key={index} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm relative group">
+                                                <div className="flex gap-4">
+                                                    <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border-2 border-emerald-500/20">
+                                                        {leader.image ? (
+                                                            <img src={leader.image} alt={leader.name} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center text-slate-400">
+                                                                <Users size={24} />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex-1 space-y-3">
+                                                        <div className="space-y-1">
+                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Nome Completo</label>
+                                                            <input
+                                                                type="text"
+                                                                value={leader.name}
+                                                                onChange={(e) => {
+                                                                    const newLeaders = [...leadershipContent.leaders];
+                                                                    newLeaders[index].name = e.target.value;
+                                                                    setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
+                                                                }}
+                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                placeholder="Ex: Pra. Ana Oliveira"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Cargo / Função</label>
+                                                            <input
+                                                                type="text"
+                                                                value={leader.role}
+                                                                onChange={(e) => {
+                                                                    const newLeaders = [...leadershipContent.leaders];
+                                                                    newLeaders[index].role = e.target.value;
+                                                                    setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
+                                                                }}
+                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                placeholder="Ex: Coordenação Geral"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">URL da Imagem</label>
+                                                            <input
+                                                                type="text"
+                                                                value={leader.image}
+                                                                onChange={(e) => {
+                                                                    const newLeaders = [...leadershipContent.leaders];
+                                                                    newLeaders[index].image = e.target.value;
+                                                                    setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
+                                                                }}
+                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-[10px] transition-all"
+                                                                placeholder="https://images.unsplash.com/..."
+                                                            />
+                                                        </div>
+
+                                                        <div className="flex gap-2 pt-2">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const newLeaders = [...leadershipContent.leaders];
+                                                                    newLeaders.splice(index + 1, 0, { ...leader });
+                                                                    setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
+                                                                }}
+                                                                className="flex-1 flex items-center justify-center gap-1 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg border border-blue-100 dark:border-blue-900/30 hover:bg-blue-600 hover:text-white transition-all"
+                                                            >
+                                                                <Save size={12} />
+                                                                Duplicar
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const newLeaders = [...leadershipContent.leaders];
+                                                                    newLeaders.splice(index, 1);
+                                                                    setLeadershipContent({ ...leadershipContent, leaders: newLeaders });
+                                                                }}
+                                                                className="px-3 py-1 bg-red-50 dark:bg-red-500/10 text-red-500 text-xs font-bold rounded-lg border border-red-100 dark:border-red-900/30 hover:bg-red-600 hover:text-white transition-all"
+                                                            >
+                                                                <Trash2 size={12} />
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
+
+                            {/* Special Sections for Infantil Page: Teachers and Kids Staff */}
+                            {formData?.slug === 'ministerios/infantil' && (
+                                <>
+                                    {/* Teachers Section */}
+                                    <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                                                <Users size={20} />
+                                                <h3 className="font-bold">Nossos Professores</h3>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setTeachers([...teachers, { name: '', role: '', image: '' }])}
+                                                className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-sm font-bold hover:bg-emerald-600 transition-all"
+                                            >
+                                                <Plus size={16} />
+                                                Adicionar Professor
+                                            </button>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {teachers.length === 0 && (
+                                                <div className="col-span-full text-sm text-slate-500 dark:text-slate-400 text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                                                    Nenhum professor cadastrado.
+                                                </div>
+                                            )}
+                                            {teachers.map((teacher, index) => (
+                                                <div key={index} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm relative group">
+                                                    <div className="flex gap-4">
+                                                        <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border-2 border-emerald-500/20">
+                                                            {teacher.image ? (
+                                                                <img src={teacher.image} alt={teacher.name} className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <div className="w-full h-full flex items-center justify-center text-slate-400">
+                                                                    <Users size={24} />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 space-y-3">
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Nome Completo</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={teacher.name}
+                                                                    onChange={(e) => {
+                                                                        const newTeachers = [...teachers];
+                                                                        newTeachers[index].name = e.target.value;
+                                                                        setTeachers(newTeachers);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Cargo / Função</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={teacher.role}
+                                                                    onChange={(e) => {
+                                                                        const newTeachers = [...teachers];
+                                                                        newTeachers[index].role = e.target.value;
+                                                                        setTeachers(newTeachers);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">URL da Imagem</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={teacher.image}
+                                                                    onChange={(e) => {
+                                                                        const newTeachers = [...teachers];
+                                                                        newTeachers[index].image = e.target.value;
+                                                                        setTeachers(newTeachers);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-[10px] transition-all"
+                                                                />
+                                                            </div>
+                                                            <div className="flex gap-2 pt-2">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const newTeachers = [...teachers];
+                                                                        newTeachers.splice(index, 1);
+                                                                        setTeachers(newTeachers);
+                                                                    }}
+                                                                    className="px-3 py-1 bg-red-50 dark:bg-red-500/10 text-red-500 text-xs font-bold rounded-lg border border-red-100 dark:border-red-900/30 hover:bg-red-600 hover:text-white transition-all w-full flex items-center justify-center gap-2"
+                                                                >
+                                                                    <Trash2 size={12} /> Remover
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Kids Staff Section */}
+                                    <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2 text-violet-700 dark:text-violet-400">
+                                                <Baby size={20} />
+                                                <h3 className="font-bold">Equipe para Crianças</h3>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setKidsStaff([...kidsStaff, { name: '', role: '', image: '' }])}
+                                                className="flex items-center gap-2 px-3 py-1.5 bg-violet-500 text-white rounded-lg text-sm font-bold hover:bg-violet-600 transition-all"
+                                            >
+                                                <Plus size={16} />
+                                                Adicionar Apoio
+                                            </button>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {kidsStaff.length === 0 && (
+                                                <div className="col-span-full text-sm text-slate-500 dark:text-slate-400 text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                                                    Nenhum membro da equipe de apoio cadastrado.
+                                                </div>
+                                            )}
+                                            {kidsStaff.map((staff, index) => (
+                                                <div key={index} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm relative group">
+                                                    <div className="flex gap-4">
+                                                        <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border-2 border-violet-500/20">
+                                                            {staff.image ? (
+                                                                <img src={staff.image} alt={staff.name} className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <div className="w-full h-full flex items-center justify-center text-slate-400">
+                                                                    <Baby size={24} />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 space-y-3">
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Nome Completo</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={staff.name}
+                                                                    onChange={(e) => {
+                                                                        const newStaff = [...kidsStaff];
+                                                                        newStaff[index].name = e.target.value;
+                                                                        setKidsStaff(newStaff);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-violet-500 outline-none text-sm transition-all"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Cargo / Função</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={staff.role}
+                                                                    onChange={(e) => {
+                                                                        const newStaff = [...kidsStaff];
+                                                                        newStaff[index].role = e.target.value;
+                                                                        setKidsStaff(newStaff);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-violet-500 outline-none text-sm transition-all"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">URL da Imagem</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={staff.image}
+                                                                    onChange={(e) => {
+                                                                        const newStaff = [...kidsStaff];
+                                                                        newStaff[index].image = e.target.value;
+                                                                        setKidsStaff(newStaff);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-violet-500 outline-none text-[10px] transition-all"
+                                                                />
+                                                            </div>
+                                                            <div className="flex gap-2 pt-2">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const newStaff = [...kidsStaff];
+                                                                        newStaff.splice(index, 1);
+                                                                        setKidsStaff(newStaff);
+                                                                    }}
+                                                                    className="px-3 py-1 bg-red-50 dark:bg-red-500/10 text-red-500 text-xs font-bold rounded-lg border border-red-100 dark:border-red-900/30 hover:bg-red-600 hover:text-white transition-all w-full flex items-center justify-center gap-2"
+                                                                >
+                                                                    <Trash2 size={12} /> Remover
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
 
                             {formData?.slug === 'ministerios/lideranca' && (
                                 <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
@@ -883,105 +1111,194 @@ const PageEditor = () => {
                                 </div>
                             )}
 
-                            {/* EBD Specific: Classes */}
+                            {/* EBD Specific: Classes and Videos */}
                             {formData?.slug === 'ministerios/ebd' && (
-                                <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
-                                            <Book size={20} />
-                                            <h3 className="font-bold">Classes da EBD</h3>
+                                <div className="space-y-8">
+                                    {/* Classes Section */}
+                                    <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                                                <Book size={20} />
+                                                <h3 className="font-bold">Classes da EBD</h3>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setClasses([...classes, { title: '', theme: '', teacher: '', time: '09:00' }])}
+                                                className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-sm font-bold hover:bg-emerald-600 transition-all"
+                                            >
+                                                <Plus size={16} />
+                                                Adicionar Classe
+                                            </button>
                                         </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => setClasses([...classes, { title: '', theme: '', teacher: '', time: '09:00' }])}
-                                            className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-sm font-bold hover:bg-emerald-600 transition-all"
-                                        >
-                                            <Plus size={16} />
-                                            Adicionar Classe
-                                        </button>
+
+                                        <div className="grid grid-cols-1 gap-4">
+                                            {classes.length === 0 && (
+                                                <div className="text-sm text-slate-500 dark:text-slate-400 text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                                                    Nenhuma classe cadastrada. Use o botão acima para adicionar.
+                                                </div>
+                                            )}
+                                            {classes.map((cls, index) => (
+                                                <div key={index} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm space-y-4">
+                                                    <div className="flex items-start justify-between gap-4">
+                                                        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Título da Classe</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={cls.title}
+                                                                    onChange={(e) => {
+                                                                        const newClasses = [...classes];
+                                                                        newClasses[index].title = e.target.value;
+                                                                        setClasses(newClasses);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                    placeholder="Ex: Classe Adultos"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Tema Atual</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={cls.theme}
+                                                                    onChange={(e) => {
+                                                                        const newClasses = [...classes];
+                                                                        newClasses[index].theme = e.target.value;
+                                                                        setClasses(newClasses);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                    placeholder="Ex: As Epístolas de Paulo"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Professor(a)</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={cls.teacher}
+                                                                    onChange={(e) => {
+                                                                        const newClasses = [...classes];
+                                                                        newClasses[index].teacher = e.target.value;
+                                                                        setClasses(newClasses);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                    placeholder="Ex: Prof. Cláudio Santos"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Horário</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={cls.time}
+                                                                    onChange={(e) => {
+                                                                        const newClasses = [...classes];
+                                                                        newClasses[index].time = e.target.value;
+                                                                        setClasses(newClasses);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                    placeholder="Ex: Domingo, 09:00"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                const newClasses = [...classes];
+                                                                newClasses.splice(index, 1);
+                                                                setClasses(newClasses);
+                                                            }}
+                                                            className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
+                                                        >
+                                                            <Trash2 size={20} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-4">
-                                        {classes.length === 0 && (
-                                            <div className="text-sm text-slate-500 dark:text-slate-400 text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
-                                                Nenhuma classe cadastrada. Use o botão acima para adicionar.
+                                    {/* Videos Section */}
+                                    <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                                                <Video size={20} />
+                                                <h3 className="font-bold">Vídeos das Lições (EBD)</h3>
                                             </div>
-                                        )}
-                                        {classes.map((cls, index) => (
-                                            <div key={index} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm space-y-4">
-                                                <div className="flex items-start justify-between gap-4">
-                                                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                                        <div className="space-y-1">
-                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Título da Classe</label>
-                                                            <input
-                                                                type="text"
-                                                                value={cls.title}
-                                                                onChange={(e) => {
-                                                                    const newClasses = [...classes];
-                                                                    newClasses[index].title = e.target.value;
-                                                                    setClasses(newClasses);
-                                                                }}
-                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
-                                                                placeholder="Ex: Classe Adultos"
-                                                            />
-                                                        </div>
-                                                        <div className="space-y-1">
-                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Tema Atual</label>
-                                                            <input
-                                                                type="text"
-                                                                value={cls.theme}
-                                                                onChange={(e) => {
-                                                                    const newClasses = [...classes];
-                                                                    newClasses[index].theme = e.target.value;
-                                                                    setClasses(newClasses);
-                                                                }}
-                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
-                                                                placeholder="Ex: As Epístolas de Paulo"
-                                                            />
-                                                        </div>
-                                                        <div className="space-y-1">
-                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Professor(a)</label>
-                                                            <input
-                                                                type="text"
-                                                                value={cls.teacher}
-                                                                onChange={(e) => {
-                                                                    const newClasses = [...classes];
-                                                                    newClasses[index].teacher = e.target.value;
-                                                                    setClasses(newClasses);
-                                                                }}
-                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
-                                                                placeholder="Ex: Prof. Cláudio Santos"
-                                                            />
-                                                        </div>
-                                                        <div className="space-y-1">
-                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Horário</label>
-                                                            <input
-                                                                type="text"
-                                                                value={cls.time}
-                                                                onChange={(e) => {
-                                                                    const newClasses = [...classes];
-                                                                    newClasses[index].time = e.target.value;
-                                                                    setClasses(newClasses);
-                                                                }}
-                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
-                                                                placeholder="Ex: Domingo, 09:00"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            const newClasses = [...classes];
-                                                            newClasses.splice(index, 1);
-                                                            setClasses(newClasses);
-                                                        }}
-                                                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
-                                                    >
-                                                        <Trash2 size={20} />
-                                                    </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setLessonVideos([...lessonVideos, { title: '', url: '', date: new Date().toISOString().split('T')[0] }])}
+                                                className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-sm font-bold hover:bg-emerald-600 transition-all"
+                                            >
+                                                <Plus size={16} />
+                                                Adicionar Vídeo
+                                            </button>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 gap-4">
+                                            {lessonVideos.length === 0 && (
+                                                <div className="text-sm text-slate-500 dark:text-slate-400 text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                                                    Nenhum vídeo cadastrado. Use o botão acima para adicionar.
                                                 </div>
-                                            </div>
-                                        ))}
+                                            )}
+                                            {lessonVideos.map((video, index) => (
+                                                <div key={index} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm space-y-4">
+                                                    <div className="flex items-start justify-between gap-4">
+                                                        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Título da Aula</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={video.title}
+                                                                    onChange={(e) => {
+                                                                        const newVideos = [...lessonVideos];
+                                                                        newVideos[index].title = e.target.value;
+                                                                        setLessonVideos(newVideos);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                    placeholder="Ex: Aula 01 - Doutrina de Deus"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">URL do Vídeo (Youtube)</label>
+                                                                <input
+                                                                    type="text"
+                                                                    value={video.url}
+                                                                    onChange={(e) => {
+                                                                        const newVideos = [...lessonVideos];
+                                                                        newVideos[index].url = e.target.value;
+                                                                        setLessonVideos(newVideos);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                    placeholder="https://www.youtube.com/watch?v=..."
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Data</label>
+                                                                <input
+                                                                    type="date"
+                                                                    value={video.date}
+                                                                    onChange={(e) => {
+                                                                        const newVideos = [...lessonVideos];
+                                                                        newVideos[index].date = e.target.value;
+                                                                        setLessonVideos(newVideos);
+                                                                    }}
+                                                                    className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                const newVideos = [...lessonVideos];
+                                                                newVideos.splice(index, 1);
+                                                                setLessonVideos(newVideos);
+                                                            }}
+                                                            className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
+                                                        >
+                                                            <Trash2 size={20} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -989,845 +1306,847 @@ const PageEditor = () => {
                     )}
 
                     {/* Media Specific Section */}
-                    {formData?.slug === 'midia' && (
-                        <div className="space-y-8">
-                            {/* Videos Section */}
-                            <div className="p-6 rounded-2xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-800/30 space-y-6">
-                                <div className="p-4 bg-red-100/50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-xl text-sm border border-red-200 dark:border-red-800/30">
-                                    <strong>💡 Dica:</strong> O primeiro vídeo da lista abaixo será automaticamente exibido como o <strong>Vídeo em Destaque</strong> na Página Inicial (Home).
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-red-700 dark:text-red-400">
-                                        <Video size={20} />
-                                        <h3 className="font-bold uppercase tracking-wider text-sm">Galeria de Vídeos</h3>
+                    {
+                        formData?.slug === 'midia' && (
+                            <div className="space-y-8">
+                                {/* Videos Section */}
+                                <div className="p-6 rounded-2xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-800/30 space-y-6">
+                                    <div className="p-4 bg-red-100/50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-xl text-sm border border-red-200 dark:border-red-800/30">
+                                        <strong>💡 Dica:</strong> O primeiro vídeo da lista abaixo será automaticamente exibido como o <strong>Vídeo em Destaque</strong> na Página Inicial (Home).
                                     </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => setMediaPageContent(prev => ({
-                                            ...prev,
-                                            videos: [...(prev.videos || []), { id: Date.now(), titulo: '', url: '', thumbnail: '' }]
-                                        }))}
-                                        className="px-3 py-1.5 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 transition-colors flex items-center gap-1"
-                                    >
-                                        <Plus size={14} /> Adicionar Vídeo
-                                    </button>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {(mediaPageContent?.videos || []).map((video, vIdx) => (
-                                        <div key={video.id || vIdx} className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 relative group/item">
-                                            <div className="absolute top-2 right-8 flex gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity z-10">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => {
-                                                        if (vIdx > 0) {
-                                                            setMediaPageContent(prev => {
-                                                                const newVideos = [...prev.videos];
-                                                                [newVideos[vIdx], newVideos[vIdx - 1]] = [newVideos[vIdx - 1], newVideos[vIdx]];
-                                                                return { ...prev, videos: newVideos };
-                                                            });
-                                                        }
-                                                    }}
-                                                    className="w-6 h-6 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center shadow-md hover:text-red-500 transition-all"
-                                                    title="Subir"
-                                                >
-                                                    <ArrowUp size={12} />
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => {
-                                                        if (vIdx < mediaPageContent.videos.length - 1) {
-                                                            setMediaPageContent(prev => {
-                                                                const newVideos = [...prev.videos];
-                                                                [newVideos[vIdx], newVideos[vIdx + 1]] = [newVideos[vIdx + 1], newVideos[vIdx]];
-                                                                return { ...prev, videos: newVideos };
-                                                            });
-                                                        }
-                                                    }}
-                                                    className="w-6 h-6 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center shadow-md hover:text-red-500 transition-all"
-                                                    title="Baixar"
-                                                >
-                                                    <ArrowDown size={12} />
-                                                </button>
-                                            </div>
-
-                                            <button
-                                                type="button"
-                                                onClick={() => setMediaPageContent(prev => ({
-                                                    ...prev,
-                                                    videos: prev.videos.filter((_, i) => i !== vIdx)
-                                                }))}
-                                                className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-opacity shadow-lg z-10"
-                                            >
-                                                <X size={12} />
-                                            </button>
-
-                                            <div className="aspect-video w-full rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-                                                {video.thumbnail || (video.url && getYouTubeId(video.url)) ? (
-                                                    <img
-                                                        src={video.thumbnail || getYouTubeThumbnail(getYouTubeId(video.url))}
-                                                        alt="Preview"
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-slate-300">
-                                                        <Video size={32} />
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase">Título do Vídeo</label>
-                                                <input
-                                                    type="text"
-                                                    value={video.titulo}
-                                                    onChange={(e) => {
-                                                        setMediaPageContent(prev => {
-                                                            const newVideos = [...prev.videos];
-                                                            newVideos[vIdx].titulo = e.target.value;
-                                                            return { ...prev, videos: newVideos };
-                                                        });
-                                                    }}
-                                                    className="w-full px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border-none rounded outline-none focus:ring-1 focus:ring-red-500"
-                                                    placeholder="Ex: Culto de Domingo"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase">URL / Iframe (YouTube)</label>
-                                                <input
-                                                    type="text"
-                                                    value={video.url}
-                                                    onChange={(e) => {
-                                                        const rawValue = e.target.value;
-                                                        const cleanUrl = extractUrlFromIframe(rawValue);
-                                                        const youtubeId = getYouTubeId(cleanUrl);
-
-                                                        setMediaPageContent(prev => {
-                                                            const newVideos = [...prev.videos];
-                                                            newVideos[vIdx].url = cleanUrl;
-                                                            if (youtubeId) {
-                                                                newVideos[vIdx].thumbnail = getYouTubeThumbnail(youtubeId);
-                                                            }
-                                                            return { ...prev, videos: newVideos };
-                                                        });
-                                                    }}
-                                                    className="w-full px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border-none rounded outline-none focus:ring-1 focus:ring-red-500 font-mono"
-                                                    placeholder="Cole a URL ou o iframe"
-                                                />
-                                            </div>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-red-700 dark:text-red-400">
+                                            <Video size={20} />
+                                            <h3 className="font-bold uppercase tracking-wider text-sm">Galeria de Vídeos</h3>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                    {(formData?.slug === 'inicio' || formData?.slug === 'contato') && (
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
-                                <Activity size={20} />
-                                <h3 className="font-bold">Conteúdo da Home: Destaque (Hero)</h3>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Texto do Selo (Badge)</label>
-                                <input
-                                    type="text"
-                                    value={homeHero.badge}
-                                    onChange={(e) => setHomeHero({ ...homeHero, badge: e.target.value })}
-                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                    placeholder="Ex: Bem-vindo à ADMAC"
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título Principal</label>
-                                <input
-                                    type="text"
-                                    value={homeHero.title}
-                                    onChange={(e) => setHomeHero({ ...homeHero, title: e.target.value })}
-                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                    placeholder="Ex: Uma Família para Pertencer"
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Subtítulo / Descrição</label>
-                                <textarea
-                                    value={homeHero.subtitle}
-                                    onChange={(e) => setHomeHero({ ...homeHero, subtitle: e.target.value })}
-                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                    rows={3}
-                                    placeholder="Descreva sua igreja..."
-                                />
-                            </div>
-
-                            <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
-                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
-                                    <h3 className="font-bold">Seção Quem Somos</h3>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título</label>
-                                        <input
-                                            type="text"
-                                            value={homeAbout.title}
-                                            onChange={(e) => setHomeAbout({ ...homeAbout, title: e.target.value })}
-                                            className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setMediaPageContent(prev => ({
+                                                ...prev,
+                                                videos: [...(prev.videos || []), { id: Date.now(), titulo: '', url: '', thumbnail: '' }]
+                                            }))}
+                                            className="px-3 py-1.5 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 transition-colors flex items-center gap-1"
+                                        >
+                                            <Plus size={14} /> Adicionar Vídeo
+                                        </button>
                                     </div>
+
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Parágrafo 1</label>
-                                            <textarea
-                                                value={homeAbout.text1}
-                                                onChange={(e) => setHomeAbout({ ...homeAbout, text1: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                                rows={3}
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Parágrafo 2</label>
-                                            <textarea
-                                                value={homeAbout.text2}
-                                                onChange={(e) => setHomeAbout({ ...homeAbout, text2: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                                rows={3}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-slate-600 dark:text-slate-400 uppercase text-xs font-bold">Missão</label>
-                                            <textarea
-                                                value={homeAbout.mission}
-                                                onChange={(e) => setHomeAbout({ ...homeAbout, mission: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-sm"
-                                                rows={3}
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-slate-600 dark:text-slate-400 uppercase text-xs font-bold">Visão</label>
-                                            <textarea
-                                                value={homeAbout.vision}
-                                                onChange={(e) => setHomeAbout({ ...homeAbout, vision: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-sm"
-                                                rows={3}
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-slate-600 dark:text-slate-400 uppercase text-xs font-bold">Valores</label>
-                                            <textarea
-                                                value={homeAbout.values}
-                                                onChange={(e) => setHomeAbout({ ...homeAbout, values: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-sm"
-                                                rows={3}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
-                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
-                                    <h3 className="font-bold">Seção Programação (Agenda)</h3>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título da Seção</label>
-                                            <input
-                                                type="text"
-                                                value={homeAgenda.title}
-                                                onChange={(e) => setHomeAgenda({ ...homeAgenda, title: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
-                                            <input
-                                                type="text"
-                                                value={homeAgenda.description}
-                                                onChange={(e) => setHomeAgenda({ ...homeAgenda, description: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-white/50 dark:bg-slate-900/50 rounded-xl border border-blue-100 dark:border-blue-900/30">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Evento Especial (Título)</label>
-                                            <input
-                                                type="text"
-                                                value={homeAgenda.nextEvent?.title || ''}
-                                                onChange={(e) => setHomeAgenda({ ...homeAgenda, nextEvent: { ...homeAgenda.nextEvent, title: e.target.value } })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Evento Especial (Data/Rótulo)</label>
-                                            <input
-                                                type="text"
-                                                value={homeAgenda.nextEvent?.label || ''}
-                                                onChange={(e) => setHomeAgenda({ ...homeAgenda, nextEvent: { ...homeAgenda.nextEvent, label: e.target.value } })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div className="flex items-center justify-between">
-                                            <label className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Dias e Horários</label>
-                                            <button
-                                                type="button"
-                                                onClick={() => setHomeAgenda({ ...homeAgenda, events: [...homeAgenda.events, { day: 'Novo Dia', sessions: [] }] })}
-                                                className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-600 hover:text-white transition-all"
-                                            >
-                                                + Adicionar Dia
-                                            </button>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {homeAgenda.events.map((event, idx) => (
-                                                <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-3">
-                                                    <div className="flex items-center justify-between gap-2">
-                                                        <input
-                                                            type="text"
-                                                            value={event.day}
-                                                            onChange={(e) => {
-                                                                const newEvents = [...homeAgenda.events];
-                                                                newEvents[idx].day = e.target.value;
-                                                                setHomeAgenda({ ...homeAgenda, events: newEvents });
-                                                            }}
-                                                            className="bg-transparent font-bold text-blue-600 dark:text-blue-400 outline-none w-full"
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setHomeAgenda({ ...homeAgenda, events: homeAgenda.events.filter((_, i) => i !== idx) })}
-                                                            className="text-red-400 hover:text-red-600 p-1"
-                                                        >
-                                                            &times;
-                                                        </button>
-                                                    </div>
-
-                                                    <div className="space-y-2">
-                                                        {event.sessions.map((session, sIdx) => (
-                                                            <div key={sIdx} className="flex items-center gap-2 text-xs">
-                                                                <input
-                                                                    type="text"
-                                                                    value={session.time}
-                                                                    onChange={(e) => {
-                                                                        const newEvents = [...homeAgenda.events];
-                                                                        newEvents[idx].sessions[sIdx].time = e.target.value;
-                                                                        setHomeAgenda({ ...homeAgenda, events: newEvents });
-                                                                    }}
-                                                                    className="w-16 px-2 py-1 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                                    placeholder="00:00"
-                                                                />
-                                                                <input
-                                                                    type="text"
-                                                                    value={session.title}
-                                                                    onChange={(e) => {
-                                                                        const newEvents = [...homeAgenda.events];
-                                                                        newEvents[idx].sessions[sIdx].title = e.target.value;
-                                                                        setHomeAgenda({ ...homeAgenda, events: newEvents });
-                                                                    }}
-                                                                    className="flex-1 px-2 py-1 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                                    placeholder="Título"
-                                                                />
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => {
-                                                                        const newEvents = [...homeAgenda.events];
-                                                                        newEvents[idx].sessions = newEvents[idx].sessions.filter((_, i) => i !== sIdx);
-                                                                        setHomeAgenda({ ...homeAgenda, events: newEvents });
-                                                                    }}
-                                                                    className="text-red-400"
-                                                                >
-                                                                    &times;
-                                                                </button>
-                                                            </div>
-                                                        ))}
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-                                                                const newEvents = [...homeAgenda.events];
-                                                                newEvents[idx].sessions.push({ time: '19:00', title: 'Novo Culto', type: 'Culto' });
-                                                                setHomeAgenda({ ...homeAgenda, events: newEvents });
-                                                            }}
-                                                            className="text-[10px] text-blue-500 font-bold hover:underline"
-                                                        >
-                                                            + Adicionar Horário
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Ministérios */}
-                            <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
-                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
-                                    <h3 className="font-bold">Seção Ministérios</h3>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título</label>
-                                            <input
-                                                type="text"
-                                                value={homeMinistries.title}
-                                                onChange={(e) => setHomeMinistries({ ...homeMinistries, title: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
-                                            <input
-                                                type="text"
-                                                value={homeMinistries.description}
-                                                onChange={(e) => setHomeMinistries({ ...homeMinistries, description: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <div className="flex items-center justify-between">
-                                            <label className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Itens de Ministérios</label>
-                                            <button
-                                                type="button"
-                                                onClick={() => setHomeMinistries({ ...homeMinistries, items: [...homeMinistries.items, { title: 'Novo Ministério', desc: '', href: '' }] })}
-                                                className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-600 hover:text-white transition-all"
-                                            >
-                                                + Adicionar Item
-                                            </button>
-                                        </div>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {homeMinistries.items.map((item, idx) => (
-                                                <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-3 group">
-                                                    <div className="flex items-center justify-between">
-                                                        <input
-                                                            type="text"
-                                                            value={item.title}
-                                                            onChange={(e) => {
-                                                                const newItems = [...homeMinistries.items];
-                                                                newItems[idx].title = e.target.value;
-                                                                setHomeMinistries({ ...homeMinistries, items: newItems });
-                                                            }}
-                                                            className="bg-transparent font-bold text-slate-800 dark:text-white outline-none w-full"
-                                                            placeholder="Título do Ministério"
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setHomeMinistries({ ...homeMinistries, items: homeMinistries.items.filter((_, i) => i !== idx) })}
-                                                            className="text-red-400 hover:text-red-600 transition-colors"
-                                                        >
-                                                            &times;
-                                                        </button>
-                                                    </div>
-
-                                                    <div className="flex flex-col gap-2">
-                                                        <label className="text-[10px] font-bold text-slate-500 uppercase">Ícone</label>
-                                                        <div className="flex gap-2 p-1 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded overflow-x-auto">
-                                                            {['Activity', 'Users', 'Heart', 'Music', 'Book', 'GraduationCap', 'Shield', 'Home', 'Compass', 'Baby', 'Star'].map(iconName => (
-                                                                <button
-                                                                    key={iconName}
-                                                                    type="button"
-                                                                    onClick={() => {
-                                                                        const newItems = [...homeMinistries.items];
-                                                                        newItems[idx].icon = iconName;
-                                                                        setHomeMinistries({ ...homeMinistries, items: newItems });
-                                                                    }}
-                                                                    className={`p-1.5 rounded transition-all ${item.icon === iconName ? 'bg-blue-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500'}`}
-                                                                    title={iconName}
-                                                                >
-                                                                    {iconName === 'Activity' && <Activity size={12} />}
-                                                                    {iconName === 'Users' && <Users size={12} />}
-                                                                    {iconName === 'Heart' && <Heart size={12} />}
-                                                                    {iconName === 'Music' && <Music size={12} />}
-                                                                    {iconName === 'Book' && <Book size={12} />}
-                                                                    {iconName === 'GraduationCap' && <Book size={12} />} {/* Use Book as GraduationCap if not available, or I'll add it to imports */}
-                                                                    {iconName === 'Shield' && <Star size={12} />}
-                                                                    {iconName === 'Home' && <Activity size={12} />}
-                                                                    {iconName === 'Compass' && <Activity size={12} />}
-                                                                    {iconName === 'Baby' && <Baby size={12} />}
-                                                                    {iconName === 'Star' && <Star size={12} />}
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-
-                                                    <textarea
-                                                        value={item.desc}
-                                                        onChange={(e) => {
-                                                            const newItems = [...homeMinistries.items];
-                                                            newItems[idx].desc = e.target.value;
-                                                            setHomeMinistries({ ...homeMinistries, items: newItems });
-                                                        }}
-                                                        className="w-full p-2 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none"
-                                                        placeholder="Descrição curta..."
-                                                        rows="2"
-                                                    />
-                                                    <input
-                                                        type="text"
-                                                        value={item.href}
-                                                        onChange={(e) => {
-                                                            const newItems = [...homeMinistries.items];
-                                                            newItems[idx].href = e.target.value;
-                                                            setHomeMinistries({ ...homeMinistries, items: newItems });
-                                                        }}
-                                                        className="w-full px-2 py-1 text-[10px] bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                        placeholder="/link-do-ministerio"
-                                                    />
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            {/* Podcast */}
-                            <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
-                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
-                                    <h3 className="font-bold">Seção Podcast</h3>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título</label>
-                                            <input
-                                                type="text"
-                                                value={homePodcast.title}
-                                                onChange={(e) => setHomePodcast({ ...homePodcast, title: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Rótulo (Badge)</label>
-                                            <input
-                                                type="text"
-                                                value={homePodcast.badge}
-                                                onChange={(e) => setHomePodcast({ ...homePodcast, badge: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
-                                        <textarea
-                                            value={homePodcast.description}
-                                            onChange={(e) => setHomePodcast({ ...homePodcast, description: e.target.value })}
-                                            className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            rows="2"
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">URL Spotify (Botão)</label>
-                                            <input
-                                                type="text"
-                                                value={homePodcast.spotifyUrl}
-                                                onChange={(e) => setHomePodcast({ ...homePodcast, spotifyUrl: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">URL Embed Spotify (Player)</label>
-                                            <input
-                                                type="text"
-                                                value={homePodcast.spotifyEmbed}
-                                                onChange={(e) => setHomePodcast({ ...homePodcast, spotifyEmbed: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Revista */}
-                            <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
-                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
-                                    <h3 className="font-bold">Seção Revista Digital</h3>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título</label>
-                                            <input
-                                                type="text"
-                                                value={homeMagazines.title}
-                                                onChange={(e) => setHomeMagazines({ ...homeMagazines, title: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
-                                            <input
-                                                type="text"
-                                                value={homeMagazines.description}
-                                                onChange={(e) => setHomeMagazines({ ...homeMagazines, description: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <div className="flex items-center justify-between">
-                                            <label className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Categorias da Revista</label>
-                                            <button
-                                                type="button"
-                                                onClick={() => setHomeMagazines({ ...homeMagazines, items: [...homeMagazines.items, { title: 'Nova Categoria', color: 'text-blue-500', href: '#' }] })}
-                                                className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-600 hover:text-white transition-all"
-                                            >
-                                                + Adicionar Categoria
-                                            </button>
-                                        </div>
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                            {homeMagazines.items.map((item, idx) => (
-                                                <div key={idx} className="p-3 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-2 group">
-                                                    <div className="flex items-center justify-between">
-                                                        <input
-                                                            type="text"
-                                                            value={item.title}
-                                                            onChange={(e) => {
-                                                                const newItems = [...homeMagazines.items];
-                                                                newItems[idx].title = e.target.value;
-                                                                setHomeMagazines({ ...homeMagazines, items: newItems });
-                                                            }}
-                                                            className="bg-transparent font-bold text-xs text-slate-800 dark:text-white outline-none w-full"
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setHomeMagazines({ ...homeMagazines, items: homeMagazines.items.filter((_, i) => i !== idx) })}
-                                                            className="text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        >
-                                                            &times;
-                                                        </button>
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        value={item.href}
-                                                        onChange={(e) => {
-                                                            const newItems = [...homeMagazines.items];
-                                                            newItems[idx].href = e.target.value;
-                                                            setHomeMagazines({ ...homeMagazines, items: newItems });
-                                                        }}
-                                                        className="w-full px-2 py-1 text-[8px] bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                        placeholder="/link"
-                                                    />
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Mídia e Redes Sociais */}
-                            <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
-                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
-                                    <h3 className="font-bold">Seção Mídia e Redes Sociais</h3>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título da Seção</label>
-                                            <input
-                                                type="text"
-                                                value={homeMedia.title || ''}
-                                                onChange={(e) => setHomeMedia({ ...homeMedia, title: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                                placeholder="Nossa Mídia"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
-                                            <input
-                                                type="text"
-                                                value={homeMedia.description || ''}
-                                                onChange={(e) => setHomeMedia({ ...homeMedia, description: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                                placeholder="Descrição da seção..."
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                        <div className="space-y-1">
-                                            <label className="text-[10px] font-bold text-slate-500 uppercase">YouTube</label>
-                                            <input
-                                                type="text"
-                                                value={homeMedia.platforms.youtube}
-                                                onChange={(e) => setHomeMedia({ ...homeMedia, platforms: { ...homeMedia.platforms, youtube: e.target.value } })}
-                                                className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg"
-                                            />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Instagram</label>
-                                            <input
-                                                type="text"
-                                                value={homeMedia.platforms.instagram}
-                                                onChange={(e) => setHomeMedia({ ...homeMedia, platforms: { ...homeMedia.platforms, instagram: e.target.value } })}
-                                                className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg"
-                                            />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Facebook</label>
-                                            <input
-                                                type="text"
-                                                value={homeMedia.platforms.facebook}
-                                                onChange={(e) => setHomeMedia({ ...homeMedia, platforms: { ...homeMedia.platforms, facebook: e.target.value } })}
-                                                className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg"
-                                            />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-[10px] font-bold text-green-500 uppercase">WhatsApp</label>
-                                            <input
-                                                type="text"
-                                                value={homeMedia.platforms.whatsapp || ''}
-                                                onChange={(e) => setHomeMedia({ ...homeMedia, platforms: { ...homeMedia.platforms, whatsapp: e.target.value } })}
-                                                className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg"
-                                                placeholder="https://wa.me/..."
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-3">
-                                        <label className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Vídeo em Destaque</label>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <input
-                                                    type="text"
-                                                    value={homeMedia.featuredVideo.title}
-                                                    onChange={(e) => setHomeMedia({ ...homeMedia, featuredVideo: { ...homeMedia.featuredVideo, title: e.target.value } })}
-                                                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                    placeholder="Título do Vídeo"
-                                                />
-                                                <input
-                                                    type="text"
-                                                    value={homeMedia.featuredVideo.tag}
-                                                    onChange={(e) => setHomeMedia({ ...homeMedia, featuredVideo: { ...homeMedia.featuredVideo, tag: e.target.value } })}
-                                                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                    placeholder="Tag (ex: ÚLTIMA MENSAGEM)"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <input
-                                                    type="text"
-                                                    value={homeMedia.featuredVideo.image}
-                                                    onChange={(e) => setHomeMedia({ ...homeMedia, featuredVideo: { ...homeMedia.featuredVideo, image: e.target.value } })}
-                                                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                    placeholder="URL da Imagem de Capa"
-                                                />
-                                                {homeMedia.featuredVideo.image && (
-                                                    <div className="relative aspect-video w-32 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-                                                        <img
-                                                            src={homeMedia.featuredVideo.image}
-                                                            alt="Preview"
-                                                            className="w-full h-full object-cover"
-                                                            onError={(e) => e.target.style.display = 'none'}
-                                                        />
-                                                    </div>
-                                                )}
-                                                <div className="flex gap-2">
-                                                    <input
-                                                        type="text"
-                                                        value={homeMedia.featuredVideo.videoUrl}
-                                                        onChange={(e) => {
-                                                            let newUrl = e.target.value;
-                                                            // Check if it's an iframe code
-                                                            newUrl = extractUrlFromIframe(newUrl);
-
-                                                            const newFeatured = { ...homeMedia.featuredVideo, videoUrl: newUrl };
-
-                                                            // Auto-generate thumbnail for Home Featured Video
-                                                            const videoId = getYouTubeId(newUrl);
-                                                            if (videoId) {
-                                                                newFeatured.image = getYouTubeThumbnail(videoId);
-                                                            }
-
-                                                            setHomeMedia({ ...homeMedia, featuredVideo: newFeatured });
-                                                        }}
-                                                        className="flex-1 px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                        placeholder="URL do Vídeo (ou código iframe)"
-                                                    />
+                                        {(mediaPageContent?.videos || []).map((video, vIdx) => (
+                                            <div key={video.id || vIdx} className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 relative group/item">
+                                                <div className="absolute top-2 right-8 flex gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity z-10">
                                                     <button
                                                         type="button"
                                                         onClick={() => {
-                                                            const url = homeMedia.featuredVideo.videoUrl;
-                                                            if (url && url !== '#') {
-                                                                let finalUrl = url.trim();
-                                                                if (!finalUrl.startsWith('http')) finalUrl = 'https://' + finalUrl;
-                                                                window.open(finalUrl, '_blank');
-                                                            } else {
-                                                                alert('Por favor, insira uma URL válida primeiro.');
+                                                            if (vIdx > 0) {
+                                                                setMediaPageContent(prev => {
+                                                                    const newVideos = [...prev.videos];
+                                                                    [newVideos[vIdx], newVideos[vIdx - 1]] = [newVideos[vIdx - 1], newVideos[vIdx]];
+                                                                    return { ...prev, videos: newVideos };
+                                                                });
                                                             }
                                                         }}
-                                                        className="px-3 py-1.5 text-[10px] bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded hover:bg-blue-600 hover:text-white transition-all font-bold uppercase"
+                                                        className="w-6 h-6 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center shadow-md hover:text-red-500 transition-all"
+                                                        title="Subir"
                                                     >
-                                                        Testar
+                                                        <ArrowUp size={12} />
                                                     </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            if (vIdx < mediaPageContent.videos.length - 1) {
+                                                                setMediaPageContent(prev => {
+                                                                    const newVideos = [...prev.videos];
+                                                                    [newVideos[vIdx], newVideos[vIdx + 1]] = [newVideos[vIdx + 1], newVideos[vIdx]];
+                                                                    return { ...prev, videos: newVideos };
+                                                                });
+                                                            }
+                                                        }}
+                                                        className="w-6 h-6 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center shadow-md hover:text-red-500 transition-all"
+                                                        title="Baixar"
+                                                    >
+                                                        <ArrowDown size={12} />
+                                                    </button>
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setMediaPageContent(prev => ({
+                                                        ...prev,
+                                                        videos: prev.videos.filter((_, i) => i !== vIdx)
+                                                    }))}
+                                                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-opacity shadow-lg z-10"
+                                                >
+                                                    <X size={12} />
+                                                </button>
+
+                                                <div className="aspect-video w-full rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                                                    {video.thumbnail || (video.url && getYouTubeId(video.url)) ? (
+                                                        <img
+                                                            src={video.thumbnail || getYouTubeThumbnail(getYouTubeId(video.url))}
+                                                            alt="Preview"
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                                            <Video size={32} />
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-bold text-slate-400 uppercase">Título do Vídeo</label>
+                                                    <input
+                                                        type="text"
+                                                        value={video.titulo}
+                                                        onChange={(e) => {
+                                                            setMediaPageContent(prev => {
+                                                                const newVideos = [...prev.videos];
+                                                                newVideos[vIdx].titulo = e.target.value;
+                                                                return { ...prev, videos: newVideos };
+                                                            });
+                                                        }}
+                                                        className="w-full px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border-none rounded outline-none focus:ring-1 focus:ring-red-500"
+                                                        placeholder="Ex: Culto de Domingo"
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-bold text-slate-400 uppercase">URL / Iframe (YouTube)</label>
+                                                    <input
+                                                        type="text"
+                                                        value={video.url}
+                                                        onChange={(e) => {
+                                                            const rawValue = e.target.value;
+                                                            const cleanUrl = extractUrlFromIframe(rawValue);
+                                                            const youtubeId = getYouTubeId(cleanUrl);
+
+                                                            setMediaPageContent(prev => {
+                                                                const newVideos = [...prev.videos];
+                                                                newVideos[vIdx].url = cleanUrl;
+                                                                if (youtubeId) {
+                                                                    newVideos[vIdx].thumbnail = getYouTubeThumbnail(youtubeId);
+                                                                }
+                                                                return { ...prev, videos: newVideos };
+                                                            });
+                                                        }}
+                                                        className="w-full px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border-none rounded outline-none focus:ring-1 focus:ring-red-500 font-mono"
+                                                        placeholder="Cole a URL ou o iframe"
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    {
+                        (formData?.slug === 'inicio' || formData?.slug === 'contato') && (
+                            <div className="space-y-6">
+                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
+                                    <Activity size={20} />
+                                    <h3 className="font-bold">Conteúdo da Home: Destaque (Hero)</h3>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Texto do Selo (Badge)</label>
+                                    <input
+                                        type="text"
+                                        value={homeHero.badge}
+                                        onChange={(e) => setHomeHero({ ...homeHero, badge: e.target.value })}
+                                        className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                        placeholder="Ex: Bem-vindo à ADMAC"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título Principal</label>
+                                    <input
+                                        type="text"
+                                        value={homeHero.title}
+                                        onChange={(e) => setHomeHero({ ...homeHero, title: e.target.value })}
+                                        className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                        placeholder="Ex: Uma Família para Pertencer"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Subtítulo / Descrição</label>
+                                    <textarea
+                                        value={homeHero.subtitle}
+                                        onChange={(e) => setHomeHero({ ...homeHero, subtitle: e.target.value })}
+                                        className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                        rows={3}
+                                        placeholder="Descreva sua igreja..."
+                                    />
+                                </div>
+
+                                <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
+                                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
+                                        <h3 className="font-bold">Seção Quem Somos</h3>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título</label>
+                                            <input
+                                                type="text"
+                                                value={homeAbout.title}
+                                                onChange={(e) => setHomeAbout({ ...homeAbout, title: e.target.value })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Parágrafo 1</label>
+                                                <textarea
+                                                    value={homeAbout.text1}
+                                                    onChange={(e) => setHomeAbout({ ...homeAbout, text1: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                    rows={3}
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Parágrafo 2</label>
+                                                <textarea
+                                                    value={homeAbout.text2}
+                                                    onChange={(e) => setHomeAbout({ ...homeAbout, text2: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                    rows={3}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-slate-600 dark:text-slate-400 uppercase text-xs font-bold">Missão</label>
+                                                <textarea
+                                                    value={homeAbout.mission}
+                                                    onChange={(e) => setHomeAbout({ ...homeAbout, mission: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-sm"
+                                                    rows={3}
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-slate-600 dark:text-slate-400 uppercase text-xs font-bold">Visão</label>
+                                                <textarea
+                                                    value={homeAbout.vision}
+                                                    onChange={(e) => setHomeAbout({ ...homeAbout, vision: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-sm"
+                                                    rows={3}
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-slate-600 dark:text-slate-400 uppercase text-xs font-bold">Valores</label>
+                                                <textarea
+                                                    value={homeAbout.values}
+                                                    onChange={(e) => setHomeAbout({ ...homeAbout, values: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-sm"
+                                                    rows={3}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
+                                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
+                                        <h3 className="font-bold">Seção Programação (Agenda)</h3>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título da Seção</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeAgenda.title}
+                                                    onChange={(e) => setHomeAgenda({ ...homeAgenda, title: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeAgenda.description}
+                                                    onChange={(e) => setHomeAgenda({ ...homeAgenda, description: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-white/50 dark:bg-slate-900/50 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Evento Especial (Título)</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeAgenda.nextEvent?.title || ''}
+                                                    onChange={(e) => setHomeAgenda({ ...homeAgenda, nextEvent: { ...homeAgenda.nextEvent, title: e.target.value } })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Evento Especial (Data/Rótulo)</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeAgenda.nextEvent?.label || ''}
+                                                    onChange={(e) => setHomeAgenda({ ...homeAgenda, nextEvent: { ...homeAgenda.nextEvent, label: e.target.value } })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <label className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Dias e Horários</label>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setHomeAgenda({ ...homeAgenda, events: [...homeAgenda.events, { day: 'Novo Dia', sessions: [] }] })}
+                                                    className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-600 hover:text-white transition-all"
+                                                >
+                                                    + Adicionar Dia
+                                                </button>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {homeAgenda.events.map((event, idx) => (
+                                                    <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-3">
+                                                        <div className="flex items-center justify-between gap-2">
+                                                            <input
+                                                                type="text"
+                                                                value={event.day}
+                                                                onChange={(e) => {
+                                                                    const newEvents = [...homeAgenda.events];
+                                                                    newEvents[idx].day = e.target.value;
+                                                                    setHomeAgenda({ ...homeAgenda, events: newEvents });
+                                                                }}
+                                                                className="bg-transparent font-bold text-blue-600 dark:text-blue-400 outline-none w-full"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setHomeAgenda({ ...homeAgenda, events: homeAgenda.events.filter((_, i) => i !== idx) })}
+                                                                className="text-red-400 hover:text-red-600 p-1"
+                                                            >
+                                                                &times;
+                                                            </button>
+                                                        </div>
+
+                                                        <div className="space-y-2">
+                                                            {event.sessions.map((session, sIdx) => (
+                                                                <div key={sIdx} className="flex items-center gap-2 text-xs">
+                                                                    <input
+                                                                        type="text"
+                                                                        value={session.time}
+                                                                        onChange={(e) => {
+                                                                            const newEvents = [...homeAgenda.events];
+                                                                            newEvents[idx].sessions[sIdx].time = e.target.value;
+                                                                            setHomeAgenda({ ...homeAgenda, events: newEvents });
+                                                                        }}
+                                                                        className="w-16 px-2 py-1 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                                        placeholder="00:00"
+                                                                    />
+                                                                    <input
+                                                                        type="text"
+                                                                        value={session.title}
+                                                                        onChange={(e) => {
+                                                                            const newEvents = [...homeAgenda.events];
+                                                                            newEvents[idx].sessions[sIdx].title = e.target.value;
+                                                                            setHomeAgenda({ ...homeAgenda, events: newEvents });
+                                                                        }}
+                                                                        className="flex-1 px-2 py-1 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                                        placeholder="Título"
+                                                                    />
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => {
+                                                                            const newEvents = [...homeAgenda.events];
+                                                                            newEvents[idx].sessions = newEvents[idx].sessions.filter((_, i) => i !== sIdx);
+                                                                            setHomeAgenda({ ...homeAgenda, events: newEvents });
+                                                                        }}
+                                                                        className="text-red-400"
+                                                                    >
+                                                                        &times;
+                                                                    </button>
+                                                                </div>
+                                                            ))}
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const newEvents = [...homeAgenda.events];
+                                                                    newEvents[idx].sessions.push({ time: '19:00', title: 'Novo Culto', type: 'Culto' });
+                                                                    setHomeAgenda({ ...homeAgenda, events: newEvents });
+                                                                }}
+                                                                className="text-[10px] text-blue-500 font-bold hover:underline"
+                                                            >
+                                                                + Adicionar Horário
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Ministérios */}
+                                <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
+                                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
+                                        <h3 className="font-bold">Seção Ministérios</h3>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeMinistries.title}
+                                                    onChange={(e) => setHomeMinistries({ ...homeMinistries, title: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeMinistries.description}
+                                                    onChange={(e) => setHomeMinistries({ ...homeMinistries, description: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <div className="flex items-center justify-between">
+                                                <label className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Itens de Ministérios</label>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setHomeMinistries({ ...homeMinistries, items: [...homeMinistries.items, { title: 'Novo Ministério', desc: '', href: '' }] })}
+                                                    className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-600 hover:text-white transition-all"
+                                                >
+                                                    + Adicionar Item
+                                                </button>
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {homeMinistries.items.map((item, idx) => (
+                                                    <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-3 group">
+                                                        <div className="flex items-center justify-between">
+                                                            <input
+                                                                type="text"
+                                                                value={item.title}
+                                                                onChange={(e) => {
+                                                                    const newItems = [...homeMinistries.items];
+                                                                    newItems[idx].title = e.target.value;
+                                                                    setHomeMinistries({ ...homeMinistries, items: newItems });
+                                                                }}
+                                                                className="bg-transparent font-bold text-slate-800 dark:text-white outline-none w-full"
+                                                                placeholder="Título do Ministério"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setHomeMinistries({ ...homeMinistries, items: homeMinistries.items.filter((_, i) => i !== idx) })}
+                                                                className="text-red-400 hover:text-red-600 transition-colors"
+                                                            >
+                                                                &times;
+                                                            </button>
+                                                        </div>
+
+                                                        <div className="flex flex-col gap-2">
+                                                            <label className="text-[10px] font-bold text-slate-500 uppercase">Ícone</label>
+                                                            <div className="flex gap-2 p-1 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded overflow-x-auto">
+                                                                {['Activity', 'Users', 'Heart', 'Music', 'Book', 'GraduationCap', 'Shield', 'Home', 'Compass', 'Baby', 'Star'].map(iconName => (
+                                                                    <button
+                                                                        key={iconName}
+                                                                        type="button"
+                                                                        onClick={() => {
+                                                                            const newItems = [...homeMinistries.items];
+                                                                            newItems[idx].icon = iconName;
+                                                                            setHomeMinistries({ ...homeMinistries, items: newItems });
+                                                                        }}
+                                                                        className={`p-1.5 rounded transition-all ${item.icon === iconName ? 'bg-blue-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500'}`}
+                                                                        title={iconName}
+                                                                    >
+                                                                        {iconName === 'Activity' && <Activity size={12} />}
+                                                                        {iconName === 'Users' && <Users size={12} />}
+                                                                        {iconName === 'Heart' && <Heart size={12} />}
+                                                                        {iconName === 'Music' && <Music size={12} />}
+                                                                        {iconName === 'Book' && <Book size={12} />}
+                                                                        {iconName === 'GraduationCap' && <Book size={12} />} {/* Use Book as GraduationCap if not available, or I'll add it to imports */}
+                                                                        {iconName === 'Shield' && <Star size={12} />}
+                                                                        {iconName === 'Home' && <Activity size={12} />}
+                                                                        {iconName === 'Compass' && <Activity size={12} />}
+                                                                        {iconName === 'Baby' && <Baby size={12} />}
+                                                                        {iconName === 'Star' && <Star size={12} />}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+
+                                                        <textarea
+                                                            value={item.desc}
+                                                            onChange={(e) => {
+                                                                const newItems = [...homeMinistries.items];
+                                                                newItems[idx].desc = e.target.value;
+                                                                setHomeMinistries({ ...homeMinistries, items: newItems });
+                                                            }}
+                                                            className="w-full p-2 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none"
+                                                            placeholder="Descrição curta..."
+                                                            rows="2"
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            value={item.href}
+                                                            onChange={(e) => {
+                                                                const newItems = [...homeMinistries.items];
+                                                                newItems[idx].href = e.target.value;
+                                                                setHomeMinistries({ ...homeMinistries, items: newItems });
+                                                            }}
+                                                            className="w-full px-2 py-1 text-[10px] bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                            placeholder="/link-do-ministerio"
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                {/* Podcast */}
+                                <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
+                                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
+                                        <h3 className="font-bold">Seção Podcast</h3>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título</label>
+                                                <input
+                                                    type="text"
+                                                    value={homePodcast.title}
+                                                    onChange={(e) => setHomePodcast({ ...homePodcast, title: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Rótulo (Badge)</label>
+                                                <input
+                                                    type="text"
+                                                    value={homePodcast.badge}
+                                                    onChange={(e) => setHomePodcast({ ...homePodcast, badge: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
+                                            <textarea
+                                                value={homePodcast.description}
+                                                onChange={(e) => setHomePodcast({ ...homePodcast, description: e.target.value })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                rows="2"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">URL Spotify (Botão)</label>
+                                                <input
+                                                    type="text"
+                                                    value={homePodcast.spotifyUrl}
+                                                    onChange={(e) => setHomePodcast({ ...homePodcast, spotifyUrl: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">URL Embed Spotify (Player)</label>
+                                                <input
+                                                    type="text"
+                                                    value={homePodcast.spotifyEmbed}
+                                                    onChange={(e) => setHomePodcast({ ...homePodcast, spotifyEmbed: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Revista */}
+                                <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
+                                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
+                                        <h3 className="font-bold">Seção Revista Digital</h3>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeMagazines.title}
+                                                    onChange={(e) => setHomeMagazines({ ...homeMagazines, title: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeMagazines.description}
+                                                    onChange={(e) => setHomeMagazines({ ...homeMagazines, description: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <div className="flex items-center justify-between">
+                                                <label className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Categorias da Revista</label>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setHomeMagazines({ ...homeMagazines, items: [...homeMagazines.items, { title: 'Nova Categoria', color: 'text-blue-500', href: '#' }] })}
+                                                    className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-600 hover:text-white transition-all"
+                                                >
+                                                    + Adicionar Categoria
+                                                </button>
+                                            </div>
+                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                {homeMagazines.items.map((item, idx) => (
+                                                    <div key={idx} className="p-3 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-2 group">
+                                                        <div className="flex items-center justify-between">
+                                                            <input
+                                                                type="text"
+                                                                value={item.title}
+                                                                onChange={(e) => {
+                                                                    const newItems = [...homeMagazines.items];
+                                                                    newItems[idx].title = e.target.value;
+                                                                    setHomeMagazines({ ...homeMagazines, items: newItems });
+                                                                }}
+                                                                className="bg-transparent font-bold text-xs text-slate-800 dark:text-white outline-none w-full"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setHomeMagazines({ ...homeMagazines, items: homeMagazines.items.filter((_, i) => i !== idx) })}
+                                                                className="text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                            >
+                                                                &times;
+                                                            </button>
+                                                        </div>
+                                                        <input
+                                                            type="text"
+                                                            value={item.href}
+                                                            onChange={(e) => {
+                                                                const newItems = [...homeMagazines.items];
+                                                                newItems[idx].href = e.target.value;
+                                                                setHomeMagazines({ ...homeMagazines, items: newItems });
+                                                            }}
+                                                            className="w-full px-2 py-1 text-[8px] bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                            placeholder="/link"
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Mídia e Redes Sociais */}
+                                <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
+                                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
+                                        <h3 className="font-bold">Seção Mídia e Redes Sociais</h3>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título da Seção</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeMedia.title || ''}
+                                                    onChange={(e) => setHomeMedia({ ...homeMedia, title: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                    placeholder="Nossa Mídia"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeMedia.description || ''}
+                                                    onChange={(e) => setHomeMedia({ ...homeMedia, description: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                    placeholder="Descrição da seção..."
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-bold text-slate-500 uppercase">YouTube</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeMedia.platforms.youtube}
+                                                    onChange={(e) => setHomeMedia({ ...homeMedia, platforms: { ...homeMedia.platforms, youtube: e.target.value } })}
+                                                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg"
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Instagram</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeMedia.platforms.instagram}
+                                                    onChange={(e) => setHomeMedia({ ...homeMedia, platforms: { ...homeMedia.platforms, instagram: e.target.value } })}
+                                                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg"
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Facebook</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeMedia.platforms.facebook}
+                                                    onChange={(e) => setHomeMedia({ ...homeMedia, platforms: { ...homeMedia.platforms, facebook: e.target.value } })}
+                                                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg"
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-bold text-green-500 uppercase">WhatsApp</label>
+                                                <input
+                                                    type="text"
+                                                    value={homeMedia.platforms.whatsapp || ''}
+                                                    onChange={(e) => setHomeMedia({ ...homeMedia, platforms: { ...homeMedia.platforms, whatsapp: e.target.value } })}
+                                                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg"
+                                                    placeholder="https://wa.me/..."
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-3">
+                                            <label className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Vídeo em Destaque</label>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <input
+                                                        type="text"
+                                                        value={homeMedia.featuredVideo.title}
+                                                        onChange={(e) => setHomeMedia({ ...homeMedia, featuredVideo: { ...homeMedia.featuredVideo, title: e.target.value } })}
+                                                        className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                        placeholder="Título do Vídeo"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        value={homeMedia.featuredVideo.tag}
+                                                        onChange={(e) => setHomeMedia({ ...homeMedia, featuredVideo: { ...homeMedia.featuredVideo, tag: e.target.value } })}
+                                                        className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                        placeholder="Tag (ex: ÚLTIMA MENSAGEM)"
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <input
+                                                        type="text"
+                                                        value={homeMedia.featuredVideo.image}
+                                                        onChange={(e) => setHomeMedia({ ...homeMedia, featuredVideo: { ...homeMedia.featuredVideo, image: e.target.value } })}
+                                                        className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                        placeholder="URL da Imagem de Capa"
+                                                    />
+                                                    {homeMedia.featuredVideo.image && (
+                                                        <div className="relative aspect-video w-32 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                                                            <img
+                                                                src={homeMedia.featuredVideo.image}
+                                                                alt="Preview"
+                                                                className="w-full h-full object-cover"
+                                                                onError={(e) => e.target.style.display = 'none'}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            type="text"
+                                                            value={homeMedia.featuredVideo.videoUrl}
+                                                            onChange={(e) => {
+                                                                let newUrl = e.target.value;
+                                                                // Check if it's an iframe code
+                                                                newUrl = extractUrlFromIframe(newUrl);
+
+                                                                const newFeatured = { ...homeMedia.featuredVideo, videoUrl: newUrl };
+
+                                                                // Auto-generate thumbnail for Home Featured Video
+                                                                const videoId = getYouTubeId(newUrl);
+                                                                if (videoId) {
+                                                                    newFeatured.image = getYouTubeThumbnail(videoId);
+                                                                }
+
+                                                                setHomeMedia({ ...homeMedia, featuredVideo: newFeatured });
+                                                            }}
+                                                            className="flex-1 px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                            placeholder="URL do Vídeo (ou código iframe)"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                const url = homeMedia.featuredVideo.videoUrl;
+                                                                if (url && url !== '#') {
+                                                                    let finalUrl = url.trim();
+                                                                    if (!finalUrl.startsWith('http')) finalUrl = 'https://' + finalUrl;
+                                                                    window.open(finalUrl, '_blank');
+                                                                } else {
+                                                                    alert('Por favor, insira uma URL válida primeiro.');
+                                                                }
+                                                            }}
+                                                            className="px-3 py-1.5 text-[10px] bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded hover:bg-blue-600 hover:text-white transition-all font-bold uppercase"
+                                                        >
+                                                            Testar
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Contato */}
-                            <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
-                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
-                                    <h3 className="font-bold">Seção Contato e Localização</h3>
-                                </div>
+                                {/* Contato */}
+                                <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
+                                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
+                                        <h3 className="font-bold">Seção Contato e Localização</h3>
+                                    </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Endereço</label>
-                                        <textarea
-                                            value={homeContact.address}
-                                            onChange={(e) => setHomeContact({ ...homeContact, address: e.target.value })}
-                                            className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-xs"
-                                            rows="2"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Telefones</label>
-                                        <textarea
-                                            value={homeContact.phone}
-                                            onChange={(e) => setHomeContact({ ...homeContact, phone: e.target.value })}
-                                            className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-xs"
-                                            rows="2"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">E-mails</label>
-                                        <textarea
-                                            value={homeContact.email}
-                                            onChange={(e) => setHomeContact({ ...homeContact, email: e.target.value })}
-                                            className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-xs"
-                                            rows="2"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Horário da Secretaria</label>
-                                        <textarea
-                                            value={homeContact.hours}
-                                            onChange={(e) => setHomeContact({ ...homeContact, hours: e.target.value })}
-                                            className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-xs"
-                                            rows="2"
-                                        />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Endereço</label>
+                                            <textarea
+                                                value={homeContact.address}
+                                                onChange={(e) => setHomeContact({ ...homeContact, address: e.target.value })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-xs"
+                                                rows="2"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Telefones</label>
+                                            <textarea
+                                                value={homeContact.phone}
+                                                onChange={(e) => setHomeContact({ ...homeContact, phone: e.target.value })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-xs"
+                                                rows="2"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">E-mails</label>
+                                            <textarea
+                                                value={homeContact.email}
+                                                onChange={(e) => setHomeContact({ ...homeContact, email: e.target.value })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-xs"
+                                                rows="2"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Horário da Secretaria</label>
+                                            <textarea
+                                                value={homeContact.hours}
+                                                onChange={(e) => setHomeContact({ ...homeContact, hours: e.target.value })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white text-xs"
+                                                rows="2"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
@@ -1858,174 +2177,176 @@ const PageEditor = () => {
                     </div>
 
                     {/* Magazine Articles Editor */}
-                    {formData.slug?.startsWith('revista/') && (
-                        <div className="pt-6 border-t border-purple-100 dark:border-purple-800/20">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center gap-2 text-purple-700 dark:text-purple-400">
-                                    <Book size={20} />
-                                    <h3 className="font-bold">Artigos da Revista</h3>
+                    {
+                        formData.slug?.startsWith('revista/') && (
+                            <div className="pt-6 border-t border-purple-100 dark:border-purple-800/20">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center gap-2 text-purple-700 dark:text-purple-400">
+                                        <Book size={20} />
+                                        <h3 className="font-bold">Artigos da Revista</h3>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setMagazineArticles([...magazineArticles, {
+                                            id: Date.now(),
+                                            title: 'Novo Artigo',
+                                            excerpt: '',
+                                            author: '',
+                                            date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }),
+                                            image: '',
+                                            content: '',
+                                            iconColor: 'bg-blue-500/10 text-blue-500'
+                                        }])}
+                                        className="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-600 px-3 py-1 rounded-full hover:bg-purple-600 hover:text-white transition-all flex items-center gap-1"
+                                    >
+                                        <Plus size={14} />
+                                        Adicionar Artigo
+                                    </button>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setMagazineArticles([...magazineArticles, {
-                                        id: Date.now(),
-                                        title: 'Novo Artigo',
-                                        excerpt: '',
-                                        author: '',
-                                        date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }),
-                                        image: '',
-                                        content: '',
-                                        iconColor: 'bg-blue-500/10 text-blue-500'
-                                    }])}
-                                    className="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-600 px-3 py-1 rounded-full hover:bg-purple-600 hover:text-white transition-all flex items-center gap-1"
-                                >
-                                    <Plus size={14} />
-                                    Adicionar Artigo
-                                </button>
-                            </div>
 
-                            <div className="space-y-4">
-                                {magazineArticles.map((article, idx) => (
-                                    <div key={article.id || idx} className="p-6 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-4">
-                                        <div className="flex items-center justify-between">
-                                            <input
-                                                type="text"
-                                                value={article.title}
-                                                onChange={(e) => {
-                                                    const newArticles = [...magazineArticles];
-                                                    newArticles[idx].title = e.target.value;
-                                                    setMagazineArticles(newArticles);
-                                                }}
-                                                className="bg-transparent font-bold text-lg text-slate-800 dark:text-white outline-none flex-1"
-                                                placeholder="Título do Artigo"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setMagazineArticles(magazineArticles.filter((_, i) => i !== idx))}
-                                                className="text-red-400 hover:text-red-600 transition-colors p-2"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 uppercase">Autor</label>
+                                <div className="space-y-4">
+                                    {magazineArticles.map((article, idx) => (
+                                        <div key={article.id || idx} className="p-6 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-4">
+                                            <div className="flex items-center justify-between">
                                                 <input
                                                     type="text"
-                                                    value={article.author}
+                                                    value={article.title}
                                                     onChange={(e) => {
                                                         const newArticles = [...magazineArticles];
-                                                        newArticles[idx].author = e.target.value;
+                                                        newArticles[idx].title = e.target.value;
                                                         setMagazineArticles(newArticles);
                                                     }}
-                                                    className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                    placeholder="Nome do Autor"
+                                                    className="bg-transparent font-bold text-lg text-slate-800 dark:text-white outline-none flex-1"
+                                                    placeholder="Título do Artigo"
                                                 />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setMagazineArticles(magazineArticles.filter((_, i) => i !== idx))}
+                                                    className="text-red-400 hover:text-red-600 transition-colors p-2"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
                                             </div>
 
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 uppercase">Data</label>
-                                                <input
-                                                    type="text"
-                                                    value={article.date}
-                                                    onChange={(e) => {
-                                                        const newArticles = [...magazineArticles];
-                                                        newArticles[idx].date = e.target.value;
-                                                        setMagazineArticles(newArticles);
-                                                    }}
-                                                    className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                    placeholder="15 Jan 2026"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 uppercase">Resumo</label>
-                                            <textarea
-                                                value={article.excerpt}
-                                                onChange={(e) => {
-                                                    const newArticles = [...magazineArticles];
-                                                    newArticles[idx].excerpt = e.target.value;
-                                                    setMagazineArticles(newArticles);
-                                                }}
-                                                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none"
-                                                placeholder="Breve resumo do artigo..."
-                                                rows="2"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 uppercase">Imagem do Artigo</label>
-                                            <div className="flex gap-2">
-                                                <input
-                                                    type="text"
-                                                    value={article.image}
-                                                    onChange={(e) => {
-                                                        const newArticles = [...magazineArticles];
-                                                        newArticles[idx].image = e.target.value;
-                                                        setMagazineArticles(newArticles);
-                                                    }}
-                                                    className="flex-1 px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                    placeholder="Cole a URL da imagem ou use o botão ao lado"
-                                                />
-                                                <label className="cursor-pointer">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-bold text-slate-500 uppercase">Autor</label>
                                                     <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        className="hidden"
+                                                        type="text"
+                                                        value={article.author}
                                                         onChange={(e) => {
-                                                            const file = e.target.files[0];
-                                                            if (file) {
-                                                                const reader = new FileReader();
-                                                                reader.onloadend = () => {
-                                                                    const newArticles = [...magazineArticles];
-                                                                    newArticles[idx].image = reader.result;
-                                                                    setMagazineArticles(newArticles);
-                                                                };
-                                                                reader.readAsDataURL(file);
-                                                            }
+                                                            const newArticles = [...magazineArticles];
+                                                            newArticles[idx].author = e.target.value;
+                                                            setMagazineArticles(newArticles);
                                                         }}
-                                                    />
-                                                    <div className="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded hover:bg-purple-600 hover:text-white transition-all flex items-center gap-2 h-full">
-                                                        <ImageIcon size={16} />
-                                                        <span className="text-sm font-medium">Subir Foto</span>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            {article.image && (
-                                                <div className="mt-2 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-                                                    <img
-                                                        src={article.image}
-                                                        alt="Preview"
-                                                        className="w-full h-48 object-cover"
-                                                        onError={(e) => {
-                                                            e.target.style.display = 'none';
-                                                        }}
+                                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                        placeholder="Nome do Autor"
                                                     />
                                                 </div>
-                                            )}
-                                        </div>
 
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 uppercase">Conteúdo HTML</label>
-                                            <textarea
-                                                value={article.content}
-                                                onChange={(e) => {
-                                                    const newArticles = [...magazineArticles];
-                                                    newArticles[idx].content = e.target.value;
-                                                    setMagazineArticles(newArticles);
-                                                }}
-                                                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none font-mono"
-                                                placeholder="<h2>Título</h2><p>Conteúdo...</p>"
-                                                rows="4"
-                                            />
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-bold text-slate-500 uppercase">Data</label>
+                                                    <input
+                                                        type="text"
+                                                        value={article.date}
+                                                        onChange={(e) => {
+                                                            const newArticles = [...magazineArticles];
+                                                            newArticles[idx].date = e.target.value;
+                                                            setMagazineArticles(newArticles);
+                                                        }}
+                                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                        placeholder="15 Jan 2026"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-slate-500 uppercase">Resumo</label>
+                                                <textarea
+                                                    value={article.excerpt}
+                                                    onChange={(e) => {
+                                                        const newArticles = [...magazineArticles];
+                                                        newArticles[idx].excerpt = e.target.value;
+                                                        setMagazineArticles(newArticles);
+                                                    }}
+                                                    className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none"
+                                                    placeholder="Breve resumo do artigo..."
+                                                    rows="2"
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-slate-500 uppercase">Imagem do Artigo</label>
+                                                <div className="flex gap-2">
+                                                    <input
+                                                        type="text"
+                                                        value={article.image}
+                                                        onChange={(e) => {
+                                                            const newArticles = [...magazineArticles];
+                                                            newArticles[idx].image = e.target.value;
+                                                            setMagazineArticles(newArticles);
+                                                        }}
+                                                        className="flex-1 px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                        placeholder="Cole a URL da imagem ou use o botão ao lado"
+                                                    />
+                                                    <label className="cursor-pointer">
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            className="hidden"
+                                                            onChange={(e) => {
+                                                                const file = e.target.files[0];
+                                                                if (file) {
+                                                                    const reader = new FileReader();
+                                                                    reader.onloadend = () => {
+                                                                        const newArticles = [...magazineArticles];
+                                                                        newArticles[idx].image = reader.result;
+                                                                        setMagazineArticles(newArticles);
+                                                                    };
+                                                                    reader.readAsDataURL(file);
+                                                                }
+                                                            }}
+                                                        />
+                                                        <div className="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded hover:bg-purple-600 hover:text-white transition-all flex items-center gap-2 h-full">
+                                                            <ImageIcon size={16} />
+                                                            <span className="text-sm font-medium">Subir Foto</span>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                {article.image && (
+                                                    <div className="mt-2 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                                                        <img
+                                                            src={article.image}
+                                                            alt="Preview"
+                                                            className="w-full h-48 object-cover"
+                                                            onError={(e) => {
+                                                                e.target.style.display = 'none';
+                                                            }}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-slate-500 uppercase">Conteúdo HTML</label>
+                                                <textarea
+                                                    value={article.content}
+                                                    onChange={(e) => {
+                                                        const newArticles = [...magazineArticles];
+                                                        newArticles[idx].content = e.target.value;
+                                                        setMagazineArticles(newArticles);
+                                                    }}
+                                                    className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none font-mono"
+                                                    placeholder="<h2>Título</h2><p>Conteúdo...</p>"
+                                                    rows="4"
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )
+                    }
 
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Raw JSON Content (Avançado)</label>
@@ -2048,11 +2369,9 @@ const PageEditor = () => {
                         </button>
                     </div>
                 </form>
-            </div >
-        </div >
+            </div>
+        </div>
     );
 };
 
-
 export default PageEditor;
-// Syntax check pass

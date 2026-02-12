@@ -133,11 +133,23 @@ const Navbar = ({ isDark, toggleTheme }) => {
                     {/* Logo */}
                     <Link to="/" className="flex items-center gap-2">
                         {settings.logoUrl ? (
-                            <img
-                                src={settings.logoUrl}
-                                alt={settings.siteName}
-                                className="h-10 md:h-12 w-auto object-contain"
-                            />
+                            <>
+                                <img
+                                    src={settings.logoUrl}
+                                    alt={settings.siteName}
+                                    className="h-10 md:h-12 w-auto object-contain"
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                />
+                                <div className="hidden p-2 bg-church-primary rounded-lg shadow-lg shadow-church-primary/20">
+                                    <Church className="w-8 h-8 text-white" />
+                                </div>
+                                <span className={`text-xl font-bold tracking-tight ${scrolled ? 'text-church-primary dark:text-white' : 'text-white'}`}>
+                                    {settings.siteName}
+                                </span>
+                            </>
                         ) : (
                             <>
                                 <div className="p-2 bg-church-primary rounded-lg shadow-lg shadow-church-primary/20">

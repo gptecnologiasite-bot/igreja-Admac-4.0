@@ -16,6 +16,15 @@ const Configuracoes = () => {
         setSettings(currentSettings);
     }, []);
 
+    const handleReset = () => {
+        if (window.confirm('ATENÇÃO: Isso apagará todas as suas edições e voltará ao conteúdo original. Deseja continuar?')) {
+            const defaults = dbService.resetToDefaults();
+            setSettings(dbService.getSettings());
+            setMessage({ type: 'success', text: 'Sistema restaurado aos padrões originais!' });
+            setTimeout(() => window.location.reload(), 1500);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsSaving(true);
@@ -130,6 +139,33 @@ const Configuracoes = () => {
                             )}
                         </div>
                         <p className="mt-4 text-xs text-slate-500 text-center">Assim é como o logo aparecerá nas páginas claras e escuras do sistema.</p>
+
+                        {/* Favicon Preview */}
+                        <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+                            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Preview do Favicon</h4>
+                            <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
+                                <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                                    {settings.logoUrl ? (
+                                        <img
+                                            src={settings.logoUrl}
+                                            alt="Favicon Preview"
+                                            className="w-4 h-4 object-contain"
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = '/favicon.svg';
+                                            }}
+                                        />
+                                    ) : (
+                                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                                            <path d="M12 6v6l4 2" strokeWidth="2" strokeLinecap="round" />
+                                        </svg>
+                                    )}
+                                    <span className="text-xs text-slate-600 dark:text-slate-400">Aba do Navegador</span>
+                                </div>
+                                <span className="text-xs text-slate-500">← Como aparecerá no navegador</span>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -196,6 +232,15 @@ const Configuracoes = () => {
                                     }}
                                 />
                             </label>
+
+                            <button
+                                type="button"
+                                onClick={handleReset}
+                                className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-4 py-3 rounded-xl transition-all font-semibold border border-red-100"
+                            >
+                                <Settings size={18} className="rotate-90" />
+                                <span>Restaurar Dados Originais</span>
+                            </button>
                         </div>
                     </div>
 

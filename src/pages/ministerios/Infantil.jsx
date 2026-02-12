@@ -15,31 +15,35 @@ const Infantil = () => {
 
     useEffect(() => {
         const page = dbService.getPages().find(p => p.slug === 'ministerios/infantil');
+        setPageData(page);
+
         if (page && page.content) {
             try {
                 const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
                 if (content.pastoralMessage) {
                     setPastoralMessage(content.pastoralMessage);
+                    setTempMessage(content.pastoralMessage);
                 }
             } catch (e) {
                 console.error("Error parsing page content", e);
             }
         }
-        setPageData(page);
     }, []);
 
-    // Temporary state while editing
-    const [tempMessage, setTempMessage] = useState(pastoralMessage);
+    // Derived data from pageData with fallbacks
+    const content = typeof pageData?.content === 'string' ? JSON.parse(pageData.content) : (pageData?.content || {});
 
-    // Use dynamic data or fallback
-    const leaders = pageData?.content?.leaders || [
+    const teachers = (content.teachers && content.teachers.length > 0) ? content.teachers : [
         { name: 'Pra. Ana Oliveira', role: 'Coordenação Geral', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&h=400&auto=format&fit=crop' },
-        { name: 'Tia Bete', role: 'Líder Berçário', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&h=400&auto=format&fit=crop' },
-        { name: 'Tio Paulo', role: 'Musicalização', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Tia Carla', role: 'Ensino Bíblico', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400&h=400&auto=format&fit=crop' },
     ];
 
-    const testimonials = pageData?.content?.testimonials || [
+    const kidsStaff = (content.kidsStaff && content.kidsStaff.length > 0) ? content.kidsStaff : [
+        { name: 'Tia Bete', role: 'Líder Berçário', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&h=400&auto=format&fit=crop' },
+        { name: 'Tio Paulo', role: 'Musicalização', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=400&auto=format&fit=crop' },
+    ];
+
+    const testimonialsData = content.testimonials || [
         {
             text: "Meus filhos amam vir para a igreja por causa do ministério infantil. Eles aprendem a Bíblia de um jeito que realmente entendem.",
             author: "Fernanda Lima",
@@ -57,23 +61,18 @@ const Infantil = () => {
         }
     ];
 
-    const scroll = (direction) => {
-        if (carouselRef.current) {
-            const { current } = carouselRef;
-            const scrollAmount = direction === 'left' ? -340 : 340;
-            current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        }
-    };
-
     const handleSave = () => {
         setPastoralMessage(tempMessage);
 
         // Update central DB
+        const currentContent = typeof pageData?.content === 'string' ? JSON.parse(pageData.content) : (pageData?.content || {});
+
         const updatedContent = {
-            ...(pageData?.content || {}),
+            ...currentContent,
             pastoralMessage: tempMessage,
-            leaders: leaders,
-            testimonials: testimonials
+            teachers: teachers,
+            kidsStaff: kidsStaff,
+            testimonials: testimonialsData
         };
 
         dbService.upsertPage({
@@ -134,22 +133,23 @@ const Infantil = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
+
                     <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl leading-relaxed mb-16 font-medium">
                         Na ADMAC, o Ministério Infantil foca em apresentar o amor de Deus de forma lúdica, segura e cheia de alegria. Cremos que ensinar a criança no caminho do Senhor é o maior investimento que podemos fazer.
                     </p>
 
-                    {/* Leaders Section - Standardized "Nossa Equipe" */}
+                    {/* Teachers Section */}
                     <section className="mb-32">
                         <div className="flex flex-col items-center mb-16">
                             <div className="p-3 bg-yellow-400/10 rounded-2xl text-yellow-600 mb-4">
                                 <Users size={32} />
                             </div>
-                            <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Nossa Equipe</h2>
+                            <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter text-center">Nossos Professores</h2>
                             <div className="w-16 h-1.5 bg-yellow-400 rounded-full mt-4"></div>
                         </div>
 
                         <div className="flex flex-wrap justify-center gap-12 max-w-6xl mx-auto">
-                            {leaders.map((leader, index) => (
+                            {teachers.map((leader, index) => (
                                 <motion.div
                                     key={index}
                                     initial={{ opacity: 0, y: 20 }}
@@ -168,6 +168,55 @@ const Infantil = () => {
                                                 src={leader.image}
                                                 alt={leader.name}
                                                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = 'https://placehold.co/400x400/1a365d/ffffff?text=' + encodeURIComponent(leader.name);
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <h4 className="text-2xl font-black text-gray-900 dark:text-white mb-1 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
+                                        {leader.name}
+                                    </h4>
+                                    <p className="text-yellow-600 dark:text-yellow-400 font-black text-xs tracking-widest uppercase">
+                                        {leader.role}
+                                    </p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Kids Support Team Section */}
+                    <section className="mb-32">
+                        <div className="flex flex-col items-center mb-16">
+                            <div className="p-3 bg-yellow-400/10 rounded-2xl text-yellow-600 mb-4">
+                                <Baby size={32} />
+                            </div>
+                            <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter text-center">Equipe para Crianças</h2>
+                            <div className="w-16 h-1.5 bg-yellow-400 rounded-full mt-4"></div>
+                        </div>
+
+                        <div className="flex flex-wrap justify-center gap-12 max-w-6xl mx-auto">
+                            {kidsStaff.map((leader, index) => (
+                                <motion.div
+                                    key={index + '_support'}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: index * 0.1 }}
+                                    className="group text-center w-full sm:w-[280px]"
+                                >
+                                    <div className="relative mb-6 mx-auto w-48 h-48">
+                                        <div className="absolute inset-0 bg-yellow-400/20 rounded-full blur-2xl group-hover:bg-yellow-400/40 transition-colors duration-500"></div>
+                                        <div className="relative w-full h-full rounded-full border-4 border-white dark:border-slate-800 overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3">
+                                            <img
+                                                src={leader.image}
+                                                alt={leader.name}
+                                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = 'https://placehold.co/400x400/1a365d/ffffff?text=' + encodeURIComponent(leader.name);
+                                                }}
                                             />
                                         </div>
                                     </div>
@@ -302,7 +351,7 @@ const Infantil = () => {
                             O Que os Pais Dizem
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {testimonials.map((testimony, index) => (
+                            {testimonialsData.map((testimony, index) => (
                                 <motion.div
                                     key={index}
                                     initial={{ opacity: 0, y: 20 }}

@@ -67,7 +67,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                             />
                         ) : (
                             <span className="text-xl font-bold bg-linear-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                                {settings.siteName} Panel
+                                {settings.siteName}
                             </span>
                         )}
                     </div>

@@ -22,9 +22,9 @@ const UserList = () => {
     }, []);
 
     const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.role.toLowerCase().includes(searchTerm.toLowerCase())
+        (user.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (user.username || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (user.role || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleDelete = (id) => {
@@ -110,7 +110,7 @@ const UserList = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                             {filteredUsers.map((user) => (
-                                <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors group">
+                                <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group">
                                     <td className="p-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 overflow-hidden border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">

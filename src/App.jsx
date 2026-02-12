@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import PageGuard from './components/PageGuard';
 import LoadingFallback from './components/LoadingFallback';
 import SkipToContent from './components/SkipToContent';
+import useFavicon from './hooks/useFavicon';
 
 // CRITICAL: Home page must NOT be lazy loaded to ensure FCP for Lighthouse
 import Home from './pages/Home';
@@ -73,6 +74,9 @@ function App() {
 const AppContent = ({ isDark, toggleTheme }) => {
   const { pathname } = useLocation();
   const isAdminPath = pathname.startsWith('/painel');
+
+  // Update favicon dynamically based on logo settings
+  useFavicon();
 
   return (
     <div className="min-h-screen bg-white dark:bg-church-dark transition-colors duration-300">

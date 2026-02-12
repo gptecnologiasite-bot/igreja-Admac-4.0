@@ -14,8 +14,8 @@ const PageList = () => {
     }, []);
 
     const filteredPages = pages.filter(page =>
-        page.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        page.slug.toLowerCase().includes(searchTerm.toLowerCase())
+        (page.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (page.slug || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleDelete = (id) => {
@@ -111,7 +111,7 @@ const PageList = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                             {filteredPages.map((page) => (
-                                <tr key={page.id} className="hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors group">
+                                <tr key={page.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group">
                                     <td className="p-4">
                                         <div className="flex flex-col">
                                             <span className="font-medium text-slate-900 dark:text-slate-100">{page.title}</span>
@@ -131,10 +131,10 @@ const PageList = () => {
                                         </div>
                                     </td>
                                     <td className="p-4 text-slate-700 dark:text-slate-300 text-sm">
-                                        {page.visits.toLocaleString()}
+                                        {(page.visits || 0).toLocaleString()}
                                     </td>
                                     <td className="p-4 text-slate-600 dark:text-slate-400 text-sm">
-                                        {new Date(page.lastUpdated).toLocaleDateString('pt-BR')}
+                                        {page.lastUpdated ? new Date(page.lastUpdated).toLocaleDateString('pt-BR') : '-'}
                                     </td>
                                     <td className="p-4 text-right">
                                         <div className="flex items-center justify-end gap-2">

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#1a365d"/>
+  <g transform="translate(256, 256)">
+    <defs>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <!-- Gear/Settings Icon -->
+    <g fill="#ffffff" filter="url(#glow)">
+      <!-- Center circle -->
+      <circle cx="0" cy="0" r="40"/>
+      <!-- Gear teeth (8 teeth around the circle) -->
+      <rect x="-15" y="-100" width="30" height="40" rx="5"/>
+      <rect x="-15" y="60" width="30" height="40" rx="5"/>
+      <rect x="-100" y="-15" width="40" height="30" rx="5"/>
+      <rect x="60" y="-15" width="40" height="30" rx="5"/>
+      <rect x="-75" y="-75" width="30" height="30" rx="5" transform="rotate(-45)"/>
+      <rect x="45" y="-75" width="30" height="30" rx="5" transform="rotate(45)"/>
+      <rect x="-75" y="45" width="30" height="30" rx="5" transform="rotate(45)"/>
+      <rect x="45" y="45" width="30" height="30" rx="5" transform="rotate(-45)"/>
+      <!-- Inner circle (hole) -->
+      <circle cx="0" cy="0" r="25" fill="#1a365d"/>
+    </g>
+    <!-- Golden accent ring -->
+    <circle cx="0" cy="0" r="30" fill="none" stroke="#d4af37" stroke-width="3" opacity="0.6"/>
+  </g>
+</svg>

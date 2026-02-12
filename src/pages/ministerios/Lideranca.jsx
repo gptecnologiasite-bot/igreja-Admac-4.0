@@ -185,6 +185,10 @@ const Lideranca = () => {
                                                 src={leader.image}
                                                 alt={leader.name}
                                                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = 'https://placehold.co/400x400/1a365d/ffffff?text=' + encodeURIComponent(leader.name);
+                                                }}
                                             />
                                         </div>
                                     </div>

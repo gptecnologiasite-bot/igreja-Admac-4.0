@@ -13,7 +13,21 @@ const Footer = () => {
                     <div>
                         <div className="flex items-center gap-2 mb-6">
                             {settings.logoUrl ? (
-                                <img src={settings.logoUrl} alt={settings.siteName} className="h-10 w-auto object-contain" />
+                                <>
+                                    <img
+                                        src={settings.logoUrl}
+                                        alt={settings.siteName}
+                                        className="h-10 w-auto object-contain"
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'flex';
+                                        }}
+                                    />
+                                    <div className="hidden p-2 bg-church-primary rounded-lg border border-white/20">
+                                        <Church className="w-8 h-8 text-white" />
+                                    </div>
+                                    <span className="text-2xl font-bold tracking-tight">{settings.siteName}</span>
+                                </>
                             ) : (
                                 <>
                                     <div className="p-2 bg-church-primary rounded-lg border border-white/20">
