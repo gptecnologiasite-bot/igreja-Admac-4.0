@@ -4,19 +4,25 @@ import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
 const Infantil = () => {
-    // Get page data from central DB
+    // ---- ESTADOS DO COMPONENTE ----
+    // pageData: Armazena o objeto da página obtido do dbService para este ministério.
     const [pageData, setPageData] = useState(null);
+    // isEditing: Controla se o campo de edição de texto da mensagem pastoral está aberto.
     const [isEditing, setIsEditing] = useState(false);
+    // pastoralMessage: Objeto que contém o texto, autor e cargo da mensagem principal da página.
     const [pastoralMessage, setPastoralMessage] = useState({
         text: "Ensinar a uma criança sobre o amor de Jesus é plantar uma semente que dará frutos para a eternidade. Nosso compromisso é criar um ambiente seguro, lúdico e cheio da presença de Deus para que cada pequeno descubra sua identidade em Cristo.",
         author: "Pra. Ana Oliveira",
         role: "Líder do Ministério Infantil"
     });
 
+    // ---- EFEITO DE INICIALIZAÇÃO ----
     useEffect(() => {
+        // Carrega os dados da página 'Infantil' no localStorage.
         const page = dbService.getPages().find(p => p.slug === 'ministerios/infantil');
         setPageData(page);
 
+        // Se houver conteúdo salvo, atualizamos o estado local.
         if (page && page.content) {
             try {
                 const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
@@ -30,9 +36,11 @@ const Infantil = () => {
         }
     }, []);
 
-    // Derived data from pageData with fallbacks
+    // ---- PROCESSAMENTO DE CONTEÚDO DINÂMICO ----
+    // Extrai o conteúdo da página com fallbacks para garantir que a UI não quebre.
     const content = typeof pageData?.content === 'string' ? JSON.parse(pageData.content) : (pageData?.content || {});
 
+    // Equipe de Professores: Usa dados do DB ou valores padrão.
     const teachers = (content.teachers && content.teachers.length > 0) ? content.teachers : [
         { name: 'Pra. Ana Oliveira', role: 'Coordenação Geral', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&h=400&auto=format&fit=crop' },
         { name: 'Tia Carla', role: 'Ensino Bíblico', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400&h=400&auto=format&fit=crop' },
@@ -92,7 +100,7 @@ const Infantil = () => {
 
     return (
         <div className="pt-24 pb-20 min-h-screen bg-white dark:bg-church-dark transition-colors duration-300">
-            {/* Hero Section */}
+            {/* ---- SEÇÃO HERO: Cabeçalho com banner e título ---- */}
             <section className="relative h-[50vh] flex items-center overflow-hidden mb-20">
                 <div className="absolute inset-0 z-0">
                     <div className="absolute inset-0 bg-linear-to-r from-church-dark to-transparent z-10" />
@@ -138,7 +146,7 @@ const Infantil = () => {
                         Na ADMAC, o Ministério Infantil foca em apresentar o amor de Deus de forma lúdica, segura e cheia de alegria. Cremos que ensinar a criança no caminho do Senhor é o maior investimento que podemos fazer.
                     </p>
 
-                    {/* Teachers Section */}
+                    {/* ---- SEÇÃO PROFESSORES: Listagem da equipe de ensino ---- */}
                     <section className="mb-32">
                         <div className="flex flex-col items-center mb-16">
                             <div className="p-3 bg-yellow-400/10 rounded-2xl text-yellow-600 mb-4">
@@ -249,7 +257,7 @@ const Infantil = () => {
                         </div>
                     </div>
 
-                    {/* Palavra Pastoral Section */}
+                    {/* ---- SEÇÃO PALAVRA PASTORAL: Mensagem Editável ---- */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -345,7 +353,7 @@ const Infantil = () => {
                         </div>
                     </motion.div>
 
-                    {/* Testimonials Section */}
+                    {/* ---- SEÇÃO DEPOIMENTOS: O Que os Pais Dizem ---- */}
                     <div className="mt-20">
                         <h2 className="text-3xl font-bold text-center text-church-primary dark:text-white mb-12">
                             O Que os Pais Dizem
