@@ -1,7 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Save, Activity, Calendar, Users, Heart, Star, Music, Book, Camera, MapPin, Phone, Mail, Clock, Baby, Trash2, Plus, MessageCircle, Share2, Video } from 'lucide-react';
+import { ArrowLeft, ArrowUp, ArrowDown, Save, Activity, Calendar, Users, Heart, Star, Music, Book, Camera, MapPin, Phone, Mail, Clock, Baby, Trash2, Plus, MessageCircle, Share2, Video, X, Image as ImageIcon } from 'lucide-react';
 import dbService from '../../services/dbService';
+
+const getYouTubeId = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+};
+
+const getYouTubeThumbnail = (id) => {
+    return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+};
+
+const extractUrlFromIframe = (input) => {
+    if (!input) return input;
+    if (input.trim().startsWith('<iframe')) {
+        const match = input.match(/src="([^"]+)"/);
+        return match ? match[1] : input;
+    }
+    return input;
+};
 
 const PageEditor = () => {
     const navigate = useNavigate();
@@ -100,11 +120,6 @@ const PageEditor = () => {
         items: [] // Will be populated from current static data or fallback
     });
 
-    const [homeActivities, setHomeActivities] = useState({
-        title: 'Atividades em Destaque',
-        description: 'Veja o que está acontecendo na igreja',
-        items: []
-    });
 
     const [homePodcast, setHomePodcast] = useState({
         badge: 'Podcast ADMAC',
@@ -148,8 +163,10 @@ const PageEditor = () => {
 
     // Media Page State
     const [mediaPageContent, setMediaPageContent] = useState({
-        social: [],
-        gallery: []
+        videos: [],
+        audios: [],
+        photos: [],
+        social: []
     });
 
     useEffect(() => {
@@ -204,9 +221,6 @@ const PageEditor = () => {
                         if (parsedContent.ministries) {
                             setHomeMinistries(parsedContent.ministries);
                         }
-                        if (parsedContent.activities) {
-                            setHomeActivities(parsedContent.activities);
-                        }
                         if (parsedContent.podcast) {
                             setHomePodcast(parsedContent.podcast);
                         }
@@ -241,8 +255,10 @@ const PageEditor = () => {
                     try {
                         const parsedContent = typeof content === 'string' ? JSON.parse(content) : content;
                         setMediaPageContent({
-                            social: parsedContent.social || [],
-                            gallery: parsedContent.gallery || []
+                            videos: Array.isArray(parsedContent.videos) ? parsedContent.videos : [],
+                            audios: Array.isArray(parsedContent.audios) ? parsedContent.audios : [],
+                            photos: Array.isArray(parsedContent.photos) ? parsedContent.photos : [],
+                            social: Array.isArray(parsedContent.social) ? parsedContent.social : []
                         });
                     } catch (e) {
                         console.error("Error parsing media content", e);
@@ -263,7 +279,9 @@ const PageEditor = () => {
         e.preventDefault();
 
         let finalContent = formData.content;
-        const isMinistry = formData.slug?.startsWith('ministerios/');
+        const savedSlug = formData.slug?.trim();
+        const checkSlug = savedSlug?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const isMinistry = checkSlug?.startsWith('ministerios/');
 
         if (isMinistry) {
             let existingContent = {};
@@ -274,22 +292,21 @@ const PageEditor = () => {
             finalContent = {
                 ...existingContent,
                 pastoralMessage: pastoralMessage,
-                raffle: raffle,
-                productPromotion: productPromotion,
+                leaders: leadershipContent.leaders,
                 testimonials: testimonials,
-                leaders: leadershipContent.leaders, // Include leaders for all ministries
-                classes: formData.slug === 'ministerios/ebd' ? classes : undefined
+                classes: checkSlug === 'ministerios/ebd' ? classes : undefined
             };
 
-            // Additional fields for the main leadership page
-            if (formData.slug === 'ministerios/lideranca') {
+            if (checkSlug === 'ministerios/lideranca') {
                 finalContent = {
                     ...finalContent,
                     obreiros: leadershipContent.obreiros,
                     chamado: leadershipContent.chamado
                 };
             }
-        } else if (formData.slug === 'inicio' || formData.slug === 'contato') {
+        }
+
+        else if (checkSlug === 'inicio' || checkSlug === 'contato') {
             let existingContent = {};
             try {
                 existingContent = typeof formData.content === 'string' && formData.content ? JSON.parse(formData.content) : (typeof formData.content === 'object' ? formData.content : {});
@@ -301,13 +318,12 @@ const PageEditor = () => {
                 about: homeAbout,
                 agenda: homeAgenda,
                 ministries: homeMinistries,
-                activities: homeActivities,
                 podcast: homePodcast,
                 magazines: homeMagazines,
                 media: homeMedia,
                 contact: homeContact
             };
-        } else if (formData.slug === 'midia') {
+        } else if (checkSlug === 'midia') {
             let existingContent = {};
             try {
                 existingContent = typeof formData.content === 'string' && formData.content ? JSON.parse(formData.content) : (typeof formData.content === 'object' ? formData.content : {});
@@ -315,10 +331,39 @@ const PageEditor = () => {
 
             finalContent = {
                 ...existingContent,
-                social: mediaPageContent.social,
-                gallery: mediaPageContent.gallery
+                videos: mediaPageContent.videos,
+                gallery: mediaPageContent.videos.map(v => ({
+                    id: v.id,
+                    title: v.titulo,
+                    url: v.url,
+                    thumbnail: v.thumbnail
+                })),
+                audios: mediaPageContent.audios,
+                photos: mediaPageContent.photos,
+                social: mediaPageContent.social
             };
-        } else if (formData.slug?.startsWith('revista/')) {
+
+            // AUTO-SYNC: Update Home Page Featured Video with the first video from the gallery
+            if (mediaPageContent.videos && mediaPageContent.videos.length > 0) {
+                const latestVideo = mediaPageContent.videos[0];
+                const inicioPage = dbService.getPageBySlug('inicio');
+                if (inicioPage && inicioPage.content) {
+                    const inicioContent = typeof inicioPage.content === 'string' ? JSON.parse(inicioPage.content) : inicioPage.content;
+                    if (inicioContent.media) {
+                        inicioContent.media.featuredVideo = {
+                            ...inicioContent.media.featuredVideo,
+                            title: latestVideo.titulo,
+                            videoUrl: latestVideo.url,
+                            image: latestVideo.thumbnail || getYouTubeThumbnail(getYouTubeId(latestVideo.url))
+                        };
+                        dbService.upsertPage({
+                            ...inicioPage,
+                            content: inicioContent
+                        });
+                    }
+                }
+            }
+        } else if (checkSlug?.startsWith('revista/')) {
             let existingContent = {};
             try {
                 existingContent = typeof formData.content === 'string' && formData.content ? JSON.parse(formData.content) : (typeof formData.content === 'object' ? formData.content : {});
@@ -332,6 +377,7 @@ const PageEditor = () => {
 
         dbService.upsertPage({
             ...formData,
+            slug: savedSlug,
             id: isEditing ? parseInt(id) : null,
             content: finalContent
         });
@@ -944,118 +990,130 @@ const PageEditor = () => {
 
                     {/* Media Specific Section */}
                     {formData?.slug === 'midia' && (
-                        <div className="space-y-6">
-                            {/* Social Links Editor */}
-                            <div className="p-6 rounded-2xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 space-y-6">
-                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
-                                    <Share2 size={20} />
-                                    <h3 className="font-bold">Redes Sociais</h3>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {mediaPageContent?.social?.map((link, index) => (
-                                        <div key={index} className="space-y-2">
-                                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                {link.platform} URL
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={link.url}
-                                                onChange={(e) => {
-                                                    const newSocial = [...mediaPageContent.social];
-                                                    newSocial[index] = { ...newSocial[index], url: e.target.value };
-                                                    setMediaPageContent({ ...mediaPageContent, social: newSocial });
-                                                }}
-                                                className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Video Gallery Editor */}
+                        <div className="space-y-8">
+                            {/* Videos Section */}
                             <div className="p-6 rounded-2xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-800/30 space-y-6">
-                                <div className="flex items-center justify-between text-red-700 dark:text-red-400">
-                                    <div className="flex items-center gap-2">
+                                <div className="p-4 bg-red-100/50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-xl text-sm border border-red-200 dark:border-red-800/30">
+                                    <strong>💡 Dica:</strong> O primeiro vídeo da lista abaixo será automaticamente exibido como o <strong>Vídeo em Destaque</strong> na Página Inicial (Home).
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2 text-red-700 dark:text-red-400">
                                         <Video size={20} />
-                                        <h3 className="font-bold">Galeria de Vídeos</h3>
+                                        <h3 className="font-bold uppercase tracking-wider text-sm">Galeria de Vídeos</h3>
                                     </div>
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            const newVideo = {
-                                                id: Date.now(),
-                                                title: 'Novo Vídeo',
-                                                url: '',
-                                                thumbnail: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38'
-                                            };
-                                            setMediaPageContent({
-                                                ...mediaPageContent,
-                                                gallery: [...mediaPageContent.gallery, newVideo]
-                                            });
-                                        }}
-                                        className="px-3 py-1 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700"
+                                        onClick={() => setMediaPageContent(prev => ({
+                                            ...prev,
+                                            videos: [...(prev.videos || []), { id: Date.now(), titulo: '', url: '', thumbnail: '' }]
+                                        }))}
+                                        className="px-3 py-1.5 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 transition-colors flex items-center gap-1"
                                     >
-                                        + Adicionar Vídeo
+                                        <Plus size={14} /> Adicionar Vídeo
                                     </button>
                                 </div>
 
-                                <div className="space-y-4">
-                                    {mediaPageContent?.gallery?.map((video, index) => (
-                                        <div key={video.id || index} className="p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 space-y-4">
-                                            <div className="flex justify-between items-start">
-                                                <h4 className="font-medium">Vídeo #{index + 1}</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {(mediaPageContent?.videos || []).map((video, vIdx) => (
+                                        <div key={video.id || vIdx} className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 relative group/item">
+                                            <div className="absolute top-2 right-8 flex gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity z-10">
                                                 <button
                                                     type="button"
                                                     onClick={() => {
-                                                        const newGallery = mediaPageContent.gallery.filter((_, i) => i !== index);
-                                                        setMediaPageContent({ ...mediaPageContent, gallery: newGallery });
+                                                        if (vIdx > 0) {
+                                                            setMediaPageContent(prev => {
+                                                                const newVideos = [...prev.videos];
+                                                                [newVideos[vIdx], newVideos[vIdx - 1]] = [newVideos[vIdx - 1], newVideos[vIdx]];
+                                                                return { ...prev, videos: newVideos };
+                                                            });
+                                                        }
                                                     }}
-                                                    className="text-red-500 hover:text-red-700"
+                                                    className="w-6 h-6 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center shadow-md hover:text-red-500 transition-all"
+                                                    title="Subir"
                                                 >
-                                                    <Trash2 size={18} />
+                                                    <ArrowUp size={12} />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        if (vIdx < mediaPageContent.videos.length - 1) {
+                                                            setMediaPageContent(prev => {
+                                                                const newVideos = [...prev.videos];
+                                                                [newVideos[vIdx], newVideos[vIdx + 1]] = [newVideos[vIdx + 1], newVideos[vIdx]];
+                                                                return { ...prev, videos: newVideos };
+                                                            });
+                                                        }
+                                                    }}
+                                                    className="w-6 h-6 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center shadow-md hover:text-red-500 transition-all"
+                                                    title="Baixar"
+                                                >
+                                                    <ArrowDown size={12} />
                                                 </button>
                                             </div>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="space-y-2">
-                                                    <label className="text-xs uppercase text-gray-500">Título</label>
-                                                    <input
-                                                        type="text"
-                                                        value={video.title}
-                                                        onChange={(e) => {
-                                                            const newGallery = [...mediaPageContent.gallery];
-                                                            newGallery[index] = { ...newGallery[index], title: e.target.value };
-                                                            setMediaPageContent({ ...mediaPageContent, gallery: newGallery });
-                                                        }}
-                                                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
+
+                                            <button
+                                                type="button"
+                                                onClick={() => setMediaPageContent(prev => ({
+                                                    ...prev,
+                                                    videos: prev.videos.filter((_, i) => i !== vIdx)
+                                                }))}
+                                                className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-opacity shadow-lg z-10"
+                                            >
+                                                <X size={12} />
+                                            </button>
+
+                                            <div className="aspect-video w-full rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                                                {video.thumbnail || (video.url && getYouTubeId(video.url)) ? (
+                                                    <img
+                                                        src={video.thumbnail || getYouTubeThumbnail(getYouTubeId(video.url))}
+                                                        alt="Preview"
+                                                        className="w-full h-full object-cover"
                                                     />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <label className="text-xs uppercase text-gray-500">URL do Vídeo</label>
-                                                    <input
-                                                        type="text"
-                                                        value={video.url}
-                                                        onChange={(e) => {
-                                                            const newGallery = [...mediaPageContent.gallery];
-                                                            newGallery[index] = { ...newGallery[index], url: e.target.value };
-                                                            setMediaPageContent({ ...mediaPageContent, gallery: newGallery });
-                                                        }}
-                                                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2 md:col-span-2">
-                                                    <label className="text-xs uppercase text-gray-500">Thumbnail URL</label>
-                                                    <input
-                                                        type="text"
-                                                        value={video.thumbnail}
-                                                        onChange={(e) => {
-                                                            const newGallery = [...mediaPageContent.gallery];
-                                                            newGallery[index] = { ...newGallery[index], thumbnail: e.target.value };
-                                                            setMediaPageContent({ ...mediaPageContent, gallery: newGallery });
-                                                        }}
-                                                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
-                                                    />
-                                                </div>
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                                        <Video size={32} />
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase">Título do Vídeo</label>
+                                                <input
+                                                    type="text"
+                                                    value={video.titulo}
+                                                    onChange={(e) => {
+                                                        setMediaPageContent(prev => {
+                                                            const newVideos = [...prev.videos];
+                                                            newVideos[vIdx].titulo = e.target.value;
+                                                            return { ...prev, videos: newVideos };
+                                                        });
+                                                    }}
+                                                    className="w-full px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border-none rounded outline-none focus:ring-1 focus:ring-red-500"
+                                                    placeholder="Ex: Culto de Domingo"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase">URL / Iframe (YouTube)</label>
+                                                <input
+                                                    type="text"
+                                                    value={video.url}
+                                                    onChange={(e) => {
+                                                        const rawValue = e.target.value;
+                                                        const cleanUrl = extractUrlFromIframe(rawValue);
+                                                        const youtubeId = getYouTubeId(cleanUrl);
+
+                                                        setMediaPageContent(prev => {
+                                                            const newVideos = [...prev.videos];
+                                                            newVideos[vIdx].url = cleanUrl;
+                                                            if (youtubeId) {
+                                                                newVideos[vIdx].thumbnail = getYouTubeThumbnail(youtubeId);
+                                                            }
+                                                            return { ...prev, videos: newVideos };
+                                                        });
+                                                    }}
+                                                    className="w-full px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border-none rounded outline-none focus:ring-1 focus:ring-red-500 font-mono"
+                                                    placeholder="Cole a URL ou o iframe"
+                                                />
                                             </div>
                                         </div>
                                     ))}
@@ -1433,153 +1491,6 @@ const PageEditor = () => {
                                 </div>
                             </div>
 
-                            {/* Atividades */}
-                            <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
-                                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
-                                    <h3 className="font-bold">Seção Atividades em Destaque</h3>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título</label>
-                                            <input
-                                                type="text"
-                                                value={homeActivities.title}
-                                                onChange={(e) => setHomeActivities({ ...homeActivities, title: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
-                                            <input
-                                                type="text"
-                                                value={homeActivities.description}
-                                                onChange={(e) => setHomeActivities({ ...homeActivities, description: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <div className="flex items-center justify-between">
-                                            <label className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Cartões de Atividades</label>
-                                            <button
-                                                type="button"
-                                                onClick={() => setHomeActivities({ ...homeActivities, items: [...homeActivities.items, { title: 'Nova Atividade', desc: '', tag: '', image: '' }] })}
-                                                className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-600 hover:text-white transition-all"
-                                            >
-                                                + Adicionar Atividade
-                                            </button>
-                                        </div>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {homeActivities.items.map((item, idx) => (
-                                                <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-4 group">
-                                                    <div className="flex items-center justify-between">
-                                                        <input
-                                                            type="text"
-                                                            value={item.title}
-                                                            onChange={(e) => {
-                                                                const newItems = [...homeActivities.items];
-                                                                newItems[idx].title = e.target.value;
-                                                                setHomeActivities({ ...homeActivities, items: newItems });
-                                                            }}
-                                                            className="bg-transparent font-bold text-slate-800 dark:text-white outline-none w-full"
-                                                            placeholder="Título da Atividade"
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setHomeActivities({ ...homeActivities, items: homeActivities.items.filter((_, i) => i !== idx) })}
-                                                            className="text-red-400 hover:text-red-600 transition-colors"
-                                                        >
-                                                            &times;
-                                                        </button>
-                                                    </div>
-
-                                                    <div className="grid grid-cols-2 gap-4">
-                                                        <div className="space-y-3">
-                                                            <div>
-                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Rótulo (Tag)</label>
-                                                                <input
-                                                                    type="text"
-                                                                    value={item.tag}
-                                                                    onChange={(e) => {
-                                                                        const newItems = [...homeActivities.items];
-                                                                        newItems[idx].tag = e.target.value;
-                                                                        setHomeActivities({ ...homeActivities, items: newItems });
-                                                                    }}
-                                                                    className="w-full px-2 py-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                                    placeholder="ex: Toda Quinta"
-                                                                />
-                                                            </div>
-
-                                                            <div>
-                                                                <label className="text-[10px] font-bold text-slate-500 uppercase">Ícone</label>
-                                                                <div className="flex gap-2 p-1 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded overflow-x-auto">
-                                                                    {['Calendar', 'Users', 'Heart', 'Star', 'Music', 'Book', 'Camera', 'Baby'].map(iconName => (
-                                                                        <button
-                                                                            key={iconName}
-                                                                            type="button"
-                                                                            onClick={() => {
-                                                                                const newItems = [...homeActivities.items];
-                                                                                newItems[idx].icon = iconName;
-                                                                                setHomeActivities({ ...homeActivities, items: newItems });
-                                                                            }}
-                                                                            className={`p-1 rounded transition-all ${item.icon === iconName ? 'bg-blue-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500'}`}
-                                                                            title={iconName}
-                                                                        >
-                                                                            {iconName === 'Calendar' && <Calendar size={14} />}
-                                                                            {iconName === 'Users' && <Users size={14} />}
-                                                                            {iconName === 'Heart' && <Heart size={14} />}
-                                                                            {iconName === 'Star' && <Star size={14} />}
-                                                                            {iconName === 'Music' && <Music size={14} />}
-                                                                            {iconName === 'Book' && <Book size={14} />}
-                                                                            {iconName === 'Camera' && <Camera size={14} />}
-                                                                            {iconName === 'Baby' && <Baby size={14} />}
-                                                                        </button>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="space-y-2">
-                                                            <label className="text-[10px] font-bold text-slate-500 uppercase line-clamp-1">Preview / URL Imagem</label>
-                                                            {item.image && (
-                                                                <div className="h-16 w-full rounded overflow-hidden border border-slate-200 dark:border-slate-600">
-                                                                    <img src={item.image} alt="Preview" className="w-full h-full object-cover" />
-                                                                </div>
-                                                            )}
-                                                            <input
-                                                                type="text"
-                                                                value={item.image}
-                                                                onChange={(e) => {
-                                                                    const newItems = [...homeActivities.items];
-                                                                    newItems[idx].image = e.target.value;
-                                                                    setHomeActivities({ ...homeActivities, items: newItems });
-                                                                }}
-                                                                className="w-full px-2 py-1 text-[10px] bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                                placeholder="URL da Imagem"
-                                                            />
-                                                        </div>
-                                                    </div>
-
-                                                    <textarea
-                                                        value={item.desc}
-                                                        onChange={(e) => {
-                                                            const newItems = [...homeActivities.items];
-                                                            newItems[idx].desc = e.target.value;
-                                                            setHomeActivities({ ...homeActivities, items: newItems });
-                                                        }}
-                                                        className="w-full p-2 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none"
-                                                        placeholder="Descrição breve da atividade..."
-                                                        rows="2"
-                                                    />
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                             {/* Podcast */}
                             <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
@@ -1726,6 +1637,28 @@ const PageEditor = () => {
                                 </div>
 
                                 <div className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título da Seção</label>
+                                            <input
+                                                type="text"
+                                                value={homeMedia.title || ''}
+                                                onChange={(e) => setHomeMedia({ ...homeMedia, title: e.target.value })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                placeholder="Nossa Mídia"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Descrição</label>
+                                            <input
+                                                type="text"
+                                                value={homeMedia.description || ''}
+                                                onChange={(e) => setHomeMedia({ ...homeMedia, description: e.target.value })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                                                placeholder="Descrição da seção..."
+                                            />
+                                        </div>
+                                    </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                         <div className="space-y-1">
                                             <label className="text-[10px] font-bold text-slate-500 uppercase">YouTube</label>
@@ -1793,13 +1726,37 @@ const PageEditor = () => {
                                                     className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
                                                     placeholder="URL da Imagem de Capa"
                                                 />
+                                                {homeMedia.featuredVideo.image && (
+                                                    <div className="relative aspect-video w-32 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                                                        <img
+                                                            src={homeMedia.featuredVideo.image}
+                                                            alt="Preview"
+                                                            className="w-full h-full object-cover"
+                                                            onError={(e) => e.target.style.display = 'none'}
+                                                        />
+                                                    </div>
+                                                )}
                                                 <div className="flex gap-2">
                                                     <input
                                                         type="text"
                                                         value={homeMedia.featuredVideo.videoUrl}
-                                                        onChange={(e) => setHomeMedia({ ...homeMedia, featuredVideo: { ...homeMedia.featuredVideo, videoUrl: e.target.value } })}
+                                                        onChange={(e) => {
+                                                            let newUrl = e.target.value;
+                                                            // Check if it's an iframe code
+                                                            newUrl = extractUrlFromIframe(newUrl);
+
+                                                            const newFeatured = { ...homeMedia.featuredVideo, videoUrl: newUrl };
+
+                                                            // Auto-generate thumbnail for Home Featured Video
+                                                            const videoId = getYouTubeId(newUrl);
+                                                            if (videoId) {
+                                                                newFeatured.image = getYouTubeThumbnail(videoId);
+                                                            }
+
+                                                            setHomeMedia({ ...homeMedia, featuredVideo: newFeatured });
+                                                        }}
                                                         className="flex-1 px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                        placeholder="URL do Vídeo (ex: youtube.com/...)"
+                                                        placeholder="URL do Vídeo (ou código iframe)"
                                                     />
                                                     <button
                                                         type="button"
@@ -1999,18 +1956,55 @@ const PageEditor = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 uppercase">URL da Imagem</label>
-                                            <input
-                                                type="text"
-                                                value={article.image}
-                                                onChange={(e) => {
-                                                    const newArticles = [...magazineArticles];
-                                                    newArticles[idx].image = e.target.value;
-                                                    setMagazineArticles(newArticles);
-                                                }}
-                                                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                placeholder="https://..."
-                                            />
+                                            <label className="text-xs font-bold text-slate-500 uppercase">Imagem do Artigo</label>
+                                            <div className="flex gap-2">
+                                                <input
+                                                    type="text"
+                                                    value={article.image}
+                                                    onChange={(e) => {
+                                                        const newArticles = [...magazineArticles];
+                                                        newArticles[idx].image = e.target.value;
+                                                        setMagazineArticles(newArticles);
+                                                    }}
+                                                    className="flex-1 px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                    placeholder="Cole a URL da imagem ou use o botão ao lado"
+                                                />
+                                                <label className="cursor-pointer">
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        className="hidden"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files[0];
+                                                            if (file) {
+                                                                const reader = new FileReader();
+                                                                reader.onloadend = () => {
+                                                                    const newArticles = [...magazineArticles];
+                                                                    newArticles[idx].image = reader.result;
+                                                                    setMagazineArticles(newArticles);
+                                                                };
+                                                                reader.readAsDataURL(file);
+                                                            }
+                                                        }}
+                                                    />
+                                                    <div className="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded hover:bg-purple-600 hover:text-white transition-all flex items-center gap-2 h-full">
+                                                        <ImageIcon size={16} />
+                                                        <span className="text-sm font-medium">Subir Foto</span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            {article.image && (
+                                                <div className="mt-2 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                                                    <img
+                                                        src={article.image}
+                                                        alt="Preview"
+                                                        className="w-full h-48 object-cover"
+                                                        onError={(e) => {
+                                                            e.target.style.display = 'none';
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="space-y-2">

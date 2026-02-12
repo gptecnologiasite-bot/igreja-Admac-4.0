@@ -58,7 +58,7 @@ const UserList = () => {
                 </div>
                 <Link
                     to="/painel/usuarios/novo"
-                    className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg transition-colors shadow-lg shadow-emerald-600/20"
+                    className="flex items-center justify-center gap-2 bg-linear-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900 font-bold px-6 py-3 rounded-full transition-all shadow-xl shadow-yellow-600/30 border-2 border-yellow-300 hover:scale-105"
                 >
                     <UserPlus size={20} />
                     <span>Novo Usuário</span>

@@ -3,7 +3,6 @@ import Hero from '../components/Hero';
 import About from '../components/About';
 import Ministries from '../components/Ministries';
 import Agenda from '../components/Agenda';
-import FeaturedActivities from '../components/FeaturedActivities';
 import PodcastSection from '../components/PodcastSection';
 import Magazines from '../components/Magazines';
 import Media from '../components/Media';
@@ -16,7 +15,6 @@ const Home = () => {
             <div id="about"><About /></div>
             <div id="ministries"><Ministries /></div>
             <div id="agenda"><Agenda /></div>
-            <FeaturedActivities />
             <PodcastSection />
             <div id="magazine"><Magazines /></div>
             <div id="media"><Media /></div>

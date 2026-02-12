@@ -13,12 +13,22 @@
   --animate-slide-up: slideUp 0.6s ease-out forwards;
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
   @keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
 }
 
@@ -30,6 +40,44 @@
 
 body {
   @apply bg-white dark:bg-church-dark text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300;
+}
+
+/* Accessibility: Focus Styles */
+*:focus-visible {
+  @apply outline-none ring-2 ring-church-accent ring-offset-2 ring-offset-white dark:ring-offset-church-dark;
+}
+
+/* Accessibility: Skip to Content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only:focus,
+.sr-only:active {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Ensure minimum touch target size (44x44px) */
+button,
+a,
+input,
+select,
+textarea {
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .section-container {

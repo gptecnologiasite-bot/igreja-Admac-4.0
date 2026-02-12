@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /painel/
+
+# Sitemap
+Sitemap: https://admac.org.br/sitemap.xml

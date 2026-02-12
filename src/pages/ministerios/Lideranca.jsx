@@ -1,13 +1,12 @@
-import { useRef, useState, useEffect } from 'react';
-import { Users, Shield, Star, ChevronLeft, ChevronRight, Quote, MessageCircle, Edit2, Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Users, Shield, Star, Quote, MessageCircle, Edit2, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
 const Lideranca = () => {
-    const carouselRef = useRef(null);
-
     // Get page data from central DB
-    const [pageData, setPageData] = useState(null);
+    const [page, setPage] = useState(null);
+    const [content, setContent] = useState({});
     const [isEditing, setIsEditing] = useState(false);
     const [pastoralMessage, setPastoralMessage] = useState({
         text: "Nossa liderança não é sobre posição, é sobre serviço. Cada líder nesta igreja está comprometido em servir você e sua família, orando e intercedendo para que o Reino de Deus flua através de nós.",
@@ -15,19 +14,28 @@ const Lideranca = () => {
         role: "Pastor Presidente"
     });
 
-    useEffect(() => {
-        const page = dbService.getPages().find(p => p.slug === 'ministerios/lideranca');
-        if (page && page.content) {
+    const loadContent = () => {
+        const pageData = dbService.getPages().find(p => p.slug === 'ministerios/lideranca');
+        if (pageData) {
+            setPage(pageData);
             try {
-                const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
-                if (content.pastoralMessage) {
-                    setPastoralMessage(content.pastoralMessage);
+                const parsedContent = typeof pageData.content === 'string' ? JSON.parse(pageData.content) : (pageData.content || {});
+                setContent(parsedContent);
+                if (parsedContent.pastoralMessage) {
+                    setPastoralMessage(parsedContent.pastoralMessage);
+                    setTempMessage(parsedContent.pastoralMessage);
                 }
             } catch (e) {
                 console.error("Error parsing page content", e);
+                setContent({});
             }
         }
-        setPageData(page);
+    };
+
+    useEffect(() => {
+        loadContent();
+        window.addEventListener('contentUpdated', loadContent);
+        return () => window.removeEventListener('contentUpdated', loadContent);
     }, []);
 
     // Temporary state while editing
@@ -60,51 +68,39 @@ const Lideranca = () => {
         }
     ];
 
-    const leaders = pageData?.content?.leaders || fallBackLeaders;
-    const testimonials = pageData?.content?.testimonials || fallBackTestimonials;
+    const leaders = Array.isArray(content.leaders) ? content.leaders : fallBackLeaders;
+    const testimonials = Array.isArray(content.testimonials) ? content.testimonials : fallBackTestimonials;
 
     const handleSave = () => {
         setPastoralMessage(tempMessage);
 
-        const currentContent = typeof pageData?.content === 'string'
-            ? JSON.parse(pageData.content)
-            : (pageData?.content || {});
-
         // Update central DB
         const updatedContent = {
-            ...currentContent,
+            ...content,
             pastoralMessage: tempMessage,
             leaders: leaders,
             testimonials: testimonials
         };
 
         dbService.upsertPage({
-            ...pageData,
+            ...page,
             slug: 'ministerios/lideranca',
-            title: 'Liderança',
+            title: page?.title || 'Liderança',
             content: updatedContent
         });
 
         setIsEditing(false);
     };
 
-    const obreiros = pageData?.content?.obreiros || {
+    const obreiros = content.obreiros || {
         title: "Corpo de Obreiros",
         text: "Além do ministério pastoral, contamos com uma equipe dedicada de diáconos, presbíteros e evangelistas que auxiliam no andamento da obra."
     };
 
-    const chamado = pageData?.content?.chamado || {
+    const chamado = content.chamado || {
         title: "Nosso Chamado",
         text: "Apascentai o rebanho de Deus, que está entre vós, tendo cuidado dele... de boa vontade.",
         reference: "1 Pedro 5:2"
-    };
-
-    const scroll = (direction) => {
-        if (carouselRef.current) {
-            const { current } = carouselRef;
-            const scrollAmount = direction === 'left' ? -340 : 340;
-            current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        }
     };
 
     const handleCancel = () => {
@@ -113,88 +109,110 @@ const Lideranca = () => {
     };
 
     return (
-        <div className="pt-24 pb-16 min-h-screen bg-white dark:bg-church-dark transition-colors duration-300">
+        <div className="pt-24 pb-20 min-h-screen bg-white dark:bg-church-dark transition-colors duration-300">
+            {/* Hero Section */}
+            <section className="relative h-[50vh] flex items-center overflow-hidden mb-20">
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute inset-0 bg-linear-to-r from-church-dark to-transparent z-10" />
+                    <img
+                        src="https://images.unsplash.com/photo-1544427920-c49ccfb85579?q=80&w=2000&auto=format&fit=crop"
+                        alt="Liderança Admac"
+                        className="w-full h-full object-cover opacity-60 dark:opacity-40"
+                    />
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full">
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 1 }}
+                        className="max-w-3xl"
+                    >
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="p-3 bg-church-primary/20 backdrop-blur-md rounded-xl border border-white/10">
+                                <Shield className="w-8 h-8 text-church-accent" />
+                            </div>
+                            <span className="text-church-accent font-bold text-xs tracking-widest uppercase">Corpo de Líderes</span>
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter leading-tight uppercase">
+                            {page?.title || 'Nossa Liderança'}
+                        </h1>
+                        <p className="text-xl text-gray-200 mb-8 italic font-medium border-l-4 border-church-primary pl-6">
+                            &quot;Apascentai o rebanho de Deus, que está entre vós, tendo cuidado dele... de boa vontade.&quot;
+                            <span className="block not-italic text-sm font-bold text-church-primary mt-2">1 Pedro 5:2</span>
+                        </p>
+                    </motion.div>
+                </div>
+            </section>
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="p-3 bg-church-primary/10 dark:bg-church-accent/10 rounded-xl">
-                            <Shield className="w-8 h-8 text-church-primary dark:text-church-accent" />
-                        </div>
-                        <h1 className="text-4xl md:text-6xl font-bold text-church-primary dark:text-white">
-                            {pageData?.title || 'Nossa Liderança'}
-                        </h1>
-                    </div>
-
-                    <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl leading-relaxed mb-16">
-                        Conheça os homens e mulheres chamados por Deus para conduzir e cuidar do rebanho da ADMAC com amor, integridade e sabedoria.
+                    <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl leading-relaxed mb-16 font-medium">
+                        Na ADMAC, cremos que a liderança é um chamado sagrado de serviço. Conheça os homens e mulheres que dedicam suas vidas para apascentar e guiar nossa comunidade com temor e amor ao Senhor.
                     </p>
 
-                    {/* Carousel Container */}
-                    <div className="relative group">
-                        {/* Navigation Buttons */}
-                        <button
-                            onClick={() => scroll('left')}
-                            className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 md:-ml-12 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 disabled:opacity-0"
-                            aria-label="Previous slide"
-                        >
-                            <ChevronLeft className="w-6 h-6" />
-                        </button>
+                    {/* Leaders Section - Standardized "Nossa Equipe" */}
+                    <section className="mb-32">
+                        <div className="flex flex-col items-center mb-16">
+                            <div className="p-3 bg-church-primary/10 rounded-2xl text-church-primary mb-4">
+                                <Users size={32} />
+                            </div>
+                            <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Nossa Equipe</h2>
+                            <div className="w-16 h-1.5 bg-church-primary rounded-full mt-4"></div>
+                        </div>
 
-                        <button
-                            onClick={() => scroll('right')}
-                            className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 md:-mr-12 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
-                            aria-label="Next slide"
-                        >
-                            <ChevronRight className="w-6 h-6" />
-                        </button>
-
-                        <div
-                            ref={carouselRef}
-                            className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-12 -mx-4 px-4 md:-mx-8 md:px-8 scrollbar-hide"
-                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                        >
+                        <div className="flex flex-wrap justify-center gap-12 max-w-6xl mx-auto">
                             {leaders.map((leader, index) => (
                                 <motion.div
                                     key={index}
-                                    initial={{ opacity: 0, x: 20 }}
-                                    animate={{ opacity: 1, x: 0 }}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
                                     transition={{ delay: index * 0.1 }}
-                                    className="snap-center min-w-[280px] md:min-w-[320px] shrink-0 group/card p-8 rounded-4xl bg-[#1a1c23] border border-white/5 hover:border-church-accent/30 hover:shadow-2xl hover:shadow-church-accent/10 transition-all duration-300 text-center select-none"
+                                    className="group text-center w-full sm:w-[280px]"
                                 >
-                                    <div className="relative w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden ring-4 ring-[#252733] group-hover/card:ring-church-accent transition-all duration-300 shadow-xl">
-                                        <img
-                                            src={leader.image}
-                                            alt={leader.name}
-                                            className="w-full h-full object-cover pointer-events-none transform group-hover/card:scale-110 transition-transform duration-500"
-                                        />
+                                    <div className="relative mb-6 mx-auto w-48 h-48">
+                                        {/* Decorative Glow */}
+                                        <div className="absolute inset-0 bg-church-primary/20 rounded-full blur-2xl group-hover:bg-church-primary/40 transition-colors duration-500"></div>
+
+                                        {/* Circle Frame */}
+                                        <div className="relative w-full h-full rounded-full border-4 border-white dark:border-slate-800 overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3">
+                                            <img
+                                                src={leader.image}
+                                                alt={leader.name}
+                                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                            />
+                                        </div>
                                     </div>
-                                    <h3 className="text-2xl font-bold text-white mb-3">{leader.name}</h3>
-                                    <span className="inline-block px-4 py-1.5 rounded-xl bg-church-accent/10 text-church-accent font-bold text-xs tracking-widest uppercase border border-church-accent/20">
+                                    <h4 className="text-2xl font-black text-gray-900 dark:text-white mb-1 group-hover:text-church-primary transition-colors">
+                                        {leader.name}
+                                    </h4>
+                                    <p className="text-church-primary dark:text-church-accent font-black text-xs tracking-widest uppercase">
                                         {leader.role}
-                                    </span>
+                                    </p>
                                 </motion.div>
                             ))}
                         </div>
-                    </div>
+                    </section>
 
                     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-12">
-                        <div className="p-10 rounded-[2.5rem] bg-church-primary text-white space-y-4">
-                            <Users className="w-12 h-12 text-church-accent" />
-                            <h2 className="text-3xl font-bold">{obreiros.title}</h2>
-                            <p className="text-white/80 leading-relaxed text-lg">
+                        <div className="p-10 rounded-3xl bg-church-primary text-white space-y-4 shadow-xl">
+                            <Users className="w-12 h-12 text-white/50" />
+                            <h2 className="text-3xl font-black">{obreiros.title}</h2>
+                            <p className="text-white/80 leading-relaxed text-lg font-medium">
                                 {obreiros.text}
                             </p>
                         </div>
-                        <div className="p-10 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-white/10 flex flex-col justify-center text-center space-y-4">
+                        <div className="p-10 rounded-3xl border-2 border-dashed border-gray-200 dark:border-white/10 flex flex-col justify-center text-center space-y-4">
                             <Star className="w-12 h-12 text-church-primary dark:text-church-accent mx-auto" />
-                            <h2 className="text-3xl font-bold text-church-primary dark:text-white tracking-tight">{chamado.title}</h2>
-                            <p className="text-gray-500 dark:text-gray-400 text-lg">
+                            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{chamado.title}</h2>
+                            <p className="text-gray-500 dark:text-gray-400 text-lg italic">
                                 &quot;{chamado.text}&quot; <br />
-                                <span className="font-bold">{chamado.reference}</span>
+                                <span className="font-black not-italic text-church-primary dark:text-church-accent mt-2 block uppercase text-sm tracking-widest">{chamado.reference}</span>
                             </p>
                         </div>
                     </div>
@@ -204,71 +222,71 @@ const Lideranca = () => {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="mt-20 p-8 md:p-12 rounded-4xl bg-linear-to-br from-[#1a1c23] to-[#252733] border border-white/5 relative overflow-hidden group"
+                        className="mt-20 p-8 md:p-12 rounded-3xl bg-linear-to-br from-gray-50 to-gray-100 dark:from-[#1a1c23] dark:to-[#252733] border border-gray-100 dark:border-white/5 relative overflow-hidden group shadow-xl"
                     >
                         <div className="absolute top-0 right-0 p-12 opacity-5">
-                            <MessageCircle className="w-64 h-64 text-white" />
+                            <MessageCircle className="w-64 h-64 text-church-primary dark:text-white" />
                         </div>
 
-                        {/* Edit Button - Always visible for discoverability */}
+                        {/* Edit Button */}
                         <button
                             onClick={() => !isEditing && setIsEditing(true)}
-                            className={`absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-church-accent/20 hover:bg-church-accent text-white border border-church-accent/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
+                            className={`absolute top-6 right-6 z-20 items-center gap-2 px-4 py-2 rounded-xl bg-church-primary/10 dark:bg-church-accent/20 hover:bg-church-primary dark:hover:bg-church-accent text-church-primary dark:text-white border border-church-primary/20 dark:border-church-accent/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
                         >
                             <Edit2 size={18} />
                             <span className="text-sm font-bold uppercase tracking-wider">Editar Mensagem</span>
                         </button>
 
                         <div className="relative z-10">
-                            <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                                <MessageCircle className="text-church-accent" />
+                            <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                                <MessageCircle className="text-church-primary dark:text-church-accent" />
                                 Palavra Pastoral
                             </h2>
 
                             {isEditing ? (
-                                <div className="space-y-6 mb-8 bg-black/30 p-6 rounded-3xl border border-church-accent/30 animate-in fade-in zoom-in duration-300">
+                                <div className="space-y-6 mb-8 bg-white/50 dark:bg-black/30 p-6 rounded-3xl border border-church-primary/30 dark:border-church-accent/30 animate-in fade-in zoom-in duration-300">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-church-accent uppercase tracking-widest ml-1">Mensagem do Pastor</label>
+                                        <label className="text-xs font-bold text-church-primary dark:text-church-accent uppercase tracking-widest ml-1">Mensagem do Pastor</label>
                                         <textarea
                                             value={tempMessage.text}
                                             onChange={(e) => setTempMessage({ ...tempMessage, text: e.target.value })}
-                                            className="w-full bg-white/5 border-2 border-white/10 rounded-2xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-church-accent focus:ring-1 focus:ring-church-accent transition-all resize-none h-48 text-lg leading-relaxed"
+                                            className="w-full bg-white dark:bg-white/5 border-2 border-gray-100 dark:border-white/10 rounded-2xl p-4 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-church-primary dark:focus:border-church-accent focus:ring-1 focus:ring-church-primary dark:focus:ring-church-accent transition-all resize-none h-48 text-lg leading-relaxed"
                                             placeholder="Escreva aqui a mensagem para a igreja..."
                                             autoFocus
                                         />
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-church-accent uppercase tracking-widest ml-1">Nome</label>
+                                            <label className="text-xs font-bold text-church-primary dark:text-church-accent uppercase tracking-widest ml-1">Nome</label>
                                             <input
                                                 type="text"
                                                 value={tempMessage.author}
                                                 onChange={(e) => setTempMessage({ ...tempMessage, author: e.target.value })}
-                                                className="w-full bg-white/5 border-2 border-white/10 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:border-church-accent"
+                                                className="w-full bg-white dark:bg-white/5 border-2 border-gray-100 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-church-primary dark:focus:border-church-accent"
                                                 placeholder="Ex: Pr. João Silva"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-church-accent uppercase tracking-widest ml-1">Cargo/Função</label>
+                                            <label className="text-xs font-bold text-church-primary dark:text-church-accent uppercase tracking-widest ml-1">Cargo/Função</label>
                                             <input
                                                 type="text"
                                                 value={tempMessage.role}
                                                 onChange={(e) => setTempMessage({ ...tempMessage, role: e.target.value })}
-                                                className="w-full bg-white/5 border-2 border-white/10 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:border-church-accent"
+                                                className="w-full bg-white dark:bg-white/5 border-2 border-gray-100 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-church-primary dark:focus:border-church-accent"
                                                 placeholder="Ex: Pastor Presidente"
                                             />
                                         </div>
                                     </div>
-                                    <div className="flex gap-4 justify-end pt-4 border-t border-white/5">
+                                    <div className="flex gap-4 justify-end pt-4 border-t border-gray-100 dark:border-white/5">
                                         <button
                                             onClick={handleCancel}
-                                            className="px-6 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all font-medium"
+                                            className="px-6 py-2.5 rounded-xl text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all font-medium"
                                         >
                                             Cancelar
                                         </button>
                                         <button
                                             onClick={handleSave}
-                                            className="flex items-center gap-2 px-8 py-2.5 rounded-xl bg-church-accent hover:bg-church-accent/80 text-white font-bold transition-all shadow-xl shadow-church-accent/20 hover:scale-105 active:scale-95"
+                                            className="flex items-center gap-2 px-8 py-2.5 rounded-xl bg-church-primary dark:bg-church-accent hover:opacity-90 text-white font-bold transition-all shadow-xl shadow-church-primary/20 dark:shadow-church-accent/20 hover:scale-105 active:scale-95"
                                         >
                                             <Check size={20} />
                                             Publicar Agora
@@ -276,7 +294,7 @@ const Lideranca = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <blockquote className="text-xl md:text-2xl text-gray-300 leading-relaxed italic border-l-4 border-church-accent pl-6 mb-8 min-h-[100px] whitespace-pre-wrap">
+                                <blockquote className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed italic border-l-4 border-church-primary dark:border-church-accent pl-6 mb-8 min-h-[100px] whitespace-pre-wrap font-medium">
                                     &quot;{pastoralMessage.text}&quot;
                                 </blockquote>
                             )}
@@ -285,11 +303,11 @@ const Lideranca = () => {
                                 <img
                                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&h=100&auto=format&fit=crop"
                                     alt="Pastor Presidente"
-                                    className="w-12 h-12 rounded-full ring-2 ring-church-accent"
+                                    className="w-12 h-12 rounded-full ring-2 ring-church-primary dark:ring-church-accent shadow-lg"
                                 />
                                 <div>
-                                    <p className="text-white font-bold">{pastoralMessage.author}</p>
-                                    <p className="text-church-accent text-sm">{pastoralMessage.role}</p>
+                                    <p className="text-gray-900 dark:text-white font-black">{pastoralMessage.author}</p>
+                                    <p className="text-church-primary dark:text-church-accent text-sm font-bold uppercase tracking-wider">{pastoralMessage.role}</p>
                                 </div>
                             </div>
                         </div>
@@ -297,9 +315,12 @@ const Lideranca = () => {
 
                     {/* Testimonials Section */}
                     <div className="mt-20">
-                        <h2 className="text-3xl font-bold text-center text-church-primary dark:text-white mb-12">
-                            O Que Dizem Nossos Membros
-                        </h2>
+                        <div className="flex flex-col items-center mb-12">
+                            <h2 className="text-3xl font-black text-center text-gray-900 dark:text-white">
+                                O Que Dizem Nossos Membros
+                            </h2>
+                            <div className="w-12 h-1.5 bg-church-primary rounded-full mt-4"></div>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {testimonials.map((testimony, index) => (
                                 <motion.div
@@ -308,15 +329,15 @@ const Lideranca = () => {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: index * 0.1 }}
-                                    className="p-8 rounded-4xl bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/5 relative"
+                                    className="p-8 rounded-3xl bg-gray-50 dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/5 relative group hover:bg-white dark:hover:bg-slate-900 transition-all duration-300"
                                 >
-                                    <Quote className="w-10 h-10 text-church-accent/20 mb-4 absolute top-8 right-8" />
-                                    <p className="text-gray-600 dark:text-gray-300 italic mb-6 relative z-10">
+                                    <Quote className="w-10 h-10 text-church-primary/10 dark:text-church-accent/10 mb-4 absolute top-8 right-8 group-hover:text-church-primary/20 transition-colors" />
+                                    <p className="text-gray-600 dark:text-gray-300 italic mb-6 relative z-10 font-medium">
                                         &quot;{testimony.text}&quot;
                                     </p>
                                     <div className="flex flex-col">
-                                        <span className="font-bold text-church-primary dark:text-white">{testimony.author}</span>
-                                        <span className="text-sm text-church-accent">{testimony.role}</span>
+                                        <span className="font-black text-gray-900 dark:text-white">{testimony.author}</span>
+                                        <span className="text-sm text-church-primary dark:text-church-accent font-bold uppercase tracking-widest text-[10px]">{testimony.role}</span>
                                     </div>
                                 </motion.div>
                             ))}

@@ -1,11 +1,9 @@
-import { useRef, useState, useEffect } from 'react';
-import { BookOpen, Users, Star, ChevronLeft, ChevronRight, Quote, MessageCircle, Edit2, Check, GraduationCap, Bookmark, Book, Library, Award, Download, FileText, Presentation } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { BookOpen, Users, Star, Quote, MessageCircle, Edit2, Check, GraduationCap, Bookmark, Book, Library, Award, Download, FileText, Presentation, X, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
 const EscolaBiblica = () => {
-    const carouselRef = useRef(null);
-
     // Get page data from central DB
     const [pageData, setPageData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -118,42 +116,57 @@ const EscolaBiblica = () => {
     };
 
     return (
-        <div className="pt-24 pb-16 min-h-screen bg-white dark:bg-church-dark transition-colors duration-300">
+        <div className="pt-24 pb-20 min-h-screen bg-white dark:bg-church-dark transition-colors duration-300">
+            {/* Hero Section */}
+            <section className="relative h-[50vh] flex items-center overflow-hidden mb-20">
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute inset-0 bg-linear-to-r from-church-dark to-transparent z-10" />
+                    <img
+                        src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=2000&auto=format&fit=crop"
+                        alt="Escola Bíblica Admac"
+                        className="w-full h-full object-cover opacity-60 dark:opacity-40"
+                    />
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full">
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 1 }}
+                        className="max-w-3xl"
+                    >
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="p-3 bg-emerald-600/20 backdrop-blur-md rounded-xl border border-white/10">
+                                <Library className="w-8 h-8 text-emerald-400" />
+                            </div>
+                            <span className="text-emerald-400 font-bold text-xs tracking-widest uppercase">Portal do Conhecimento</span>
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter leading-tight uppercase">
+                            Escola <span className="text-emerald-400">Bíblica</span>
+                        </h1>
+                        <p className="text-xl text-gray-200 mb-8 italic font-medium border-l-4 border-emerald-400 pl-6">
+                            &quot;O conhecimento da Verdade é o fundamento da liberdade.&quot;
+                            <span className="block not-italic text-sm font-bold text-emerald-400 mt-2 text-right">João 8:32</span>
+                        </p>
+                    </motion.div>
+                </div>
+            </section>
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    {/* Header Section */}
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 underline-purple-500">
-                        <div className="max-w-3xl">
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 bg-emerald-600/10 rounded-2xl ring-1 ring-emerald-600/20">
-                                    <Library className="w-8 h-8 text-emerald-600" />
-                                </div>
-                                <span className="text-emerald-600 font-bold uppercase tracking-[0.2em] text-sm">Portal do Conhecimento</span>
-                            </div>
-                            <h1 className="text-5xl md:text-7xl font-black text-church-primary dark:text-white leading-tight mb-6">
-                                Escola <span className="text-emerald-600">Bíblica</span> Dominical
-                            </h1>
-                            <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-                                Um espaço dedicado ao estudo sistemático, crescimento espiritual e maturidade cristã. Aqui, a Palavra de Deus é a nossa única regra de fé e prática.
-                            </p>
-                        </div>
-                        <div className="hidden lg:block">
-                            <div className="p-6 rounded-3xl bg-church-primary dark:bg-white/5 border border-white/10 text-center">
-                                <p className="text-emerald-500 font-bold text-3xl">09:00</p>
-                                <p className="text-gray-400 text-sm uppercase font-bold tracking-widest mt-1">Todo Domingo</p>
-                            </div>
-                        </div>
-                    </div>
+                    <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl leading-relaxed mb-16 font-medium">
+                        Um espaço dedicado ao estudo sistemático, crescimento espiritual e maturidade cristã. Na ADMAC, a Palavra de Deus é a nossa única regra de fé e prática, e a EBD é onde mergulhamos em Seus ensinos.
+                    </p>
 
                     {/* Classes Grid - NEW SPECIAL SECTION */}
-                    <div className="mb-24">
+                    <div className="mb-32">
                         <div className="flex items-center gap-3 mb-10">
-                            <BookOpen className="text-emerald-500 w-6 h-6" />
-                            <h2 className="text-3xl font-bold text-church-primary dark:text-white">Nossas Classes</h2>
+                            <BookOpen className="text-emerald-500 w-8 h-8" />
+                            <h2 className="text-4xl font-black text-church-primary dark:text-white uppercase tracking-tighter">Nossas Classes</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {classes.map((cls, idx) => (
@@ -162,19 +175,19 @@ const EscolaBiblica = () => {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: idx * 0.1 }}
-                                    className="p-8 rounded-[2.5rem] bg-white dark:bg-[#1a1c23] border border-gray-100 dark:border-white/5 hover:border-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all group"
+                                    className="p-8 rounded-[2.5rem] bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-emerald-500/30 hover:shadow-2xl transition-all group"
                                 >
-                                    <div className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 w-fit mb-6 group-hover:scale-110 transition-transform">
+                                    <div className="p-3 rounded-2xl bg-white dark:bg-white/5 w-fit mb-6 group-hover:scale-110 transition-transform shadow-sm">
                                         {cls.icon}
                                     </div>
-                                    <h3 className="text-2xl font-bold text-church-primary dark:text-white mb-2">{cls.title}</h3>
+                                    <h3 className="text-2xl font-black text-church-primary dark:text-white mb-2 tracking-tight">{cls.title}</h3>
                                     <div className="space-y-4">
                                         <div>
                                             <p className="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">Tema Atual</p>
-                                            <p className="text-gray-600 dark:text-gray-400 font-medium">{cls.theme}</p>
+                                            <p className="text-gray-600 dark:text-gray-400 font-bold leading-tight">{cls.theme}</p>
                                         </div>
-                                        <div className="pt-4 border-t border-gray-100 dark:border-white/5">
-                                            <p className="text-sm text-gray-500 dark:text-gray-500 flex items-center gap-2">
+                                        <div className="pt-4 border-t border-gray-200 dark:border-white/10">
+                                            <p className="text-sm text-gray-500 dark:text-gray-500 flex items-center gap-2 font-medium">
                                                 <Users size={14} className="text-emerald-500" />
                                                 {cls.teacher}
                                             </p>
@@ -185,44 +198,52 @@ const EscolaBiblica = () => {
                         </div>
                     </div>
 
-                    {/* Teachers Section - Refined Carousel */}
-                    <div className="mb-24 relative overflow-hidden">
-                        <div className="flex items-center justify-between mb-10">
-                            <div className="flex items-center gap-3">
-                                <Award className="text-emerald-500 w-6 h-6" />
-                                <h2 className="text-3xl font-bold text-church-primary dark:text-white">Corpo Docente</h2>
+                    {/* Standardized "Nossa Equipe" (Corpo Docente) */}
+                    <section className="mb-32">
+                        <div className="flex flex-col items-center mb-16">
+                            <div className="p-3 bg-emerald-500/10 rounded-2xl text-emerald-500 mb-4">
+                                <Users size={32} />
                             </div>
-                            <div className="flex gap-2">
-                                <button onClick={() => scroll('left')} className="p-2 rounded-full border border-gray-200 dark:border-white/10 hover:bg-emerald-500 transition-colors group">
-                                    <ChevronLeft className="group-hover:text-white" />
-                                </button>
-                                <button onClick={() => scroll('right')} className="p-2 rounded-full border border-gray-200 dark:border-white/10 hover:bg-emerald-500 transition-colors group">
-                                    <ChevronRight className="group-hover:text-white" />
-                                </button>
-                            </div>
+                            <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Nossa Equipe</h2>
+                            <div className="w-16 h-1.5 bg-emerald-500 rounded-full mt-4"></div>
                         </div>
 
-                        <div
-                            ref={carouselRef}
-                            className="flex gap-8 overflow-x-auto snap-x snap-mandatory pb-8 scrollbar-hide"
-                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                        >
-                            {professors.map((prof, idx) => (
-                                <div key={prof.name} className="snap-center min-w-[300px] md:min-w-[400px] shrink-0">
-                                    <div className="flex items-center gap-6 p-6 rounded-4xl bg-emerald-600/5 border border-emerald-600/10">
-                                        <div className="w-24 h-24 rounded-2xl overflow-hidden shrink-0 border-2 border-emerald-500/20">
-                                            <img src={prof.image} alt={prof.name} className="w-full h-full object-cover" />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-xl font-bold text-church-primary dark:text-white">{prof.name}</h3>
-                                            <p className="text-emerald-600 text-sm font-bold uppercase tracking-widest mb-2">{prof.role}</p>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{prof.bio}</p>
+                        <div className="flex flex-wrap justify-center gap-12 max-w-6xl mx-auto">
+                            {professors.map((prof, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: index * 0.1 }}
+                                    className="group text-center w-full sm:w-[280px]"
+                                >
+                                    <div className="relative mb-6 mx-auto w-48 h-48">
+                                        {/* Decorative Glow */}
+                                        <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/40 transition-colors duration-500"></div>
+
+                                        {/* Circle Frame */}
+                                        <div className="relative w-full h-full rounded-full border-4 border-white dark:border-slate-800 overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3">
+                                            <img
+                                                src={prof.image}
+                                                alt={prof.name}
+                                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                            />
                                         </div>
                                     </div>
-                                </div>
+                                    <h4 className="text-2xl font-black text-gray-900 dark:text-white mb-1 group-hover:text-emerald-500 transition-colors">
+                                        {prof.name}
+                                    </h4>
+                                    <p className="text-emerald-500 dark:text-emerald-400 font-black text-xs tracking-widest uppercase">
+                                        {prof.role}
+                                    </p>
+                                    <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 line-clamp-2 px-4 group-hover:text-gray-400 transition-colors">
+                                        {prof.bio}
+                                    </p>
+                                </motion.div>
                             ))}
                         </div>
-                    </div>
+                    </section>
 
                     {/* Biblioteca de Recursos - NEW DOWNLOAD SECTION */}
                     <div className="mb-24">

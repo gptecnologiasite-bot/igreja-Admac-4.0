@@ -1,175 +1,315 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Youtube, Instagram, Facebook, PlayCircle, ExternalLink, MessageCircle } from 'lucide-react';
+import { FaYoutube, FaInstagram, FaFacebookF, FaWhatsapp } from "react-icons/fa";
+import { Play, Video } from 'lucide-react';
 import dbService from '../services/dbService';
+import VideoModal from './VideoModal';
 
 const Media = () => {
-    const [mediaData, setMediaData] = useState({
-        platforms: {
-            youtube: 'https://youtube.com',
-            instagram: 'https://instagram.com',
-            facebook: 'https://facebook.com',
-            whatsapp: 'https://wa.me/'
-        },
-        featuredVideo: {
-            title: 'Esperança em Tempos Difíceis - Pr. Elias Santos',
-            tag: 'ÚLTIMA MENSAGEM',
-            image: 'https://images.unsplash.com/photo-1510003343711-64353896504a?q=80&w=1600&auto=format&fit=crop',
-            videoUrl: '#'
-        }
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+    const [videos, setVideos] = useState([]);
+    const [platforms, setPlatforms] = useState({
+        youtube: '#',
+        instagram: '#',
+        facebook: '#',
+        whatsapp: '#'
     });
 
     useEffect(() => {
         const loadMedia = () => {
             try {
-                const page = dbService.getPageBySlug('inicio');
-                if (page && page.content) {
-                    const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
-                    if (content.media) {
-                        setMediaData(content.media);
+                // Load platform URLs from inicio page
+                const inicioPage = dbService.getPageBySlug('inicio');
+                if (inicioPage && inicioPage.content) {
+                    const content = typeof inicioPage.content === 'string' ? JSON.parse(inicioPage.content) : inicioPage.content;
+                    if (content.media && content.media.platforms) {
+                        setPlatforms(prev => ({ ...prev, ...content.media.platforms }));
                     }
                 }
-            } catch (error) {
-                console.error("Error loading media:", error);
+
+                // Load videos from midia page
+                const midiaPage = dbService.getPageBySlug('midia');
+                if (midiaPage && midiaPage.content) {
+                    const content = typeof midiaPage.content === 'string' ? JSON.parse(midiaPage.content) : midiaPage.content;
+                    const rawVideos = content.gallery || content.videos || [];
+
+                    if (rawVideos.length > 0) {
+                        // Take first 3 videos for the gallery
+                        const videoList = rawVideos.slice(0, 3).map(v => ({
+                            title: v.title || v.titulo || 'Culto',
+                            url: v.url || '',
+                            thumbnail: v.thumbnail || getYouTubeThumbnail(getYouTubeId(v.url))
+                        }));
+                        setVideos(videoList);
+                    }
+                }
+            } catch (err) {
+                console.error("Error loading media data:", err);
             }
         };
 
         loadMedia();
         window.addEventListener('contentUpdated', loadMedia);
-        // Sync across tabs
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'admac_pages_db') {
-                loadMedia();
-            }
-        });
-
-        return () => {
-            window.removeEventListener('contentUpdated', loadMedia);
-            window.removeEventListener('storage', loadMedia);
-        };
+        return () => window.removeEventListener('contentUpdated', loadMedia);
     }, []);
 
-    const handleVideoClick = () => {
-        const url = mediaData.featuredVideo.videoUrl;
-        if (!url || url === '#') return;
-
-        // Ensure protocol
-        let finalUrl = url.trim();
-        if (!finalUrl.startsWith('http')) {
-            finalUrl = 'https://' + finalUrl;
-        }
-
-        window.open(finalUrl, '_blank', 'noopener,noreferrer');
+    const getYouTubeId = (url) => {
+        if (!url) return null;
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
     };
 
-    const socialPlatforms = [
+    const getYouTubeThumbnail = (videoId) => {
+        return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200";
+    };
+
+    const handleVideoClick = (index) => {
+        setActiveVideoIndex(index);
+        setIsModalOpen(true);
+    };
+
+    const cards = [
         {
-            name: 'YouTube',
-            icon: <Youtube className="w-8 h-8" />,
-            color: 'bg-[#FF0000]',
-            desc: 'Assista nossos cultos ao vivo e mensagens gravadas.',
-            link: mediaData.platforms.youtube,
-            action: 'Inscrever-se'
+            icon: <FaYoutube size={28} />,
+            title: "YouTube",
+            text: "Assista nossos cultos ao vivo e mensagens gravadas.",
+            btn: "Inscrever-se",
+            color: "#ff0000",
+            link: platforms.youtube
         },
         {
-            name: 'Instagram',
-            icon: <Instagram className="w-8 h-8" />,
-            color: 'bg-linear-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]',
-            desc: 'Acompanhe nosso dia a dia e avisos importantes.',
-            link: mediaData.platforms.instagram,
-            action: 'Seguir'
+            icon: <FaInstagram size={28} />,
+            title: "Instagram",
+            text: "Acompanhe nosso dia a dia e avisos importantes.",
+            btn: "Seguir",
+            color: "linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4)",
+            link: platforms.instagram
         },
         {
-            name: 'Facebook',
-            icon: <Facebook className="w-8 h-8" />,
-            color: 'bg-[#1877F2]',
-            desc: 'Fique por dentro das novidades e eventos da comunidade.',
-            link: mediaData.platforms.facebook,
-            action: 'Curtir Página'
+            icon: <FaFacebookF size={28} />,
+            title: "Facebook",
+            text: "Fique por dentro das novidades e eventos.",
+            btn: "Curtir Página",
+            color: "#1877f2",
+            link: platforms.facebook
         },
         {
-            name: 'WhatsApp',
-            icon: <MessageCircle className="w-8 h-8" />,
-            color: 'bg-[#25D366]',
-            desc: 'Fale diretamente conosco pelo WhatsApp.',
-            link: mediaData.platforms.whatsapp,
-            action: 'Conversar'
+            icon: <FaWhatsapp size={28} />,
+            title: "WhatsApp",
+            text: "Fale diretamente conosco pelo WhatsApp.",
+            btn: "Conversar",
+            color: "#25d366",
+            link: platforms.whatsapp
         }
     ];
 
     return (
-        <section id="media" className="section-container bg-church-light/30 dark:bg-white/2 transition-colors duration-300">
-            <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold text-church-primary dark:text-white mb-4">Nossa Mídia</h2>
-                <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-                    Conecte-se conosco através das redes sociais e não perca nenhum momento importante da nossa caminhada.
+        <div id="media" style={{ padding: "80px 30px", background: "#0f172a" }}>
+            {/* TITLE */}
+            <div style={{ textAlign: "center", marginBottom: 50 }}>
+                <h2 style={{
+                    fontSize: 42,
+                    fontWeight: "bold",
+                    color: "#fff",
+                    marginBottom: 10
+                }}>
+                    Central de Mídia
+                </h2>
+                <p style={{
+                    fontSize: 16,
+                    color: "#94a3b8",
+                    maxWidth: 600,
+                    margin: "0 auto"
+                }}>
+                    Acompanhe nossos cultos, louvores e registros especiais.
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-                {socialPlatforms.map((platform, index) => (
-                    <motion.div
-                        key={platform.name}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 }}
-                        className="card group overflow-hidden bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10"
-                    >
-                        <div className={`h-24 ${platform.color} flex items-center justify-center text-white -mx-6 -mt-6 mb-6 group-hover:scale-105 transition-transform duration-500`}>
-                            {platform.icon}
-                        </div>
-                        <h3 className="text-xl font-bold dark:text-white mb-3">{platform.name}</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
-                            {platform.desc}
-                        </p>
-                        <a
-                            href={platform.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-bold text-church-primary dark:text-church-accent border-2 border-church-primary/10 dark:border-church-accent/10 hover:bg-church-primary dark:hover:bg-church-accent hover:text-white dark:hover:text-church-dark transition-all"
+            {/* VIDEO GALLERY */}
+            {videos.length > 0 && (
+                <div style={{ maxWidth: 1100, margin: "0 auto 60px" }}>
+                    {/* Main Video Preview */}
+                    <div style={{ marginBottom: 30 }}>
+                        <div
+                            onClick={() => handleVideoClick(activeVideoIndex)}
+                            className="group"
+                            style={{
+                                position: "relative",
+                                paddingTop: "56.25%",
+                                borderRadius: 20,
+                                overflow: "hidden",
+                                boxShadow: "0 10px 30px rgba(0,0,0,.4)",
+                                cursor: "pointer",
+                                background: "#000"
+                            }}
                         >
-                            {platform.action}
-                            <ExternalLink className="w-4 h-4" />
-                        </a>
-                    </motion.div>
+                            {/* Thumbnail Image */}
+                            <img
+                                src={videos[activeVideoIndex]?.thumbnail}
+                                alt={videos[activeVideoIndex]?.title}
+                                style={{
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                    transition: "transform 0.5s ease"
+                                }}
+                                className="group-hover:scale-105"
+                            />
+
+                            {/* Play Button Overlay */}
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors z-10">
+                                <div className="w-20 h-20 rounded-full bg-yellow-500 text-white flex items-center justify-center shadow-2xl transform transition-all duration-300 group-hover:scale-110">
+                                    <Play size={40} fill="currentColor" />
+                                </div>
+                            </div>
+
+                            {/* Title Banner */}
+                            <div className="absolute bottom-0 left-0 right-0 p-6 bg-linear-to-t from-black/90 via-black/40 to-transparent z-20 pointer-events-none">
+                                <div className="flex items-center gap-3 drop-shadow-lg">
+                                    <Video size={18} className="text-yellow-500" fill="currentColor" />
+                                    <h3 className="text-white font-bold text-lg tracking-tight">
+                                        {videos[activeVideoIndex]?.title}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Video Thumbnails */}
+                    <div style={{
+                        display: "flex",
+                        gap: 20,
+                        justifyContent: "center",
+                        flexWrap: "wrap"
+                    }}>
+                        {videos.map((video, index) => (
+                            <div
+                                key={index}
+                                onClick={() => setActiveVideoIndex(index)}
+                                style={{
+                                    width: 260,
+                                    cursor: "pointer",
+                                    background: "#1e293b",
+                                    borderRadius: 20,
+                                    padding: 12,
+                                    transition: "all 0.3s ease",
+                                    border: activeVideoIndex === index
+                                        ? "2px solid #facc15"
+                                        : "2px solid transparent",
+                                    transform: activeVideoIndex === index ? "scale(1.02)" : "scale(1)"
+                                }}
+                                className="hover:shadow-xl"
+                            >
+                                <div style={{ position: "relative" }}>
+                                    <img
+                                        src={video.thumbnail}
+                                        alt={video.title}
+                                        style={{
+                                            width: "100%",
+                                            height: 150,
+                                            objectFit: "cover",
+                                            borderRadius: 14
+                                        }}
+                                    />
+                                    {activeVideoIndex === index && (
+                                        <div style={{
+                                            position: "absolute",
+                                            top: "50%",
+                                            left: "50%",
+                                            transform: "translate(-50%, -50%)",
+                                            width: 40,
+                                            height: 40,
+                                            borderRadius: "50%",
+                                            background: "#facc15",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }}>
+                                            <Play size={20} fill="white" color="white" />
+                                        </div>
+                                    )}
+                                </div>
+                                <p style={{
+                                    marginTop: 10,
+                                    fontSize: 14,
+                                    color: "#fff",
+                                    lineHeight: 1.4
+                                }}>
+                                    {video.title}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* VIDEO MODAL */}
+            <VideoModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                videoUrl={videos[activeVideoIndex]?.url || ''}
+                videoTitle={videos[activeVideoIndex]?.title || ''}
+            />
+
+            {/* CARDS */}
+            <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))",
+                gap: 20,
+                maxWidth: 1100,
+                margin: "auto"
+            }}>
+                {cards.map((c, i) => (
+                    <div key={i} style={{
+                        background: "#f3f4f6", // Slightly lighter than e5e7eb for better contrast
+                        borderRadius: 16,
+                        overflow: "hidden",
+                        textAlign: "center",
+                        boxShadow: "0 6px 18px rgba(0,0,0,.2)"
+                    }}>
+
+                        {/* HEADER */}
+                        <div style={{
+                            background: c.color,
+                            padding: 20,
+                            color: "#fff",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }}>
+                            {c.icon}
+                        </div>
+
+                        {/* BODY */}
+                        <div style={{ padding: 20 }}>
+                            <h3 style={{ fontWeight: 'bold', marginBottom: 10, color: '#1e293b' }}>{c.title}</h3>
+                            <p style={{ fontSize: 14, marginBottom: 20, color: '#475569' }}>{c.text}</p>
+
+                            <a href={c.link} target="_blank" rel="noopener noreferrer">
+                                <button style={{
+                                    padding: "10px 20px",
+                                    borderRadius: 10,
+                                    border: "1px solid #d1a954",
+                                    background: "transparent",
+                                    color: "#d1a954",
+                                    cursor: "pointer",
+                                    fontWeight: "bold",
+                                    transition: "all 0.3s ease"
+                                }}>
+                                    {c.btn}
+                                </button>
+                            </a>
+                        </div>
+
+                    </div>
                 ))}
             </div>
-
-            {/* Featured Video */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="relative aspect-video max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl group cursor-pointer"
-                onClick={handleVideoClick}
-            >
-                <img
-                    src={mediaData.featuredVideo.image || 'https://images.unsplash.com/photo-1510003343711-64353896504a?q=80&w=1600&auto=format&fit=crop'}
-                    alt={mediaData.featuredVideo.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/30 transition-colors">
-                    <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform">
-                        <PlayCircle className="w-12 h-12 text-white" />
-                    </div>
-                </div>
-                <div className="absolute bottom-0 left-0 w-full p-8 bg-linear-to-t from-black/80 to-transparent">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <span className="px-3 py-1 bg-church-accent text-church-dark text-xs font-bold rounded-full mb-2 inline-block">
-                                {mediaData.featuredVideo.tag}
-                            </span>
-                            <h4 className="text-2xl font-bold text-white">{mediaData.featuredVideo.title}</h4>
-                        </div>
-                        <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all">
-                            <ExternalLink className="w-5 h-5 text-white" />
-                        </div>
-                    </div>
-                </div>
-            </motion.div>
-        </section>
+        </div>
     );
-};
+}
 
 export default Media;

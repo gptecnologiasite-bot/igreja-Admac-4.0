@@ -91,11 +91,12 @@ const Agenda = () => {
                     {events.map((event, index) => (
                         <motion.div
                             key={event.day}
+                            id={event.day.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')}
                             initial={{ opacity: 0, x: 20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="p-6 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/8 transition-all"
+                            className="p-6 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/8 transition-all scroll-mt-24"
                         >
                             <h3 className="text-xl font-bold text-church-accent mb-6 flex items-center gap-2">
                                 <Clock className="w-5 h-5" />

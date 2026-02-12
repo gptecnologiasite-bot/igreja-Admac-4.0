@@ -1,11 +1,9 @@
-import { useRef, useState, useEffect } from 'react';
-import { Music, Users, Star, ChevronLeft, ChevronRight, Quote, MessageCircle, Edit2, Check, Mic2, Guitar, Radio, Disc, X, ExternalLink, Copy } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Music, Users, Star, Quote, MessageCircle, Edit2, Check, Mic2, Guitar, Radio, Disc, X, ExternalLink, Copy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dbService from '../../services/dbService';
 
 const Louvor = () => {
-    const carouselRef = useRef(null);
-
     // Get page data from central DB
     const [pageData, setPageData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -92,14 +90,10 @@ const Louvor = () => {
 
     const leaders = pageData?.content?.leaders || fallBackLeaders;
 
-    const scroll = (direction) => {
-        if (carouselRef.current) {
-            const { current } = carouselRef;
-            const scrollAmount = direction === 'left' ? -340 : 340;
-            current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        }
+    const handleCancel = () => {
+        setTempMessage(pastoralMessage);
+        setIsEditing(false);
     };
-
     const handleSave = () => {
         setPastoralMessage(tempMessage);
 
@@ -127,79 +121,96 @@ const Louvor = () => {
         setIsEditing(false);
     };
 
-    const handleCancel = () => {
-        setTempMessage(pastoralMessage);
-        setIsEditing(false);
-    };
-
     return (
-        <div className="pt-24 pb-16 min-h-screen bg-white dark:bg-church-dark transition-colors duration-300">
+        <div className="pt-24 pb-20 min-h-screen bg-white dark:bg-church-dark transition-colors duration-300">
+            {/* Hero Section */}
+            <section className="relative h-[50vh] flex items-center overflow-hidden mb-20">
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute inset-0 bg-linear-to-r from-church-dark to-transparent z-10" />
+                    <img
+                        src="https://images.unsplash.com/photo-1514525253361-bee8a187499b?q=80&w=2000&auto=format&fit=crop"
+                        alt="Ministério de Louvor Admac"
+                        className="w-full h-full object-cover opacity-60 dark:opacity-40"
+                    />
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full">
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 1 }}
+                        className="max-w-3xl"
+                    >
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="p-3 bg-church-primary/20 backdrop-blur-md rounded-xl border border-white/10">
+                                <Music className="w-8 h-8 text-church-accent" />
+                            </div>
+                            <span className="text-church-accent font-bold text-xs tracking-widest uppercase">Adoração e Louvor</span>
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter leading-tight uppercase">
+                            Exaltando ao <span className="text-church-accent">Rei</span>
+                        </h1>
+                        <p className="text-xl text-gray-200 mb-8 italic font-medium border-l-4 border-church-accent pl-6">
+                            &quot;Cantai-lhe um cântico novo; tocai bem e com júbilo.&quot;
+                            <span className="block not-italic text-sm font-bold text-church-accent mt-2 text-right">Salmos 33:3</span>
+                        </p>
+                    </motion.div>
+                </div>
+            </section>
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="p-3 bg-church-primary/10 dark:bg-church-accent/10 rounded-xl">
-                            <Music className="w-8 h-8 text-church-primary dark:text-church-accent" />
-                        </div>
-                        <h1 className="text-4xl md:text-6xl font-bold text-church-primary dark:text-white">
-                            Ministério de Louvor
-                        </h1>
-                    </div>
-
-                    <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl leading-relaxed mb-16">
-                        Adorando ao Rei através da música e das artes. Nosso objetivo é conduzir a igreja a um encontro genuíno com a presença de Deus através da adoração congregacional.
+                    <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl leading-relaxed mb-16 font-medium">
+                        Adorando ao Rei através da música e das artes. Nosso objetivo é conduzir a igreja a um encontro genuíno com a presença de Deus através da adoração congregacional unida à excelência técnica.
                     </p>
 
-                    {/* Carousel Container */}
-                    <div className="relative group mb-20">
-                        {/* Navigation Buttons */}
-                        <button
-                            onClick={() => scroll('left')}
-                            className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 md:-ml-12 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
-                            aria-label="Previous slide"
-                        >
-                            <ChevronLeft className="w-6 h-6" />
-                        </button>
+                    {/* Leaders Section - Standardized "Nossa Equipe" */}
+                    <section className="mb-32">
+                        <div className="flex flex-col items-center mb-16">
+                            <div className="p-3 bg-church-accent/10 rounded-2xl text-church-accent mb-4">
+                                <Users size={32} />
+                            </div>
+                            <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Nossa Equipe</h2>
+                            <div className="w-16 h-1.5 bg-church-accent rounded-full mt-4"></div>
+                        </div>
 
-                        <button
-                            onClick={() => scroll('right')}
-                            className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 md:-mr-12 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
-                            aria-label="Next slide"
-                        >
-                            <ChevronRight className="w-6 h-6" />
-                        </button>
-
-                        <div
-                            ref={carouselRef}
-                            className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-12 -mx-4 px-4 md:-mx-8 md:px-8 scrollbar-hide"
-                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                        >
+                        <div className="flex flex-wrap justify-center gap-12 max-w-6xl mx-auto">
                             {leaders.map((leader, index) => (
                                 <motion.div
-                                    key={leader.name}
-                                    initial={{ opacity: 0, x: 20 }}
-                                    animate={{ opacity: 1, x: 0 }}
+                                    key={index}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
                                     transition={{ delay: index * 0.1 }}
-                                    className="snap-center min-w-[280px] md:min-w-[320px] shrink-0 group/card p-8 rounded-4xl bg-white dark:bg-[#1a1c23] border border-gray-100 dark:border-white/5 hover:border-church-accent/30 hover:shadow-2xl hover:shadow-church-accent/10 transition-all duration-300 text-center select-none"
+                                    className="group text-center w-full sm:w-[280px]"
                                 >
-                                    <div className="relative w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden ring-4 ring-gray-100 dark:ring-[#252733] group-hover/card:ring-church-accent transition-all duration-300 shadow-xl">
-                                        <img
-                                            src={leader.image}
-                                            alt={leader.name}
-                                            className="w-full h-full object-cover pointer-events-none transform group-hover/card:scale-110 transition-transform duration-500"
-                                        />
+                                    <div className="relative mb-6 mx-auto w-48 h-48">
+                                        {/* Decorative Glow */}
+                                        <div className="absolute inset-0 bg-church-accent/20 rounded-full blur-2xl group-hover:bg-church-accent/40 transition-colors duration-500"></div>
+
+                                        {/* Circle Frame */}
+                                        <div className="relative w-full h-full rounded-full border-4 border-white dark:border-slate-800 overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3">
+                                            <img
+                                                src={leader.image}
+                                                alt={leader.name}
+                                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                            />
+                                        </div>
                                     </div>
-                                    <h3 className="text-2xl font-bold text-church-primary dark:text-white mb-3">{leader.name}</h3>
-                                    <span className="inline-block px-4 py-1.5 rounded-xl bg-church-accent/10 text-church-accent font-bold text-xs tracking-widest uppercase border border-church-accent/20">
+                                    <h4 className="text-2xl font-black text-gray-900 dark:text-white mb-1 group-hover:text-church-accent transition-colors">
+                                        {leader.name}
+                                    </h4>
+                                    <p className="text-church-accent dark:text-church-accent font-black text-xs tracking-widest uppercase">
                                         {leader.role}
-                                    </span>
+                                    </p>
                                 </motion.div>
                             ))}
                         </div>
-                    </div>
+                    </section>
 
                     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-12">
                         <div className="p-10 rounded-[2.5rem] bg-church-primary text-white space-y-4 shadow-xl">

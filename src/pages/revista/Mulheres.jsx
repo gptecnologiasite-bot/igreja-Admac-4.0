@@ -89,10 +89,22 @@ const Mulheres = () => {
                             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                         >
                             {items.map((item, i) => (
-                                <div key={i} className="snap-center min-w-[280px] md:min-w-[300px] shrink-0 p-8 rounded-3xl bg-pink-50 dark:bg-pink-900/10 hover:bg-pink-100 transition-colors text-center border border-pink-100 dark:border-pink-900/20">
-                                    <div className="w-12 h-12 mx-auto mb-4 text-pink-500">{item.icon}</div>
-                                    <h3 className="text-xl font-bold text-church-primary dark:text-white mb-2">{item.title}</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">{item.desc}</p>
+                                <div key={i} className="snap-center min-w-[280px] md:min-w-[300px] shrink-0 rounded-3xl bg-pink-50 dark:bg-pink-900/10 hover:bg-pink-100 transition-colors border border-pink-100 dark:border-pink-900/20 overflow-hidden">
+                                    {item.image ? (
+                                        <div className="w-full h-48 overflow-hidden">
+                                            <img
+                                                src={item.image}
+                                                alt={item.title}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="w-12 h-12 mx-auto mt-8 mb-4 text-pink-500">{item.icon}</div>
+                                    )}
+                                    <div className="p-8 pt-4">
+                                        <h3 className="text-xl font-bold text-church-primary dark:text-white mb-2">{item.title}</h3>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">{item.desc}</p>
+                                    </div>
                                 </div>
                             ))}
                         </div>

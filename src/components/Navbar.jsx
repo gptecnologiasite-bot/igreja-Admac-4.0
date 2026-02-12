@@ -22,26 +22,33 @@ const Navbar = ({ isDark, toggleTheme }) => {
 
     const loadMinistries = () => {
         const pages = dbService.getPages();
-        const ministryPages = pages
+        const dynamicMinistries = pages
             .filter(p => p.slug && p.slug.startsWith('ministerios/'))
             .map(p => ({
                 name: p.title,
                 href: `/${p.slug}`
             }));
 
-        // Fallback to defaults if empty
-        if (ministryPages.length === 0) {
-            setMinistries([
-                { name: 'Liderança', href: '/ministerios/lideranca' },
-                { name: 'Casais', href: '/ministerios/casais' },
-                { name: 'Infantil', href: '/ministerios/infantil' },
-                { name: 'Louvor', href: '/ministerios/louvor' },
-                { name: 'Intercessão', href: '/ministerios/intercessao' },
-                { name: 'Escola Bíblica', href: '/ministerios/ebd' }
-            ]);
-        } else {
-            setMinistries(ministryPages);
-        }
+        const defaultMinistries = [
+            { name: 'Liderança', href: '/ministerios/lideranca' },
+            { name: 'Casais', href: '/ministerios/casais' },
+            { name: 'Infantil', href: '/ministerios/infantil' },
+            { name: 'Louvor', href: '/ministerios/louvor' },
+            { name: 'Intercessão', href: '/ministerios/intercessao' },
+            { name: 'Escola Bíblica', href: '/ministerios/ebd' },
+            { name: 'Homens', href: '/ministerios/homens' }
+        ];
+
+        // Merge dynamic pages with defaults, avoiding duplicates by href
+        const merged = [...dynamicMinistries];
+        defaultMinistries.forEach(def => {
+            if (!merged.find(m => m.href === def.href)) {
+                merged.push(def);
+            }
+        });
+
+        // Maintain a specific order if possible or just use merged
+        setMinistries(merged);
     };
 
     useEffect(() => {
@@ -103,13 +110,13 @@ const Navbar = ({ isDark, toggleTheme }) => {
             ]
         },
         {
-            name: 'Agenda',
+            name: 'Programação',
             href: isHomePage ? '#agenda' : '/#agenda',
             submenu: [
-                { name: 'Domingo', href: isHomePage ? '#agenda' : '/#agenda' },
-                { name: 'Terça-feira', href: isHomePage ? '#agenda' : '/#agenda' },
-                { name: 'Quinta-feira', href: isHomePage ? '#agenda' : '/#agenda' },
-                { name: 'Sábado', href: isHomePage ? '#agenda' : '/#agenda' },
+                { name: 'Domingo', href: isHomePage ? '#domingo' : '/#domingo' },
+                { name: 'Terça-feira', href: isHomePage ? '#terca-feira' : '/#terca-feira' },
+                { name: 'Quinta-feira', href: isHomePage ? '#quinta-feira' : '/#quinta-feira' },
+                { name: 'Sábado', href: isHomePage ? '#sabado' : '/#sabado' },
             ]
         },
         {
@@ -120,7 +127,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
     ];
 
     return (
-        <nav ref={navRef} className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white dark:bg-church-dark/95 shadow-md py-2 backdrop-blur-md' : 'bg-transparent py-4'}`}>
+        <nav ref={navRef} role="navigation" aria-label="Menu principal" className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white dark:bg-church-dark/95 shadow-md py-2 backdrop-blur-md' : 'bg-transparent py-4'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center">
                     {/* Logo */}
@@ -233,6 +240,9 @@ const Navbar = ({ isDark, toggleTheme }) => {
                         <button
                             onClick={() => setIsOpen(!isOpen)}
                             className={`${scrolled ? 'text-gray-700 dark:text-white' : 'text-white'} p-2`}
+                            aria-label={isOpen ? 'Fechar menu' : 'Abrir menu'}
+                            aria-expanded={isOpen}
+                            aria-controls="mobile-menu"
                         >
                             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                         </button>
@@ -242,7 +252,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
 
             {/* Mobile Menu Overlay */}
             {isOpen && (
-                <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl animate-fade-in border-t border-gray-100">
+                <div id="mobile-menu" className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl animate-fade-in border-t border-gray-100" role="menu">
                     <div className="px-4 py-6 space-y-4">
                         {menuItems.map((item) => (
                             <div key={item.name} className="space-y-2">
@@ -258,6 +268,8 @@ const Navbar = ({ isDark, toggleTheme }) => {
                                         <button
                                             onClick={() => setMobileSubmenu(mobileSubmenu === item.name ? null : item.name)}
                                             className="p-2 text-gray-500"
+                                            aria-label={`${mobileSubmenu === item.name ? 'Fechar' : 'Abrir'} submenu de ${item.name}`}
+                                            aria-expanded={mobileSubmenu === item.name}
                                         >
                                             <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${mobileSubmenu === item.name ? 'rotate-180' : ''}`} />
                                         </button>

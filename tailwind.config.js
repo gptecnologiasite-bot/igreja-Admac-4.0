@@ -30,6 +30,9 @@ export default {
           "100%": { transform: "translateY(0)", opacity: "1" },
         },
       },
+      aspectRatio: {
+        '4/5': '4 / 5',
+      },
     },
   },
   plugins: [],
