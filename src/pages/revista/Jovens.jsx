@@ -29,27 +29,45 @@ const Jovens = () => {
         }
     ]);
 
+    const [featured, setFeatured] = useState({
+        title: 'Juventude com Propósito',
+        description: 'Conectando nossa geração à essência do Evangelho. Relevância, verdade e impacto para o jovem cristão hoje.',
+        image: '',
+        link: '',
+        buttonText: 'Saiba Mais'
+    });
+
     useEffect(() => {
-        const page = dbService.getPages().find(p => p.slug === 'revista/jovens');
-        if (page && page.content) {
-            try {
-                const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
-                if (content.articles && content.articles.length > 0) {
-                    setItems(content.articles);
-                }
-            } catch (e) {
-                console.error("Error loading Jovens articles", e);
-            }
-        }
-        const handleUpdate = () => {
-            const updatedPage = dbService.getPages().find(p => p.slug === 'revista/jovens');
-            if (updatedPage && updatedPage.content) {
+        const loadContent = () => {
+            const page = dbService.getPages().find(p => p.slug === 'revista/jovens');
+            if (page && page.content) {
                 try {
-                    const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
-                    if (content.articles && content.articles.length > 0) setItems(content.articles);
-                } catch (e) { }
+                    const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
+
+                    if (content.articles && content.articles.length > 0) {
+                        // Map items to ensure they have icons and className
+                        const articlesWithExtras = content.articles.map((art, index) => ({
+                            ...art,
+                            icon: index === 0 ? <Globe className="w-5 h-5 text-church-accent" /> :
+                                (index === 1 ? <Headphones className="w-5 h-5 text-church-primary" /> :
+                                    <MessageSquare className="w-5 h-5 text-church-primary dark:text-church-accent" />),
+                            className: art.className || (index === 1 ? "bg-church-accent text-church-primary" : "bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10"),
+                            subtitle: art.subtitle || (index === 0 ? "TENDÊNCIAS" : (index === 1 ? "PLAYLIST" : "FALA AÍ"))
+                        }));
+                        setItems(articlesWithExtras);
+                    }
+
+                    if (content.featured) {
+                        setFeatured(prev => ({ ...prev, ...content.featured }));
+                    }
+                } catch (e) {
+                    console.error("Error loading Jovens content", e);
+                }
             }
         };
+
+        loadContent();
+        const handleUpdate = () => loadContent();
         window.addEventListener('contentUpdated', handleUpdate);
         return () => window.removeEventListener('contentUpdated', handleUpdate);
     }, []);
@@ -70,18 +88,44 @@ const Jovens = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8 }}
                 >
-                    {/* Header */}
-                    <div className="relative py-20 px-8 rounded-[3rem] bg-linear-to-br from-church-primary to-church-secondary overflow-hidden mb-16">
-                        <Zap className="absolute -top-10 -right-10 w-64 h-64 text-white/5 rotate-12" />
-                        <div className="relative z-10">
-                            <h1 className="text-6xl md:text-8xl font-black text-white italic tracking-tighter">
-                                REVISTA <span className="text-church-accent">JOVENS</span>
-                            </h1>
-                            <p className="text-xl text-white/80 max-w-xl mt-4">
-                                Conectando nossa geração à essência do Evangelho. Relevância, verdade e impacto para o jovem cristão hoje.
-                            </p>
+                    {/* Header Dynamic */}
+                    {featured.image ? (
+                        <div className="relative py-20 px-8 rounded-[3rem] overflow-hidden mb-16 h-[500px] group">
+                            <img
+                                src={featured.image}
+                                alt={featured.title}
+                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-black/60" />
+                            <Zap className="absolute -top-10 -right-10 w-64 h-64 text-white/5 rotate-12" />
+                            <div className="relative z-10 h-full flex flex-col justify-end">
+                                <span className="text-church-accent font-bold tracking-widest uppercase mb-4">Revista Jovens</span>
+                                <h1 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter mb-6">
+                                    {featured.title}
+                                </h1>
+                                <p className="text-xl text-white/80 max-w-xl mb-8">
+                                    {featured.description}
+                                </p>
+                                {featured.link && (
+                                    <a href={featured.link} className="inline-block bg-church-accent text-church-primary px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform w-fit">
+                                        {featured.buttonText}
+                                    </a>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="relative py-20 px-8 rounded-[3rem] bg-linear-to-br from-church-primary to-church-secondary overflow-hidden mb-16">
+                            <Zap className="absolute -top-10 -right-10 w-64 h-64 text-white/5 rotate-12" />
+                            <div className="relative z-10">
+                                <h1 className="text-6xl md:text-8xl font-black text-white italic tracking-tighter">
+                                    REVISTA <span className="text-church-accent">JOVENS</span>
+                                </h1>
+                                <p className="text-xl text-white/80 max-w-xl mt-4">
+                                    {featured.description}
+                                </p>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Carousel Section */}
                     <div className="relative group mb-20 -mx-4 px-4 md:-mx-8 md:px-8">
@@ -107,25 +151,30 @@ const Jovens = () => {
                             className="flex gap-8 overflow-x-auto snap-x snap-mandatory pb-12 scrollbar-hide"
                             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                         >
-                            {items.map((item, i) => (
-                                <div key={i} className={`snap-center min-w-[300px] md:min-w-[400px] shrink-0 p-10 rounded-3xl space-y-4 ${item.className}`}>
-                                    <div className="flex items-center gap-2 mb-2">
-                                        {item.icon}
-                                        <span className={`text-sm font-bold uppercase tracking-wider opacity-60 ${item.className.includes('bg-church-accent') ? 'text-church-primary' : 'text-gray-500 dark:text-gray-400'}`}>
-                                            {item.subtitle}
-                                        </span>
+                            {items.map((item, i) => {
+                                const containerClass = item.className || "bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10";
+                                const isAccent = containerClass.includes('bg-church-accent');
+
+                                return (
+                                    <div key={i} className={`snap-center min-w-[300px] md:min-w-[400px] shrink-0 p-10 rounded-3xl space-y-4 ${containerClass}`}>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            {item.icon}
+                                            <span className={`text-sm font-bold uppercase tracking-wider opacity-60 ${isAccent ? 'text-church-primary' : 'text-gray-500 dark:text-gray-400'}`}>
+                                                {item.subtitle || 'ARTIGO'}
+                                            </span>
+                                        </div>
+                                        <h3 className={`text-2xl font-bold ${isAccent ? 'text-church-primary' : 'text-church-primary dark:text-white'}`}>
+                                            {item.title}
+                                        </h3>
+                                        <p className={`text-lg ${isAccent ? 'text-church-primary/80' : 'text-gray-500 dark:text-gray-400'}`}>
+                                            {item.desc || item.excerpt}
+                                        </p>
+                                        <button className={`mt-4 font-bold hover:underline ${isAccent ? 'text-church-primary' : 'text-church-primary dark:text-church-accent'}`}>
+                                            Ver mais →
+                                        </button>
                                     </div>
-                                    <h3 className={`text-2xl font-bold ${item.className.includes('bg-church-accent') ? 'text-church-primary' : 'text-church-primary dark:text-white'}`}>
-                                        {item.title}
-                                    </h3>
-                                    <p className={`text-lg ${item.className.includes('bg-church-accent') ? 'text-church-primary/80' : 'text-gray-500 dark:text-gray-400'}`}>
-                                        {item.desc}
-                                    </p>
-                                    <button className={`mt-4 font-bold hover:underline ${item.className.includes('bg-church-accent') ? 'text-church-primary' : 'text-church-primary dark:text-church-accent'}`}>
-                                        Ver mais →
-                                    </button>
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
                     </div>
                 </motion.div>

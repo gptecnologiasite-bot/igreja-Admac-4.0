@@ -66,6 +66,20 @@ const PageEditor = () => {
     const [lessonVideos, setLessonVideos] = useState([]);
     const [homensGallery, setHomensGallery] = useState([]);
 
+    const [magazineFeatured, setMagazineFeatured] = useState({
+        title: '',
+        description: '',
+        image: '',
+        link: '',
+        buttonText: 'Ler Agora'
+    });
+
+    const [kidsGalleryPreview, setKidsGalleryPreview] = useState({
+        title: 'O que rolou na última EBF',
+        buttonText: 'Ver Galeria Completa',
+        link: ''
+    });
+
     const [leadershipContent, setLeadershipContent] = useState({
         leaders: [],
         obreiros: {
@@ -304,6 +318,12 @@ const PageEditor = () => {
                         if (parsedContent.articles) {
                             setMagazineArticles(parsedContent.articles);
                         }
+                        if (parsedContent.featured) {
+                            setMagazineFeatured(parsedContent.featured);
+                        }
+                        if (parsedContent.galleryPreview && page.slug === 'revista/kids') {
+                            setKidsGalleryPreview(parsedContent.galleryPreview);
+                        }
                     } catch (e) {
                         console.error("Error parsing magazine content", e);
                     }
@@ -435,7 +455,9 @@ const PageEditor = () => {
 
             finalContent = {
                 ...existingContent,
-                articles: magazineArticles
+                articles: magazineArticles,
+                featured: magazineFeatured,
+                galleryPreview: checkSlug === 'revista/kids' ? kidsGalleryPreview : undefined
             };
         }
 
@@ -2537,145 +2559,289 @@ const PageEditor = () => {
                                 </div>
 
                                 <div className="space-y-4">
-                                    {magazineArticles.map((article, idx) => (
-                                        <div key={article.id || idx} className="p-6 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-4">
-                                            <div className="flex items-center justify-between">
+                                    <div className="space-y-4">
+                                        {magazineArticles.map((article, idx) => (
+                                            // ... existing article editor code ...
+                                            <div key={article.id || idx} className="p-6 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-4">
+                                                <div className="flex items-center justify-between">
+                                                    <input
+                                                        type="text"
+                                                        value={article.title}
+                                                        onChange={(e) => {
+                                                            const newArticles = [...magazineArticles];
+                                                            newArticles[idx].title = e.target.value;
+                                                            setMagazineArticles(newArticles);
+                                                        }}
+                                                        className="bg-transparent font-bold text-lg text-slate-800 dark:text-white outline-none flex-1"
+                                                        placeholder="Título do Artigo"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setMagazineArticles(magazineArticles.filter((_, i) => i !== idx))}
+                                                        className="text-red-400 hover:text-red-600 transition-colors p-2"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="space-y-2">
+                                                        <label className="text-xs font-bold text-slate-500 uppercase">Autor</label>
+                                                        <input
+                                                            type="text"
+                                                            value={article.author}
+                                                            onChange={(e) => {
+                                                                const newArticles = [...magazineArticles];
+                                                                newArticles[idx].author = e.target.value;
+                                                                setMagazineArticles(newArticles);
+                                                            }}
+                                                            className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                            placeholder="Nome do Autor"
+                                                        />
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <label className="text-xs font-bold text-slate-500 uppercase">Data</label>
+                                                        <input
+                                                            type="text"
+                                                            value={article.date}
+                                                            onChange={(e) => {
+                                                                const newArticles = [...magazineArticles];
+                                                                newArticles[idx].date = e.target.value;
+                                                                setMagazineArticles(newArticles);
+                                                            }}
+                                                            className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                            placeholder="15 Jan 2026"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-bold text-slate-500 uppercase">Resumo</label>
+                                                    <textarea
+                                                        value={article.excerpt}
+                                                        onChange={(e) => {
+                                                            const newArticles = [...magazineArticles];
+                                                            newArticles[idx].excerpt = e.target.value;
+                                                            setMagazineArticles(newArticles);
+                                                        }}
+                                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none"
+                                                        placeholder="Breve resumo do artigo..."
+                                                        rows="2"
+                                                    />
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-bold text-slate-500 uppercase">Imagem do Artigo</label>
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            type="text"
+                                                            value={article.image}
+                                                            onChange={(e) => {
+                                                                const newArticles = [...magazineArticles];
+                                                                newArticles[idx].image = e.target.value;
+                                                                setMagazineArticles(newArticles);
+                                                            }}
+                                                            className="flex-1 px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                            placeholder="Cole a URL da imagem ou use o botão ao lado"
+                                                        />
+                                                        <label className="cursor-pointer">
+                                                            <input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                className="hidden"
+                                                                onChange={(e) => {
+                                                                    const file = e.target.files[0];
+                                                                    if (file) {
+                                                                        const reader = new FileReader();
+                                                                        reader.onloadend = () => {
+                                                                            const newArticles = [...magazineArticles];
+                                                                            newArticles[idx].image = reader.result;
+                                                                            setMagazineArticles(newArticles);
+                                                                        };
+                                                                        reader.readAsDataURL(file);
+                                                                    }
+                                                                }}
+                                                            />
+                                                            <div className="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded hover:bg-purple-600 hover:text-white transition-all flex items-center gap-2 h-full">
+                                                                <ImageIcon size={16} />
+                                                                <span className="text-sm font-medium">Subir Foto</span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    {article.image && (
+                                                        <div className="mt-2 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                                                            <img
+                                                                src={article.image}
+                                                                alt="Preview"
+                                                                className="w-full h-48 object-cover"
+                                                                onError={(e) => {
+                                                                    e.target.style.display = 'none';
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-bold text-slate-500 uppercase">Conteúdo HTML</label>
+                                                    <textarea
+                                                        value={article.content}
+                                                        onChange={(e) => {
+                                                            const newArticles = [...magazineArticles];
+                                                            newArticles[idx].content = e.target.value;
+                                                            setMagazineArticles(newArticles);
+                                                        }}
+                                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none font-mono"
+                                                        placeholder="<h2>Título</h2><p>Conteúdo...</p>"
+                                                        rows="4"
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="pt-6 border-t border-purple-100 dark:border-purple-800/20">
+                                    <div className="flex items-center gap-2 text-purple-700 dark:text-purple-400 mb-4">
+                                        <Star size={20} />
+                                        <h3 className="font-bold">Destaque da Revista</h3>
+                                    </div>
+                                    <div className="p-6 bg-purple-50 dark:bg-purple-900/10 rounded-xl border border-purple-100 dark:border-purple-800/30 space-y-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Título do Destaque</label>
+                                            <input
+                                                type="text"
+                                                value={magazineFeatured.title}
+                                                onChange={(e) => setMagazineFeatured({ ...magazineFeatured, title: e.target.value })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-purple-500 dark:text-white"
+                                                placeholder="Ex: Pequenos Missionários / Marta ou Maria?"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Descrição</label>
+                                            <textarea
+                                                value={magazineFeatured.description}
+                                                onChange={(e) => setMagazineFeatured({ ...magazineFeatured, description: e.target.value })}
+                                                className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-purple-500 dark:text-white"
+                                                rows="3"
+                                                placeholder="Breve descrição do destaque..."
+                                            />
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Link do Botão</label>
                                                 <input
                                                     type="text"
-                                                    value={article.title}
-                                                    onChange={(e) => {
-                                                        const newArticles = [...magazineArticles];
-                                                        newArticles[idx].title = e.target.value;
-                                                        setMagazineArticles(newArticles);
-                                                    }}
-                                                    className="bg-transparent font-bold text-lg text-slate-800 dark:text-white outline-none flex-1"
-                                                    placeholder="Título do Artigo"
+                                                    value={magazineFeatured.link}
+                                                    onChange={(e) => setMagazineFeatured({ ...magazineFeatured, link: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-purple-500 dark:text-white"
+                                                    placeholder="#"
                                                 />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setMagazineArticles(magazineArticles.filter((_, i) => i !== idx))}
-                                                    className="text-red-400 hover:text-red-600 transition-colors p-2"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Texto do Botão</label>
+                                                <input
+                                                    type="text"
+                                                    value={magazineFeatured.buttonText}
+                                                    onChange={(e) => setMagazineFeatured({ ...magazineFeatured, buttonText: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-purple-500 dark:text-white"
+                                                    placeholder="Ler Agora"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Imagem de Destaque</label>
+                                            <div className="flex gap-2">
+                                                <input
+                                                    type="text"
+                                                    value={magazineFeatured.image}
+                                                    onChange={(e) => setMagazineFeatured({ ...magazineFeatured, image: e.target.value })}
+                                                    className="flex-1 px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-purple-500 dark:text-white"
+                                                    placeholder="URL da imagem..."
+                                                />
+                                                <label className="cursor-pointer">
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        className="hidden"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files[0];
+                                                            if (file) {
+                                                                const reader = new FileReader();
+                                                                reader.onloadend = () => {
+                                                                    setMagazineFeatured({ ...magazineFeatured, image: reader.result });
+                                                                };
+                                                                reader.readAsDataURL(file);
+                                                            }
+                                                        }}
+                                                    />
+                                                    <div className="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg hover:bg-purple-600 hover:text-white transition-all flex items-center gap-2 h-full whitespace-nowrap">
+                                                        <ImageIcon size={18} />
+                                                        <span className="text-sm font-medium">Subir Foto</span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            {magazineFeatured.image && (
+                                                <div className="mt-2 h-48 w-full rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
+                                                    <img
+                                                        src={magazineFeatured.image}
+                                                        alt="Preview"
+                                                        className="w-full h-full object-cover"
+                                                        onError={(e) => e.target.style.display = 'none'}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {formData.slug === 'revista/kids' && (
+                                    <div className="pt-6 border-t border-purple-100 dark:border-purple-800/20">
+                                        <div className="flex items-center gap-2 text-purple-700 dark:text-purple-400 mb-4">
+                                            <Camera size={20} />
+                                            <h3 className="font-bold">Preview da Galeria (Kids)</h3>
+                                        </div>
+                                        <div className="p-6 bg-yellow-50 dark:bg-yellow-900/10 rounded-xl border border-yellow-100 dark:border-yellow-800/30 space-y-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Título da Seção</label>
+                                                <input
+                                                    type="text"
+                                                    value={kidsGalleryPreview.title}
+                                                    onChange={(e) => setKidsGalleryPreview({ ...kidsGalleryPreview, title: e.target.value })}
+                                                    className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-yellow-500 dark:text-white"
+                                                    placeholder="Ex: O que rolou na última EBF"
+                                                />
                                             </div>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-slate-500 uppercase">Autor</label>
+                                                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Link do Botão</label>
                                                     <input
                                                         type="text"
-                                                        value={article.author}
-                                                        onChange={(e) => {
-                                                            const newArticles = [...magazineArticles];
-                                                            newArticles[idx].author = e.target.value;
-                                                            setMagazineArticles(newArticles);
-                                                        }}
-                                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                        placeholder="Nome do Autor"
+                                                        value={kidsGalleryPreview.link}
+                                                        onChange={(e) => setKidsGalleryPreview({ ...kidsGalleryPreview, link: e.target.value })}
+                                                        className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-yellow-500 dark:text-white"
+                                                        placeholder="Link para a galeria completa"
                                                     />
                                                 </div>
-
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-slate-500 uppercase">Data</label>
+                                                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Texto do Botão</label>
                                                     <input
                                                         type="text"
-                                                        value={article.date}
-                                                        onChange={(e) => {
-                                                            const newArticles = [...magazineArticles];
-                                                            newArticles[idx].date = e.target.value;
-                                                            setMagazineArticles(newArticles);
-                                                        }}
-                                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                        placeholder="15 Jan 2026"
+                                                        value={kidsGalleryPreview.buttonText}
+                                                        onChange={(e) => setKidsGalleryPreview({ ...kidsGalleryPreview, buttonText: e.target.value })}
+                                                        className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-yellow-500 dark:text-white"
+                                                        placeholder="Ver Galeria Completa"
                                                     />
                                                 </div>
-                                            </div>
-
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 uppercase">Resumo</label>
-                                                <textarea
-                                                    value={article.excerpt}
-                                                    onChange={(e) => {
-                                                        const newArticles = [...magazineArticles];
-                                                        newArticles[idx].excerpt = e.target.value;
-                                                        setMagazineArticles(newArticles);
-                                                    }}
-                                                    className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none"
-                                                    placeholder="Breve resumo do artigo..."
-                                                    rows="2"
-                                                />
-                                            </div>
-
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 uppercase">Imagem do Artigo</label>
-                                                <div className="flex gap-2">
-                                                    <input
-                                                        type="text"
-                                                        value={article.image}
-                                                        onChange={(e) => {
-                                                            const newArticles = [...magazineArticles];
-                                                            newArticles[idx].image = e.target.value;
-                                                            setMagazineArticles(newArticles);
-                                                        }}
-                                                        className="flex-1 px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
-                                                        placeholder="Cole a URL da imagem ou use o botão ao lado"
-                                                    />
-                                                    <label className="cursor-pointer">
-                                                        <input
-                                                            type="file"
-                                                            accept="image/*"
-                                                            className="hidden"
-                                                            onChange={(e) => {
-                                                                const file = e.target.files[0];
-                                                                if (file) {
-                                                                    const reader = new FileReader();
-                                                                    reader.onloadend = () => {
-                                                                        const newArticles = [...magazineArticles];
-                                                                        newArticles[idx].image = reader.result;
-                                                                        setMagazineArticles(newArticles);
-                                                                    };
-                                                                    reader.readAsDataURL(file);
-                                                                }
-                                                            }}
-                                                        />
-                                                        <div className="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded hover:bg-purple-600 hover:text-white transition-all flex items-center gap-2 h-full">
-                                                            <ImageIcon size={16} />
-                                                            <span className="text-sm font-medium">Subir Foto</span>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                                {article.image && (
-                                                    <div className="mt-2 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-                                                        <img
-                                                            src={article.image}
-                                                            alt="Preview"
-                                                            className="w-full h-48 object-cover"
-                                                            onError={(e) => {
-                                                                e.target.style.display = 'none';
-                                                            }}
-                                                        />
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 uppercase">Conteúdo HTML</label>
-                                                <textarea
-                                                    value={article.content}
-                                                    onChange={(e) => {
-                                                        const newArticles = [...magazineArticles];
-                                                        newArticles[idx].content = e.target.value;
-                                                        setMagazineArticles(newArticles);
-                                                    }}
-                                                    className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none font-mono"
-                                                    placeholder="<h2>Título</h2><p>Conteúdo...</p>"
-                                                    rows="4"
-                                                />
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                )}
                             </div>
                         )
                     }

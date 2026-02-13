@@ -26,23 +26,43 @@ const Homens = () => {
         }
     ]);
 
+    const [featured, setFeatured] = useState({
+        title: 'Integridade em Meio à Crise',
+        description: 'Um estudo profundo sobre a vida de José no Egito e como ele manteve sua pureza e fé inabaláveis em território hostil.',
+        image: '',
+        link: '',
+        buttonText: 'Acessar Estudo'
+    });
+
     useEffect(() => {
-        const page = dbService.getPages().find(p => p.slug === 'revista/homens');
-        if (page && page.content) {
-            try {
-                const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
-                if (content.articles && content.articles.length > 0) setItems(content.articles);
-            } catch (e) { }
-        }
-        const handleUpdate = () => {
-            const updatedPage = dbService.getPages().find(p => p.slug === 'revista/homens');
-            if (updatedPage && updatedPage.content) {
+        const loadContent = () => {
+            const page = dbService.getPages().find(p => p.slug === 'revista/homens');
+            if (page && page.content) {
                 try {
-                    const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
-                    if (content.articles && content.articles.length > 0) setItems(content.articles);
-                } catch (e) { }
+                    const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
+
+                    if (content.articles && content.articles.length > 0) {
+                        const articlesWithExtras = content.articles.map((art, index) => ({
+                            ...art,
+                            icon: index === 0 ? <Shield className="w-10 h-10 text-church-accent" /> :
+                                (index === 1 ? <Target className="w-10 h-10 text-church-primary dark:text-church-accent" /> :
+                                    <Users className="w-10 h-10 text-church-primary dark:text-church-accent" />),
+                            className: art.className || (index === 0 ? "bg-church-primary text-white shadow-xl shadow-church-primary/20" : "bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10")
+                        }));
+                        setItems(articlesWithExtras);
+                    }
+
+                    if (content.featured) {
+                        setFeatured(prev => ({ ...prev, ...content.featured }));
+                    }
+                } catch (e) {
+                    console.error("Error loading Homens content", e);
+                }
             }
         };
+
+        loadContent();
+        const handleUpdate = () => loadContent();
         window.addEventListener('contentUpdated', handleUpdate);
         return () => window.removeEventListener('contentUpdated', handleUpdate);
     }, []);
@@ -104,31 +124,61 @@ const Homens = () => {
                             className="flex gap-8 overflow-x-auto snap-x snap-mandatory pb-12 scrollbar-hide"
                             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                         >
-                            {items.map((item, i) => (
-                                <div key={i} className={`snap-center min-w-[300px] md:min-w-[350px] shrink-0 p-10 rounded-3xl space-y-4 ${item.className}`}>
-                                    {item.icon}
-                                    <h3 className={`text-2xl font-bold ${item.className.includes('text-white') ? 'text-white' : 'text-church-primary dark:text-white'}`}>{item.title}</h3>
-                                    <p className={item.className.includes('text-white') ? 'text-white/70' : 'text-gray-500 dark:text-gray-400'}>
-                                        {item.desc}
-                                    </p>
-                                </div>
-                            ))}
+                            {items.map((item, i) => {
+                                const containerClass = item.className || "bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10";
+                                const isWhite = containerClass.includes('text-white');
+
+                                return (
+                                    <div key={i} className={`snap-center min-w-[300px] md:min-w-[350px] shrink-0 p-10 rounded-3xl space-y-4 ${containerClass}`}>
+                                        {item.icon}
+                                        <h3 className={`text-2xl font-bold ${isWhite ? 'text-white' : 'text-church-primary dark:text-white'}`}>{item.title}</h3>
+                                        <p className={isWhite ? 'text-white/70' : 'text-gray-500 dark:text-gray-400'}>
+                                            {item.desc || item.excerpt}
+                                        </p>
+                                    </div>
+                                )
+                            })}
                         </div>
                     </div>
 
-                    {/* Featured Section */}
-                    <div className="relative p-12 md:p-20 rounded-[4rem] bg-gray-100 dark:bg-white/5 overflow-hidden text-center">
-                        <Anchor className="absolute top-10 left-10 w-24 h-24 text-church-primary/5 -rotate-12" />
-                        <h2 className="text-4xl md:text-5xl font-bold text-church-primary dark:text-white mb-8 tracking-tight">
-                            Integridade em Meio à Crise
-                        </h2>
-                        <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed mb-10">
-                            Um estudo profundo sobre a vida de José no Egito e como ele manteve sua pureza e fé inabaláveis em território hostil.
-                        </p>
-                        <button className="bg-church-primary text-white px-10 py-4 rounded-full font-bold hover:bg-church-secondary transition-all shadow-xl shadow-church-primary/20">
-                            Acessar Estudo
-                        </button>
-                    </div>
+                    {/* Featured Section Dynamic */}
+                    {featured.image ? (
+                        <div className="relative p-12 md:p-20 rounded-[4rem] overflow-hidden text-center group h-[500px] flex flex-col items-center justify-center">
+                            <img
+                                src={featured.image}
+                                alt={featured.title}
+                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-black/60" />
+                            <Anchor className="absolute top-10 left-10 w-24 h-24 text-white/10 -rotate-12 z-10" />
+                            <div className="relative z-10">
+                                <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tight">
+                                    {featured.title}
+                                </h2>
+                                <p className="text-xl text-white/90 max-w-2xl mx-auto leading-relaxed mb-10">
+                                    {featured.description}
+                                </p>
+                                {featured.link && (
+                                    <a href={featured.link} className="inline-block bg-church-primary text-white px-10 py-4 rounded-full font-bold hover:bg-church-secondary transition-all shadow-xl shadow-white/10 border border-white/20">
+                                        {featured.buttonText}
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="relative p-12 md:p-20 rounded-[4rem] bg-gray-100 dark:bg-white/5 overflow-hidden text-center">
+                            <Anchor className="absolute top-10 left-10 w-24 h-24 text-church-primary/5 -rotate-12" />
+                            <h2 className="text-4xl md:text-5xl font-bold text-church-primary dark:text-white mb-8 tracking-tight">
+                                {featured.title}
+                            </h2>
+                            <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed mb-10">
+                                {featured.description}
+                            </p>
+                            <button className="bg-church-primary text-white px-10 py-4 rounded-full font-bold hover:bg-church-secondary transition-all shadow-xl shadow-church-primary/20">
+                                {featured.buttonText}
+                            </button>
+                        </div>
+                    )}
                 </motion.div>
             </div>
         </div>

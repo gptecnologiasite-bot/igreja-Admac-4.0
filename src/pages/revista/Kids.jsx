@@ -125,30 +125,27 @@ const Kids = () => {
         }
     ]);
 
-    useEffect(() => {
-        const page = dbService.getPages().find(p => p.slug === 'revista/kids');
-        if (page && page.content) {
-            try {
-                const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
-                if (content.articles && content.articles.length > 0) {
-                    // Map back the icons which are lost in JSON
-                    const articlesWithIcons = content.articles.map((art, index) => ({
-                        ...art,
-                        icon: index === 0 ? <Star className="w-6 h-6" /> : (index === 1 ? <Heart className="w-6 h-6" /> : <BookOpen className="w-6 h-6" />)
-                    }));
-                    setArticles(articlesWithIcons);
-                }
-            } catch (e) {
-                console.error("Error parsing kids articles", e);
-            }
-        }
+    const [featured, setFeatured] = useState({
+        title: 'Pequenos Missionários',
+        description: 'Como ensinar o evangelismo prático desde cedo.',
+        image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800',
+        link: '',
+        buttonText: 'Ler Agora'
+    });
 
-        // Listen for changes
-        const handleUpdate = () => {
-            const updatedPage = dbService.getPages().find(p => p.slug === 'revista/kids');
-            if (updatedPage && updatedPage.content) {
+    const [galleryPreview, setGalleryPreview] = useState({
+        title: 'O que rolou na última EBF',
+        buttonText: 'Ver Galeria Completa',
+        link: ''
+    });
+
+    useEffect(() => {
+        const loadContent = () => {
+            const page = dbService.getPages().find(p => p.slug === 'revista/kids');
+            if (page && page.content) {
                 try {
-                    const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
+                    const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
+
                     if (content.articles && content.articles.length > 0) {
                         const articlesWithIcons = content.articles.map((art, index) => ({
                             ...art,
@@ -156,14 +153,24 @@ const Kids = () => {
                         }));
                         setArticles(articlesWithIcons);
                     }
+
+                    if (content.featured) {
+                        setFeatured(prev => ({ ...prev, ...content.featured }));
+                    }
+
+                    if (content.galleryPreview) {
+                        setGalleryPreview(prev => ({ ...prev, ...content.galleryPreview }));
+                    }
+
                 } catch (e) {
-                    console.error("Error parsing kids articles", e);
+                    console.error("Error parsing kids content", e);
                 }
             }
         };
 
-        window.addEventListener('contentUpdated', handleUpdate);
-        return () => window.removeEventListener('contentUpdated', handleUpdate);
+        loadContent();
+        window.addEventListener('contentUpdated', loadContent);
+        return () => window.removeEventListener('contentUpdated', loadContent);
     }, []);
 
     const scroll = (direction) => {
@@ -197,16 +204,24 @@ const Kids = () => {
 
                     {/* Featured Article */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20 items-center">
-                        <div className="relative aspect-square rounded-[3rem] overflow-hidden shadow-2xl">
+                        <div className="relative aspect-square rounded-[3rem] overflow-hidden shadow-2xl group">
                             <img
-                                src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800"
-                                alt="Crianças na Igreja"
-                                className="w-full h-full object-cover"
+                                src={featured.image}
+                                alt={featured.title}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             />
-                            <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
                             <div className="absolute bottom-8 left-8 right-8">
-                                <h2 className="text-3xl font-bold text-white mb-2">Pequenos Missionários</h2>
-                                <p className="text-white/80">Como ensinar o evangelismo prático desde cedo.</p>
+                                <h2 className="text-3xl font-bold text-white mb-2">{featured.title}</h2>
+                                <p className="text-white/80 mb-4">{featured.description}</p>
+                                {featured.link && (
+                                    <a
+                                        href={featured.link}
+                                        className="inline-block bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-2 rounded-full text-sm font-bold transition-all border border-white/30"
+                                    >
+                                        {featured.buttonText}
+                                    </a>
+                                )}
                             </div>
                         </div>
 
@@ -272,10 +287,19 @@ const Kids = () => {
                     {/* Gallery Preview */}
                     <div className="p-12 rounded-[3.5rem] bg-church-primary text-white text-center">
                         <Camera className="w-12 h-12 text-church-accent mx-auto mb-6" />
-                        <h2 className="text-4xl font-bold mb-6 italic tracking-tight">O que rolou na última EBF</h2>
-                        <button className="bg-church-accent text-church-primary px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform">
-                            Ver Galeria Completa
-                        </button>
+                        <h2 className="text-4xl font-bold mb-6 italic tracking-tight">{galleryPreview.title}</h2>
+                        {galleryPreview.link ? (
+                            <a
+                                href={galleryPreview.link}
+                                className="inline-block bg-church-accent text-church-primary px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform"
+                            >
+                                {galleryPreview.buttonText}
+                            </a>
+                        ) : (
+                            <button className="bg-church-accent text-church-primary px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform">
+                                {galleryPreview.buttonText}
+                            </button>
+                        )}
                     </div>
                 </motion.div>
             </div>

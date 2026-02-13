@@ -12,25 +12,29 @@ const Mulheres = () => {
         { icon: <Flower />, title: "Propósito", desc: "Descobrindo o plano divino." }
     ]);
 
+    const [featured, setFeatured] = useState({
+        title: 'Marta ou Maria?',
+        description: 'Como encontrar o descanso na presença de Jesus em meio à correria do cotidiano e às múltiplas tarefas da mulher atual.',
+        image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=400',
+        link: '',
+        buttonText: 'Ler Agora'
+    });
+
     useEffect(() => {
-        const page = dbService.getPages().find(p => p.slug === 'revista/mulheres');
-        if (page && page.content) {
-            try {
-                const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
-                if (content.articles && content.articles.length > 0) setItems(content.articles);
-            } catch (e) { }
-        }
-        const handleUpdate = () => {
-            const updatedPage = dbService.getPages().find(p => p.slug === 'revista/mulheres');
-            if (updatedPage && updatedPage.content) {
+        const loadContent = () => {
+            const page = dbService.getPages().find(p => p.slug === 'revista/mulheres');
+            if (page && page.content) {
                 try {
-                    const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
+                    const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
                     if (content.articles && content.articles.length > 0) setItems(content.articles);
+                    if (content.featured) setFeatured(prev => ({ ...prev, ...content.featured }));
                 } catch (e) { }
             }
         };
-        window.addEventListener('contentUpdated', handleUpdate);
-        return () => window.removeEventListener('contentUpdated', handleUpdate);
+
+        loadContent();
+        window.addEventListener('contentUpdated', loadContent);
+        return () => window.removeEventListener('contentUpdated', loadContent);
     }, []);
 
     const scroll = (direction) => {
@@ -113,15 +117,26 @@ const Mulheres = () => {
                     {/* Featured Article */}
                     <div className="p-12 rounded-[3rem] bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 flex flex-col md:flex-row items-center gap-12">
                         <div className="shrink-0 w-full md:w-80 aspect-rectangle rounded-2xl overflow-hidden shadow-lg">
-                            <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=400" alt="Mulheres orando" className="w-full h-full object-cover" />
+                            <img src={featured.image} alt={featured.title} className="w-full h-full object-cover" />
                         </div>
                         <div>
                             <span className="text-pink-500 font-bold uppercase text-sm tracking-widest">Destaque</span>
-                            <h2 className="text-3xl font-bold text-church-primary dark:text-white mt-2 mb-4">Marta ou Maria?</h2>
+                            <h2 className="text-3xl font-bold text-church-primary dark:text-white mt-2 mb-4">{featured.title}</h2>
                             <p className="text-gray-500 dark:text-gray-400 text-lg leading-relaxed mb-6">
-                                Como encontrar o descanso na presença de Jesus em meio à correria do cotidiano e às múltiplas tarefas da mulher atual.
+                                {featured.description}
                             </p>
-                            <button className="bg-pink-500 text-white px-8 py-3 rounded-full font-bold hover:shadow-lg transition-all shadow-pink-200">Ler Agora</button>
+                            {featured.link ? (
+                                <a
+                                    href={featured.link}
+                                    className="inline-block bg-pink-500 text-white px-8 py-3 rounded-full font-bold hover:shadow-lg transition-all shadow-pink-200"
+                                >
+                                    {featured.buttonText}
+                                </a>
+                            ) : (
+                                <button className="bg-pink-500 text-white px-8 py-3 rounded-full font-bold hover:shadow-lg transition-all shadow-pink-200">
+                                    {featured.buttonText}
+                                </button>
+                            )}
                         </div>
                     </div>
                 </motion.div>
