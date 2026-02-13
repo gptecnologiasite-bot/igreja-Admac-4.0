@@ -1,16 +1,16 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Flower, Coffee, Users, ChevronLeft, ChevronRight, Star, Music, Book } from 'lucide-react';
+import { LuHeart, LuFlower, LuCoffee, LuUsers, LuChevronLeft, LuChevronRight, LuStar, LuMusic, LuBook } from 'react-icons/lu';
 import dbService from '../services/dbService';
 
 const HomeCarousel = () => {
     const carouselRef = useRef(null);
     const [title, setTitle] = useState('Destaques');
     const [items, setItems] = useState([
-        { icon: <Heart />, title: "Família", desc: "Equilíbrio emocional no lar.", color: "text-pink-500", bg: "bg-pink-50 dark:bg-pink-900/10" },
-        { icon: <Users />, title: "Comunhão", desc: "O valor da amizade cristã.", color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/10" },
-        { icon: <Coffee />, title: "Devocional", desc: "Sua hora especial com Deus.", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-900/10" },
-        { icon: <Flower />, title: "Propósito", desc: "Descobrindo o plano divino.", color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-900/10" }
+        { icon: <LuHeart />, title: "Família", desc: "Equilíbrio emocional no lar.", color: "text-pink-500", bg: "bg-pink-50 dark:bg-pink-900/10" },
+        { icon: <LuUsers />, title: "Comunhão", desc: "O valor da amizade cristã.", color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/10" },
+        { icon: <LuCoffee />, title: "Devocional", desc: "Sua hora especial com Deus.", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-900/10" },
+        { icon: <LuFlower />, title: "Propósito", desc: "Descobrindo o plano divino.", color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-900/10" }
     ]);
 
     useEffect(() => {
@@ -46,14 +46,14 @@ const HomeCarousel = () => {
 
     const getIcon = (iconName) => {
         switch (iconName) {
-            case 'Heart': return <Heart />;
-            case 'Users': return <Users />;
-            case 'Coffee': return <Coffee />;
-            case 'Flower': return <Flower />;
-            case 'Star': return <Star />;
-            case 'Music': return <Music />;
-            case 'Book': return <Book />;
-            default: return <Star />;
+            case 'Heart': return <LuHeart />;
+            case 'Users': return <LuUsers />;
+            case 'Coffee': return <LuCoffee />;
+            case 'Flower': return <LuFlower />;
+            case 'Star': return <LuStar />;
+            case 'Music': return <LuMusic />;
+            case 'Book': return <LuBook />;
+            default: return <LuStar />;
         }
     };
 
@@ -76,14 +76,14 @@ const HomeCarousel = () => {
                                 className="p-2 rounded-full bg-gray-100 dark:bg-white/10 text-church-primary dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
                                 aria-label="Previous slide"
                             >
-                                <ChevronLeft className="w-6 h-6" />
+                                <LuChevronLeft className="w-6 h-6" />
                             </button>
                             <button
                                 onClick={() => scroll('right')}
                                 className="p-2 rounded-full bg-gray-100 dark:bg-white/10 text-church-primary dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
                                 aria-label="Next slide"
                             >
-                                <ChevronRight className="w-6 h-6" />
+                                <LuChevronRight className="w-6 h-6" />
                             </button>
                         </div>
                     </div>

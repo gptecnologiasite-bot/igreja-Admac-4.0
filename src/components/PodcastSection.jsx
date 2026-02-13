@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Headphones } from 'lucide-react';
+import { LuHeadphones } from 'react-icons/lu';
 import dbService from '../services/dbService';
 
 const PodcastSection = () => {
@@ -43,7 +43,7 @@ const PodcastSection = () => {
                         className="flex-1 space-y-6"
                     >
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-church-accent/20 text-church-primary dark:text-church-accent rounded-full text-sm font-bold uppercase tracking-widest">
-                            <Headphones className="w-4 h-4" />
+                            <LuHeadphones className="w-4 h-4" />
                             {podcastData.badge}
                         </div>
                         <h2 className="text-4xl md:text-5xl font-bold text-church-primary dark:text-white leading-tight">
@@ -60,7 +60,7 @@ const PodcastSection = () => {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 bg-[#1DB954] text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-transform"
                             >
-                                <Headphones className="w-5 h-5" />
+                                <LuHeadphones className="w-5 h-5" />
                                 Ouvir no Spotify
                             </a>
                         </div>

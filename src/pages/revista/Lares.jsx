@@ -1,25 +1,25 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Home, Coffee, Users, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LuHouse, LuCoffee, LuUsers, LuHeart, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const Lares = () => {
     const carouselRef = useRef(null);
     const [items, setItems] = useState([
         {
-            icon: <Home className="w-8 h-8" />,
+            icon: <LuHouse className="w-8 h-8" />,
             title: "Aberto a Todos",
             desc: "Um lugar seguro para fazer perguntas e criar amizades verdadeiras.",
             className: "bg-church-accent/10 text-church-primary dark:text-church-accent"
         },
         {
-            icon: <Coffee className="w-8 h-8 text-orange-500" />,
+            icon: <LuCoffee className="w-8 h-8 text-orange-500" />,
             title: "Papo & Café",
             desc: "Momentos de partilha informal e descontração.",
             className: "bg-church-light/50 dark:bg-white/5 border border-gray-100 dark:border-white/10"
         },
         {
-            icon: <Users className="w-8 h-8 text-blue-500" />,
+            icon: <LuUsers className="w-8 h-8 text-blue-500" />,
             title: "Comunhão",
             desc: "Crescimento mútuo através da vida compartilhada.",
             className: "bg-church-light/50 dark:bg-white/5 border border-gray-100 dark:border-white/10"
@@ -93,7 +93,7 @@ const Lares = () => {
                                 className="absolute left-0 top-1/2 -translate-y-1/2 ml-4 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 disabled:opacity-0 hidden md:block"
                                 aria-label="Previous slide"
                             >
-                                <ChevronLeft className="w-6 h-6" />
+                                <LuChevronLeft className="w-6 h-6" />
                             </button>
 
                             <button
@@ -101,7 +101,7 @@ const Lares = () => {
                                 className="absolute right-0 top-1/2 -translate-y-1/2 mr-4 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 hidden md:block"
                                 aria-label="Next slide"
                             >
-                                <ChevronRight className="w-6 h-6" />
+                                <LuChevronRight className="w-6 h-6" />
                             </button>
 
                             <div
@@ -124,7 +124,7 @@ const Lares = () => {
 
                     {/* CTA Section */}
                     <div className="bg-church-primary rounded-[3rem] p-12 md:p-16 text-center text-white">
-                        <Heart className="w-12 h-12 text-church-accent mx-auto mb-6" />
+                        <LuHeart className="w-12 h-12 text-church-accent mx-auto mb-6" />
                         <h2 className="text-3xl md:text-5xl font-bold mb-6 italic tracking-tight">Quer abrir as portas do seu lar?</h2>
                         <p className="text-white/70 text-lg mb-10 max-w-2xl mx-auto">Saiba como iniciar um Pequeno Grupo de Oração e Estudo Bíblico na sua vizinhança.</p>
                         <button className="bg-white text-church-primary px-10 py-4 rounded-full font-bold hover:scale-105 transition-transform shadow-2xl">Mais Informações</button>

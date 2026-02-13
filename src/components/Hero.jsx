@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, ArrowRight } from 'lucide-react';
+import { LuCalendar, LuArrowRight } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import dbService from '../services/dbService';
 
@@ -75,13 +75,14 @@ const Hero = () => {
                     <div className="flex flex-col sm:flex-row gap-4">
                         <a href="#agenda" className="btn-primary flex items-center justify-center gap-2 group">
                             Ver Programação
-                            <Calendar className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            <LuCalendar className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </a>
                         <a href="#about" className="px-8 py-3 rounded-full border border-white/30 font-semibold hover:bg-white/10 transition-all flex items-center justify-center gap-2 group">
                             Quem Somos
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform opacity-60 group-hover:opacity-100" />
+                            <LuArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform opacity-60 group-hover:opacity-100" />
                         </a>
                     </div>
+
                 </motion.div>
             </div>
 

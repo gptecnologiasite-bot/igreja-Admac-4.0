@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Settings, Image as ImageIcon, Globe } from 'lucide-react';
+import { LuSave, LuSettings, LuImage as LuImageIcon, LuGlobe } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const Configuracoes = () => {
@@ -46,7 +46,7 @@ const Configuracoes = () => {
         <div className="space-y-6">
             <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-600/10 text-blue-600 rounded-lg">
-                    <Settings size={24} />
+                    <LuSettings size={24} />
                 </div>
                 <div>
                     <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Configurações Gerais</h1>
@@ -70,7 +70,7 @@ const Configuracoes = () => {
                             <div className="grid grid-cols-1 gap-6">
                                 <div className="space-y-2">
                                     <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
-                                        <Globe size={18} className="text-slate-400" />
+                                        <LuGlobe size={18} className="text-slate-400" />
                                         Nome da Igreja / Site
                                     </label>
                                     <input
@@ -85,7 +85,7 @@ const Configuracoes = () => {
 
                                 <div className="space-y-2">
                                     <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
-                                        <ImageIcon size={18} className="text-slate-400" />
+                                        <LuImageIcon size={18} className="text-slate-400" />
                                         URL do Logo (Imagem)
                                     </label>
                                     <div className="space-y-1">
@@ -107,7 +107,7 @@ const Configuracoes = () => {
                                     disabled={isSaving}
                                     className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl transition-all font-bold shadow-lg shadow-blue-600/20 active:scale-95 disabled:opacity-50"
                                 >
-                                    <Save size={20} />
+                                    <LuSave size={20} />
                                     <span>{isSaving ? 'Salvando...' : 'Salvar Configurações'}</span>
                                 </button>
                             </div>
@@ -132,7 +132,7 @@ const Configuracoes = () => {
                             ) : (
                                 <div className="flex items-center gap-3">
                                     <div className="p-3 bg-blue-600 rounded-xl shadow-lg shadow-blue-600/20">
-                                        <Settings className="w-10 h-10 text-white" />
+                                        <LuSettings className="w-10 h-10 text-white" />
                                     </div>
                                     <span className="text-2xl font-bold text-white tracking-tight">{settings.siteName}</span>
                                 </div>
@@ -199,12 +199,12 @@ const Configuracoes = () => {
                                 }}
                                 className="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white px-4 py-3 rounded-xl transition-all font-semibold"
                             >
-                                <Save size={18} />
+                                <LuSave size={18} />
                                 <span>Fazer Backup (Download)</span>
                             </button>
 
                             <label className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-500 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 px-4 py-3 rounded-xl transition-all font-semibold cursor-pointer">
-                                <Globe size={18} />
+                                <LuGlobe size={18} />
                                 <span>Importar Dados</span>
                                 <input
                                     type="file"
@@ -238,7 +238,7 @@ const Configuracoes = () => {
                                 onClick={handleReset}
                                 className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-4 py-3 rounded-xl transition-all font-semibold border border-red-100"
                             >
-                                <Settings size={18} className="rotate-90" />
+                                <LuSettings size={18} className="rotate-90" />
                                 <span>Restaurar Dados Originais</span>
                             </button>
                         </div>

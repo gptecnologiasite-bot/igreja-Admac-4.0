@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, GraduationCap, Bookmark, Award, X, Calendar, User, Book, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LuBookOpen, LuGraduationCap, LuBookmark, LuAward, LuX, LuCalendar, LuUser, LuBook, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const EBD = () => {
@@ -10,7 +10,7 @@ const EBD = () => {
     const [articles, setArticles] = useState([
         {
             id: 1,
-            icon: <BookOpen className="w-6 h-6" />,
+            icon: <LuBookOpen className="w-6 h-6" />,
             iconColor: 'bg-indigo-500/10 text-indigo-500',
             title: 'Fundamentos da Fé Cristã',
             excerpt: 'Explorando as doutrinas essenciais que sustentam nossa fé e prática cristã.',
@@ -57,7 +57,7 @@ const EBD = () => {
         },
         {
             id: 2,
-            icon: <GraduationCap className="w-6 h-6" />,
+            icon: <LuGraduationCap className="w-6 h-6" />,
             iconColor: 'bg-blue-500/10 text-blue-500',
             title: 'Hermenêutica Bíblica',
             excerpt: 'Princípios para interpretar corretamente as Escrituras e aplicá-las à vida contemporânea.',
@@ -68,7 +68,7 @@ const EBD = () => {
         },
         {
             id: 3,
-            icon: <Award className="w-6 h-6" />,
+            icon: <LuAward className="w-6 h-6" />,
             iconColor: 'bg-purple-500/10 text-purple-500',
             title: 'Teologia Sistemática',
             excerpt: 'Uma visão organizada das principais doutrinas cristãs e sua aplicação prática.',
@@ -87,7 +87,7 @@ const EBD = () => {
                 if (content.articles && content.articles.length > 0) {
                     const articlesWithIcons = content.articles.map((art, index) => ({
                         ...art,
-                        icon: index === 0 ? <BookOpen className="w-6 h-6" /> : (index === 1 ? <GraduationCap className="w-6 h-6" /> : <Award className="w-6 h-6" />)
+                        icon: index === 0 ? <LuBookOpen className="w-6 h-6" /> : (index === 1 ? <LuGraduationCap className="w-6 h-6" /> : <LuAward className="w-6 h-6" />)
                     }));
                     setArticles(articlesWithIcons);
                 }
@@ -101,7 +101,7 @@ const EBD = () => {
                     if (content.articles && content.articles.length > 0) {
                         const articlesWithIcons = content.articles.map((art, index) => ({
                             ...art,
-                            icon: index === 0 ? <BookOpen className="w-6 h-6" /> : (index === 1 ? <GraduationCap className="w-6 h-6" /> : <Award className="w-6 h-6" />)
+                            icon: index === 0 ? <LuBookOpen className="w-6 h-6" /> : (index === 1 ? <LuGraduationCap className="w-6 h-6" /> : <LuAward className="w-6 h-6" />)
                         }));
                         setArticles(articlesWithIcons);
                     }
@@ -138,14 +138,14 @@ const EBD = () => {
                             <p className="text-2xl text-gray-500 dark:text-gray-400 font-medium">Aprofundamento teológico e aplicação prática das Escrituras em cada lição semanal.</p>
                         </div>
                         <div className="shrink-0 p-10 bg-church-light/50 dark:bg-white/5 rounded-[4rem] border-2 border-dashed border-gray-200 dark:border-white/10 hidden lg:block">
-                            <BookOpen className="w-32 h-32 text-church-primary dark:text-church-accent" />
+                            <LuBookOpen className="w-32 h-32 text-church-primary dark:text-church-accent" />
                         </div>
                     </div>
 
                     {/* Articles Grid / Carousel */}
                     <div className="mb-20">
                         <h2 className="text-3xl font-bold text-church-primary dark:text-white mb-8 flex items-center gap-3">
-                            <Book className="w-8 h-8 text-church-accent" />
+                            <LuBook className="w-8 h-8 text-church-accent" />
                             Estudos Bíblicos desta Edição
                         </h2>
 
@@ -157,7 +157,7 @@ const EBD = () => {
                                 className="absolute left-0 top-1/2 -translate-y-1/2 ml-4 z-20 p-2 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 disabled:opacity-0 hidden md:block"
                                 aria-label="Previous slide"
                             >
-                                <ChevronLeft className="w-5 h-5" />
+                                <LuChevronLeft className="w-5 h-5" />
                             </button>
 
                             <button
@@ -165,7 +165,7 @@ const EBD = () => {
                                 className="absolute right-0 top-1/2 -translate-y-1/2 mr-4 z-20 p-2 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 hidden md:block"
                                 aria-label="Next slide"
                             >
-                                <ChevronRight className="w-5 h-5" />
+                                <LuChevronRight className="w-5 h-5" />
                             </button>
 
                             <div
@@ -204,11 +204,11 @@ const EBD = () => {
                                                 </p>
                                                 <div className="flex items-center gap-3 text-xs text-gray-400 mb-3 mt-auto">
                                                     <span className="flex items-center gap-1">
-                                                        <User className="w-3 h-3" />
+                                                        <LuUser className="w-3 h-3" />
                                                         {article.author}
                                                     </span>
                                                     <span className="flex items-center gap-1">
-                                                        <Calendar className="w-3 h-3" />
+                                                        <LuCalendar className="w-3 h-3" />
                                                         {article.date}
                                                     </span>
                                                 </div>
@@ -226,12 +226,12 @@ const EBD = () => {
                     {/* Classes Info */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
                         <div className="group p-12 rounded-[3.5rem] bg-church-primary text-white space-y-6 hover:shadow-2xl transition-all shadow-church-primary/20">
-                            <GraduationCap className="w-12 h-12 text-church-accent" />
+                            <LuGraduationCap className="w-12 h-12 text-church-accent" />
                             <h3 className="text-3xl font-bold">Classe de Adultos</h3>
                             <p className="text-white/70 text-lg leading-relaxed">Estudos apologéticos sobre os desafios da fé cristã na pós-modernidade e fundamentos da doutrina reformada.</p>
                         </div>
                         <div className="group p-12 rounded-[3.5rem] bg-church-light/50 dark:bg-white/5 border border-gray-100 dark:border-white/10 space-y-6 hover:bg-white dark:hover:bg-white/10 transition-all">
-                            <Award className="w-12 h-12 text-church-primary dark:text-church-accent" />
+                            <LuAward className="w-12 h-12 text-church-primary dark:text-church-accent" />
                             <h3 className="text-3xl font-bold text-church-primary dark:text-white">Formação de Líderes</h3>
                             <p className="text-gray-500 dark:text-gray-400 text-lg leading-relaxed">Módulos especiais para aqueles que sentem o chamado para o ensino da Palavra e pastoreio de ovelhas.</p>
                         </div>
@@ -239,7 +239,7 @@ const EBD = () => {
 
                     {/* Featured Quote */}
                     <div className="relative p-16 md:p-24 rounded-[4.5rem] border-2 border-church-accent/30 dark:border-church-accent/20 text-center overflow-hidden">
-                        <Bookmark className="absolute -bottom-10 -right-10 w-48 h-48 text-church-accent/5" />
+                        <LuBookmark className="absolute -bottom-10 -right-10 w-48 h-48 text-church-accent/5" />
                         <h2 className="text-4xl md:text-5xl font-bold text-church-primary dark:text-white leading-tight italic max-w-4xl mx-auto">
                             "A Escritura não pode ser quebrada; o que ela diz, Deus diz."
                         </h2>
@@ -279,7 +279,7 @@ const EBD = () => {
                                     onClick={() => setSelectedArticle(null)}
                                     className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
                                 >
-                                    <X className="w-6 h-6" />
+                                    <LuX className="w-6 h-6" />
                                 </button>
                                 <div className="absolute bottom-6 left-6 right-6">
                                     <h2 className="text-3xl md:text-4xl font-black text-white mb-3">
@@ -287,11 +287,11 @@ const EBD = () => {
                                     </h2>
                                     <div className="flex items-center gap-4 text-white/80 text-sm">
                                         <span className="flex items-center gap-2">
-                                            <User className="w-4 h-4" />
+                                            <LuUser className="w-4 h-4" />
                                             {selectedArticle.author}
                                         </span>
                                         <span className="flex items-center gap-2">
-                                            <Calendar className="w-4 h-4" />
+                                            <LuCalendar className="w-4 h-4" />
                                             {selectedArticle.date}
                                         </span>
                                     </div>

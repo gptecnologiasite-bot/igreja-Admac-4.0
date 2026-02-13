@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, Users, Star, Quote, MessageCircle, Edit2, Check, GraduationCap, Bookmark, Book, Library, Award, Download, FileText, Presentation, X, ExternalLink, Video, Calendar } from 'lucide-react';
+import { LuBookOpen, LuUsers, LuStar, LuQuote, LuMessageCircle, LuPencil, LuCheck, LuGraduationCap, LuBookmark, LuBook, LuLibrary, LuDownload, LuFileText, LuPresentation, LuExternalLink, LuVideo, LuCalendar } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
@@ -41,7 +41,7 @@ const EscolaBiblica = () => {
             theme: "As Epístolas de Paulo",
             teacher: "Prof. Cláudio Santos",
             time: "Domingo, 09:00",
-            icon: <Book className="w-6 h-6 text-emerald-500" />
+            icon: <LuBook className="w-6 h-6 text-emerald-500" />
         },
         // ... (truncated for brevity, I'll keep the others too)
         {
@@ -49,27 +49,27 @@ const EscolaBiblica = () => {
             theme: "Fundamentos do Lar Cristão",
             teacher: "Pr. João & Pra. Maria",
             time: "Domingo, 09:00",
-            icon: <Users className="w-6 h-6 text-pink-500" />
+            icon: <LuUsers className="w-6 h-6 text-pink-500" />
         },
         {
             title: "Classe Juvenis",
             theme: "Identidade em Cristo",
             teacher: "Prof. Débora Lima",
             time: "Domingo, 09:00",
-            icon: <Star className="w-6 h-6 text-yellow-500" />
+            icon: <LuStar className="w-6 h-6 text-yellow-500" />
         },
         {
             title: "Classe Infantil",
             theme: "Heróis da Fé",
             teacher: "Tia Rose & Equipe",
             time: "Domingo, 09:00",
-            icon: <GraduationCap className="w-6 h-6 text-orange-500" />
+            icon: <LuGraduationCap className="w-6 h-6 text-orange-500" />
         }
     ];
 
     const classes = (pageData?.content?.classes || fallBackClasses).map(cls => ({
         ...cls,
-        icon: cls.icon || <Book className="w-6 h-6 text-emerald-500" />
+        icon: cls.icon || <LuBook className="w-6 h-6 text-emerald-500" />
     }));
 
     const fallBackProfessors = [
@@ -151,7 +151,7 @@ const EscolaBiblica = () => {
                     >
                         <div className="flex items-center gap-4 mb-6">
                             <div className="p-3 bg-emerald-600/20 backdrop-blur-md rounded-xl border border-white/10">
-                                <Library className="w-8 h-8 text-emerald-400" />
+                                <LuLibrary className="w-8 h-8 text-emerald-400" />
                             </div>
                             <span className="text-emerald-400 font-bold text-xs tracking-widest uppercase">Portal do Conhecimento</span>
                         </div>
@@ -179,7 +179,7 @@ const EscolaBiblica = () => {
                     {/* Classes Grid - NEW SPECIAL SECTION */}
                     <div className="mb-32">
                         <div className="flex items-center gap-3 mb-10">
-                            <BookOpen className="text-emerald-500 w-8 h-8" />
+                            <LuBookOpen className="text-emerald-500 w-8 h-8" />
                             <h2 className="text-4xl font-black text-church-primary dark:text-white uppercase tracking-tighter">Nossas Classes</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -202,7 +202,7 @@ const EscolaBiblica = () => {
                                         </div>
                                         <div className="pt-4 border-t border-gray-200 dark:border-white/10">
                                             <p className="text-sm text-gray-500 dark:text-gray-500 flex items-center gap-2 font-medium">
-                                                <Users size={14} className="text-emerald-500" />
+                                                <LuUsers size={14} className="text-emerald-500" />
                                                 {cls.teacher}
                                             </p>
                                         </div>
@@ -216,7 +216,7 @@ const EscolaBiblica = () => {
                     <section className="mb-32">
                         <div className="flex flex-col items-center mb-16">
                             <div className="p-3 bg-emerald-500/10 rounded-2xl text-emerald-500 mb-4">
-                                <Users size={32} />
+                                <LuUsers size={32} />
                             </div>
                             <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Nossa Equipe</h2>
                             <div className="w-16 h-1.5 bg-emerald-500 rounded-full mt-4"></div>
@@ -262,7 +262,7 @@ const EscolaBiblica = () => {
                     {/* Vídeos das Lições - NEW VIDEO SECTION */}
                     <div className="mb-32">
                         <div className="flex items-center gap-3 mb-10">
-                            <Video className="text-emerald-500 w-8 h-8" />
+                            <LuVideo className="text-emerald-500 w-8 h-8" />
                             <h2 className="text-4xl font-black text-church-primary dark:text-white uppercase tracking-tighter">Vídeos das Lições</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -294,11 +294,11 @@ const EscolaBiblica = () => {
                                                     rel="noopener noreferrer"
                                                     className="p-4 rounded-full bg-emerald-500 text-white shadow-xl hover:scale-110 transition-transform"
                                                 >
-                                                    <ExternalLink size={24} />
+                                                    <LuExternalLink size={24} />
                                                 </a>
                                             </div>
                                             <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
-                                                <Calendar size={12} className="text-emerald-400" />
+                                                <LuCalendar size={12} className="text-emerald-400" />
                                                 {video.date ? new Date(video.date).toLocaleDateString('pt-BR') : 'Data Indisponível'}
                                             </div>
                                         </div>
@@ -310,7 +310,7 @@ const EscolaBiblica = () => {
                                                 rel="noopener noreferrer"
                                                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 font-bold hover:bg-emerald-500 hover:text-white transition-all group-hover:shadow-lg"
                                             >
-                                                <Video size={18} /> Assistir Aula
+                                                <LuVideo size={18} /> Assistir Aula
                                             </a>
                                         </div>
                                     </motion.div>
@@ -322,14 +322,14 @@ const EscolaBiblica = () => {
                     {/* Biblioteca de Recursos - NEW DOWNLOAD SECTION */}
                     <div className="mb-24">
                         <div className="flex items-center gap-3 mb-10">
-                            <Library className="text-emerald-500 w-6 h-6" />
+                            <LuLibrary className="text-emerald-500 w-6 h-6" />
                             <h2 className="text-3xl font-bold text-church-primary dark:text-white">Biblioteca de Recursos</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {[
-                                { title: "Revista Trimestral", type: "PDF", size: "4.2 MB", icon: <FileText className="text-emerald-500" /> },
-                                { title: "Esboço da Lição Atual", type: "DOCX", size: "1.2 MB", icon: <FileText className="text-blue-500" /> },
-                                { title: "Slides: Visão Geral", type: "PPTX", size: "8.5 MB", icon: <Presentation className="text-orange-500" /> }
+                                { title: "Revista Trimestral", type: "PDF", size: "4.2 MB", icon: <LuFileText className="text-emerald-500" /> },
+                                { title: "Esboço da Lição Atual", type: "DOCX", size: "1.2 MB", icon: <LuFileText className="text-blue-500" /> },
+                                { title: "Slides: Visão Geral", type: "PPTX", size: "8.5 MB", icon: <LuPresentation className="text-orange-500" /> }
                             ].map((item, idx) => (
                                 <div key={idx} className="p-6 rounded-3xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-between group hover:bg-emerald-500/5 transition-colors">
                                     <div className="flex items-center gap-4">
@@ -342,7 +342,7 @@ const EscolaBiblica = () => {
                                         </div>
                                     </div>
                                     <button className="p-3 rounded-xl bg-emerald-600 text-white hover:scale-110 active:scale-95 transition-all shadow-lg shadow-emerald-600/20">
-                                        <Download size={20} />
+                                        <LuDownload size={20} />
                                     </button>
                                 </div>
                             ))}
@@ -352,10 +352,10 @@ const EscolaBiblica = () => {
                     {/* Mural do Aluno - NEW MURAL SECTION */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-24">
                         <div className="lg:col-span-2 p-10 rounded-[3rem] bg-linear-to-br from-emerald-600 to-emerald-700 text-white shadow-2xl relative overflow-hidden">
-                            <Quote className="absolute -bottom-4 -right-4 w-40 h-40 text-white/10" />
+                            <LuQuote className="absolute -bottom-4 -right-4 w-40 h-40 text-white/10" />
                             <div className="relative z-10">
                                 <div className="p-2 bg-white/20 rounded-lg w-fit mb-6">
-                                    <Bookmark className="w-6 h-6" />
+                                    <LuBookmark className="w-6 h-6" />
                                 </div>
                                 <h2 className="text-4xl font-black mb-6">Mural de Estudos</h2>
                                 <div className="space-y-6">
@@ -381,10 +381,10 @@ const EscolaBiblica = () => {
                             <h3 className="text-3xl font-bold text-church-primary dark:text-white text-center">Por que participar?</h3>
                             <div className="space-y-6">
                                 {[
-                                    { icon: <Check className="text-emerald-500" />, text: "Fundamento bíblico sólido" },
-                                    { icon: <Check className="text-emerald-500" />, text: "Espaço para tirar dúvidas" },
-                                    { icon: <Check className="text-emerald-500" />, text: "Comunhão com outros alunos" },
-                                    { icon: <Check className="text-emerald-500" />, text: "Materiais exclusivos" }
+                                    { icon: <LuCheck className="text-emerald-500" />, text: "Fundamento bíblico sólido" },
+                                    { icon: <LuCheck className="text-emerald-500" />, text: "Espaço para tirar dúvidas" },
+                                    { icon: <LuCheck className="text-emerald-500" />, text: "Comunhão com outros alunos" },
+                                    { icon: <LuCheck className="text-emerald-500" />, text: "Materiais exclusivos" }
                                 ].map((item, id) => (
                                     <div key={id} className="flex items-center gap-4 text-gray-600 dark:text-gray-300 font-medium">
                                         <div className="p-1 rounded-full bg-emerald-500/10 shrink-0">
@@ -408,12 +408,12 @@ const EscolaBiblica = () => {
                             onClick={() => !isEditing && setIsEditing(true)}
                             className={`absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600 text-white border border-emerald-600/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
                         >
-                            <Edit2 size={18} />
+                            <LuEdit2 size={18} />
                             <span className="text-sm font-bold uppercase tracking-wider">Editar Visão</span>
                         </button>
 
                         <div className="relative z-10 max-w-4xl mx-auto text-center">
-                            <MessageCircle className="text-emerald-500 w-12 h-12 mx-auto mb-8" />
+                            <LuMessageCircle className="text-emerald-500 w-12 h-12 mx-auto mb-8" />
                             <h2 className="text-3xl font-bold text-white mb-10 tracking-tight">
                                 Palavra da Superintendência
                             </h2>
@@ -445,7 +445,7 @@ const EscolaBiblica = () => {
                                     <div className="flex gap-4 justify-center">
                                         <button onClick={handleCancel} className="px-6 py-2 text-gray-400 font-bold">Cancelar</button>
                                         <button onClick={handleSave} className="flex items-center gap-2 px-8 py-2.5 rounded-xl bg-emerald-600 text-white font-bold">
-                                            <Check size={20} /> Publicar
+                                            <LuCheck size={20} /> Publicar
                                         </button>
                                     </div>
                                 </div>

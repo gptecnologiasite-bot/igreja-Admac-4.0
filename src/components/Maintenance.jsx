@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, Clock, ArrowLeft } from 'lucide-react';
+import { LuSettings, LuClock, LuArrowLeft } from 'react-icons/lu';
 import { Link } from 'react-router-dom';
 
 const Maintenance = () => {
@@ -9,10 +9,10 @@ const Maintenance = () => {
                 <div className="relative inline-block">
                     <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl animate-pulse"></div>
                     <div className="relative p-6 bg-white dark:bg-church-dark rounded-full shadow-lg">
-                        <Settings className="w-16 h-16 text-blue-600 dark:text-blue-400 animate-[spin_4s_linear_infinite]" />
+                        <LuSettings className="w-16 h-16 text-blue-600 dark:text-blue-400 animate-[spin_4s_linear_infinite]" />
                     </div>
                     <div className="absolute -bottom-2 -right-2 p-3 bg-white dark:bg-church-dark rounded-full shadow-lg">
-                        <Clock className="w-8 h-8 text-church-accent" />
+                        <LuClock className="w-8 h-8 text-church-accent" />
                     </div>
                 </div>
 
@@ -30,7 +30,7 @@ const Maintenance = () => {
                         to="/"
                         className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-church-primary text-white font-bold hover:bg-church-secondary transition-all shadow-lg hover:scale-105 active:scale-95"
                     >
-                        <ArrowLeft size={20} />
+                        <LuArrowLeft size={20} />
                         Voltar ao Início
                     </Link>
                 </div>

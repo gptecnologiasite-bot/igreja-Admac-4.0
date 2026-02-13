@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sun, Moon } from 'lucide-react';
+import { LuSun, LuMoon } from 'react-icons/lu';
 
 const ThemeToggle = ({ isDark, toggleTheme }) => {
     return (
@@ -21,15 +21,15 @@ const ThemeToggle = ({ isDark, toggleTheme }) => {
                 }}
             >
                 {isDark ? (
-                    <Moon className="w-3.5 h-3.5 text-[#854D0E] fill-[#854D0E]" />
+                    <LuMoon className="w-3.5 h-3.5 text-[#854D0E] fill-[#854D0E]" />
                 ) : (
-                    <Sun className="w-3.5 h-3.5 text-[#854D0E]" />
+                    <LuSun className="w-3.5 h-3.5 text-[#854D0E]" />
                 )}
             </motion.div>
 
             {/* Background Icons */}
             <div className={`absolute ${isDark ? 'left-2.5' : 'right-2.5'} transition-opacity duration-300 opacity-40`}>
-                {isDark ? <Sun className="w-3 h-3 text-[#713F12]" /> : <Moon className="w-3 h-3 text-[#713F12]" />}
+                {isDark ? <LuSun className="w-3 h-3 text-[#713F12]" /> : <LuMoon className="w-3 h-3 text-[#713F12]" />}
             </div>
         </button>
     );

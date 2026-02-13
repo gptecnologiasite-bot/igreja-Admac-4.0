@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Bell, Search, User } from 'lucide-react';
+import { LuMenu, LuBell, LuSearch, LuUser } from 'react-icons/lu';
 import { useAuth } from '../../context/AuthContext';
 
 const Topbar = ({ onMenuClick }) => {
@@ -11,11 +11,11 @@ const Topbar = ({ onMenuClick }) => {
                     onClick={onMenuClick}
                     className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 lg:hidden text-slate-600 dark:text-slate-300"
                 >
-                    <Menu size={24} />
+                    <LuMenu size={24} />
                 </button>
 
                 <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-900 rounded-lg w-64">
-                    <Search size={18} className="text-slate-400" />
+                    <LuSearch size={18} className="text-slate-400" />
                     <input
                         type="text"
                         placeholder="Buscar..."
@@ -26,7 +26,7 @@ const Topbar = ({ onMenuClick }) => {
 
             <div className="flex items-center gap-4">
                 <button className="relative p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">
-                    <Bell size={20} />
+                    <LuBell size={20} />
                     <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-pulse border border-white dark:border-slate-800"></span>
                 </button>
 
@@ -47,7 +47,7 @@ const Topbar = ({ onMenuClick }) => {
                                 className="w-full h-full object-cover"
                             />
                         ) : (
-                            <User size={20} />
+                            <LuUser size={20} />
                         )}
                     </div>
                 </div>

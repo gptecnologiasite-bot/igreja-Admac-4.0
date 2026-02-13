@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Eye, Heart } from 'lucide-react';
+import { LuTarget, LuEye, LuHeart } from 'react-icons/lu';
 import dbService from '../services/dbService';
 
 const About = () => {
@@ -54,17 +54,17 @@ const About = () => {
 
     const values = [
         {
-            icon: <Target className="w-6 h-6" />,
+            icon: <LuTarget className="w-6 h-6" />,
             title: 'Missão',
             desc: content.mission
         },
         {
-            icon: <Eye className="w-6 h-6" />,
+            icon: <LuEye className="w-6 h-6" />,
             title: 'Visão',
             desc: content.vision
         },
         {
-            icon: <Heart className="w-6 h-6" />,
+            icon: <LuHeart className="w-6 h-6" />,
             title: 'Valores',
             desc: content.values
         }

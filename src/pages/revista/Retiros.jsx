@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Compass, Sun, Star, MapPin } from 'lucide-react';
+import { LuCompass, LuSun, LuStar, LuMapPin } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const Retiros = () => {
@@ -37,7 +37,7 @@ const Retiros = () => {
                     {/* Header */}
                     <div className="text-center mb-16">
                         <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-full text-xs font-bold uppercase tracking-widest">
-                            <Compass className="w-4 h-4" />
+                            <LuCompass className="w-4 h-4" />
                             Novos Ares
                         </div>
                         <h1 className="text-6xl md:text-8xl font-black text-church-primary dark:text-white tracking-tighter uppercase italic leading-none">
@@ -76,7 +76,7 @@ const Retiros = () => {
                     <div className="p-12 rounded-[4rem] bg-emerald-500 text-white flex flex-col md:flex-row items-center justify-between gap-12">
                         <div className="space-y-4 text-center md:text-left">
                             <div className="flex items-center gap-3 justify-center md:justify-start">
-                                <MapPin className="w-6 h-6 text-emerald-200" />
+                                <LuMapPin className="w-6 h-6 text-emerald-200" />
                                 <span className="font-bold uppercase tracking-widest text-sm text-emerald-200">Próximo Local</span>
                             </div>
                             <h2 className="text-4xl font-bold tracking-tight">Sítio águas de Lindoia</h2>

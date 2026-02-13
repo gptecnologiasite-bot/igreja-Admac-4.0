@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Church, ChevronDown, LayoutDashboard } from 'lucide-react';
+import { LuMenu, LuX, LuChurch, LuChevronDown, LuLayoutDashboard } from 'react-icons/lu';
 import { Link, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import dbService from '../services/dbService';
@@ -144,7 +144,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
                                     }}
                                 />
                                 <div className="hidden p-2 bg-church-primary rounded-lg shadow-lg shadow-church-primary/20">
-                                    <Church className="w-8 h-8 text-white" />
+                                    <LuChurch className="w-8 h-8 text-white" />
                                 </div>
                                 <span className={`text-xl font-bold tracking-tight ${scrolled ? 'text-church-primary dark:text-white' : 'text-white'}`}>
                                     {settings.siteName}
@@ -153,7 +153,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
                         ) : (
                             <>
                                 <div className="p-2 bg-church-primary rounded-lg shadow-lg shadow-church-primary/20">
-                                    <Church className="w-8 h-8 text-white" />
+                                    <LuChurch className="w-8 h-8 text-white" />
                                 </div>
                                 <span className={`text-xl font-bold tracking-tight ${scrolled ? 'text-church-primary dark:text-white' : 'text-white'}`}>
                                     {settings.siteName}
@@ -194,7 +194,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
                                         className={`flex items-center gap-1 font-medium transition-colors hover:text-church-accent ${scrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'}`}
                                     >
                                         {item.name}
-                                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === item.name ? 'rotate-180' : ''}`} />
+                                        <LuChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === item.name ? 'rotate-180' : ''}`} />
                                     </Link>
                                 ) : (
                                     <Link
@@ -233,7 +233,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
                             aria-label="Painel de Controle"
                             title="Painel de Controle"
                         >
-                            <LayoutDashboard className="w-5 h-5" />
+                            <LuLayoutDashboard className="w-5 h-5" />
                         </Link>
 
                         <ThemeToggle isDark={isDark} toggleTheme={toggleTheme} />
@@ -246,7 +246,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
                             className={`p-2 rounded-full ${scrolled ? 'text-church-primary dark:text-emerald-500' : 'text-white'}`}
                             aria-label="Painel de Controle"
                         >
-                            <LayoutDashboard className="w-5 h-5" />
+                            <LuLayoutDashboard className="w-5 h-5" />
                         </Link>
                         <ThemeToggle isDark={isDark} toggleTheme={toggleTheme} />
                         <button
@@ -256,7 +256,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
                             aria-expanded={isOpen}
                             aria-controls="mobile-menu"
                         >
-                            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                            {isOpen ? <LuX className="w-6 h-6" /> : <LuMenu className="w-6 h-6" />}
                         </button>
                     </div>
                 </div>
@@ -283,7 +283,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
                                             aria-label={`${mobileSubmenu === item.name ? 'Fechar' : 'Abrir'} submenu de ${item.name}`}
                                             aria-expanded={mobileSubmenu === item.name}
                                         >
-                                            <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${mobileSubmenu === item.name ? 'rotate-180' : ''}`} />
+                                            <LuChevronDown className={`w-5 h-5 transition-transform duration-300 ${mobileSubmenu === item.name ? 'rotate-180' : ''}`} />
                                         </button>
                                     )}
                                 </div>

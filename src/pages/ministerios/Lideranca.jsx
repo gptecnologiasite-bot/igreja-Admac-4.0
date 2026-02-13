@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, Shield, Star, Quote, MessageCircle, Edit2, Check } from 'lucide-react';
+import { LuUsers, LuShield, LuStar, LuQuote, LuMessageCircle, LuPencil, LuCheck } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
@@ -130,7 +130,7 @@ const Lideranca = () => {
                     >
                         <div className="flex items-center gap-4 mb-6">
                             <div className="p-3 bg-church-primary/20 backdrop-blur-md rounded-xl border border-white/10">
-                                <Shield className="w-8 h-8 text-church-accent" />
+                                <LuShield className="w-8 h-8 text-church-accent" />
                             </div>
                             <span className="text-church-accent font-bold text-xs tracking-widest uppercase">Corpo de Líderes</span>
                         </div>
@@ -159,7 +159,7 @@ const Lideranca = () => {
                     <section className="mb-32">
                         <div className="flex flex-col items-center mb-16">
                             <div className="p-3 bg-church-primary/10 rounded-2xl text-church-primary mb-4">
-                                <Users size={32} />
+                                <LuUsers size={32} />
                             </div>
                             <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Nossa Equipe</h2>
                             <div className="w-16 h-1.5 bg-church-primary rounded-full mt-4"></div>
@@ -205,14 +205,14 @@ const Lideranca = () => {
 
                     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-12">
                         <div className="p-10 rounded-3xl bg-church-primary text-white space-y-4 shadow-xl">
-                            <Users className="w-12 h-12 text-white/50" />
+                            <LuUsers className="w-12 h-12 text-white/50" />
                             <h2 className="text-3xl font-black">{obreiros.title}</h2>
                             <p className="text-white/80 leading-relaxed text-lg font-medium">
                                 {obreiros.text}
                             </p>
                         </div>
                         <div className="p-10 rounded-3xl border-2 border-dashed border-gray-200 dark:border-white/10 flex flex-col justify-center text-center space-y-4">
-                            <Star className="w-12 h-12 text-church-primary dark:text-church-accent mx-auto" />
+                            <LuStar className="w-12 h-12 text-church-primary dark:text-church-accent mx-auto" />
                             <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{chamado.title}</h2>
                             <p className="text-gray-500 dark:text-gray-400 text-lg italic">
                                 &quot;{chamado.text}&quot; <br />
@@ -229,7 +229,7 @@ const Lideranca = () => {
                         className="mt-20 p-8 md:p-12 rounded-3xl bg-linear-to-br from-gray-50 to-gray-100 dark:from-[#1a1c23] dark:to-[#252733] border border-gray-100 dark:border-white/5 relative overflow-hidden group shadow-xl"
                     >
                         <div className="absolute top-0 right-0 p-12 opacity-5">
-                            <MessageCircle className="w-64 h-64 text-church-primary dark:text-white" />
+                            <LuMessageCircle className="w-64 h-64 text-church-primary dark:text-white" />
                         </div>
 
                         {/* Edit Button */}
@@ -237,13 +237,13 @@ const Lideranca = () => {
                             onClick={() => !isEditing && setIsEditing(true)}
                             className={`absolute top-6 right-6 z-20 items-center gap-2 px-4 py-2 rounded-xl bg-church-primary/10 dark:bg-church-accent/20 hover:bg-church-primary dark:hover:bg-church-accent text-church-primary dark:text-white border border-church-primary/20 dark:border-church-accent/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
                         >
-                            <Edit2 size={18} />
+                            <LuEdit2 size={18} />
                             <span className="text-sm font-bold uppercase tracking-wider">Editar Mensagem</span>
                         </button>
 
                         <div className="relative z-10">
                             <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3">
-                                <MessageCircle className="text-church-primary dark:text-church-accent" />
+                                <LuMessageCircle className="text-church-primary dark:text-church-accent" />
                                 Palavra Pastoral
                             </h2>
 
@@ -292,7 +292,7 @@ const Lideranca = () => {
                                             onClick={handleSave}
                                             className="flex items-center gap-2 px-8 py-2.5 rounded-xl bg-church-primary dark:bg-church-accent hover:opacity-90 text-white font-bold transition-all shadow-xl shadow-church-primary/20 dark:shadow-church-accent/20 hover:scale-105 active:scale-95"
                                         >
-                                            <Check size={20} />
+                                            <LuCheck size={20} />
                                             Publicar Agora
                                         </button>
                                     </div>
@@ -335,7 +335,7 @@ const Lideranca = () => {
                                     transition={{ delay: index * 0.1 }}
                                     className="p-8 rounded-3xl bg-gray-50 dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/5 relative group hover:bg-white dark:hover:bg-slate-900 transition-all duration-300"
                                 >
-                                    <Quote className="w-10 h-10 text-church-primary/10 dark:text-church-accent/10 mb-4 absolute top-8 right-8 group-hover:text-church-primary/20 transition-colors" />
+                                    <LuQuote className="w-10 h-10 text-church-primary/10 dark:text-church-accent/10 mb-4 absolute top-8 right-8 group-hover:text-church-primary/20 transition-colors" />
                                     <p className="text-gray-600 dark:text-gray-300 italic mb-6 relative z-10 font-medium">
                                         &quot;{testimony.text}&quot;
                                     </p>

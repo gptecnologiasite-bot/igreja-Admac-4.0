@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Baby, Users, Star, Quote, MessageCircle, Edit2, Check, Palette, Music, BookOpen, Sun, X, ExternalLink } from 'lucide-react';
+import { LuBaby, LuUsers, LuStar, LuQuote, LuMessageCircle, LuPencil, LuCheck, LuSun } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
@@ -120,7 +120,7 @@ const Infantil = () => {
                     >
                         <div className="flex items-center gap-4 mb-6">
                             <div className="p-3 bg-yellow-400/20 backdrop-blur-md rounded-xl border border-white/10">
-                                <Baby className="w-8 h-8 text-yellow-500" />
+                                <LuBaby className="w-8 h-8 text-yellow-500" />
                             </div>
                             <span className="text-yellow-500 font-bold text-xs tracking-widest uppercase">Pequenos Discípulos</span>
                         </div>
@@ -150,7 +150,7 @@ const Infantil = () => {
                     <section className="mb-32">
                         <div className="flex flex-col items-center mb-16">
                             <div className="p-3 bg-yellow-400/10 rounded-2xl text-yellow-600 mb-4">
-                                <Users size={32} />
+                                <LuUsers size={32} />
                             </div>
                             <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter text-center">Nossos Professores</h2>
                             <div className="w-16 h-1.5 bg-yellow-400 rounded-full mt-4"></div>
@@ -198,7 +198,7 @@ const Infantil = () => {
                     <section className="mb-32">
                         <div className="flex flex-col items-center mb-16">
                             <div className="p-3 bg-yellow-400/10 rounded-2xl text-yellow-600 mb-4">
-                                <Baby size={32} />
+                                <LuBaby size={32} />
                             </div>
                             <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter text-center">Equipe para Crianças</h2>
                             <div className="w-16 h-1.5 bg-yellow-400 rounded-full mt-4"></div>
@@ -241,14 +241,14 @@ const Infantil = () => {
 
                     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-12">
                         <div className="p-10 rounded-[2.5rem] bg-yellow-400 text-church-primary space-y-4">
-                            <Star className="w-12 h-12 text-yellow-700" />
+                            <LuStar className="w-12 h-12 text-yellow-700" />
                             <h2 className="text-3xl font-bold">Base do Ensino</h2>
                             <p className="text-yellow-900/80 leading-relaxed text-lg font-medium">
                                 Usamos recursos lúdicos, música e teatro para que a palavra de Deus seja compreendida de forma leve e profunda por cada faixa etária.
                             </p>
                         </div>
                         <div className="p-10 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-white/10 flex flex-col justify-center text-center space-y-4">
-                            <Sun className="w-12 h-12 text-yellow-500 mx-auto" />
+                            <LuSun className="w-12 h-12 text-yellow-500 mx-auto" />
                             <h2 className="text-3xl font-bold text-church-primary dark:text-white tracking-tight">Nosso Versículo</h2>
                             <p className="text-gray-500 dark:text-gray-400 text-lg">
                                 &quot;Ensina a criança no caminho em que deve andar, e, ainda quando for velho, não se desviará dele.&quot; <br />
@@ -265,7 +265,7 @@ const Infantil = () => {
                         className="mt-20 p-8 md:p-12 rounded-4xl bg-linear-to-br from-[#1a1c23] to-[#252733] border border-white/5 relative overflow-hidden group shadow-2xl"
                     >
                         <div className="absolute top-0 right-0 p-12 opacity-5">
-                            <MessageCircle className="w-64 h-64 text-white" />
+                            <LuMessageCircle className="w-64 h-64 text-white" />
                         </div>
 
                         {/* Edit Button */}
@@ -273,13 +273,13 @@ const Infantil = () => {
                             onClick={() => !isEditing && setIsEditing(true)}
                             className={`absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-yellow-400/20 hover:bg-yellow-400 text-white border border-yellow-400/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
                         >
-                            <Edit2 size={18} />
+                            <LuEdit2 size={18} />
                             <span className="text-sm font-bold uppercase tracking-wider">Editar Mensagem</span>
                         </button>
 
                         <div className="relative z-10">
                             <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                                <MessageCircle className="text-yellow-400" />
+                                <LuMessageCircle className="text-yellow-400" />
                                 Mensagem aos Pais
                             </h2>
 
@@ -328,7 +328,7 @@ const Infantil = () => {
                                             onClick={handleSave}
                                             className="flex items-center gap-2 px-8 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-500 text-church-primary font-bold transition-all shadow-xl shadow-yellow-400/20 hover:scale-105 active:scale-95"
                                         >
-                                            <Check size={20} />
+                                            <LuCheck size={20} />
                                             Publicar Agora
                                         </button>
                                     </div>
@@ -368,7 +368,7 @@ const Infantil = () => {
                                     transition={{ delay: index * 0.1 }}
                                     className="p-8 rounded-4xl bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/5 relative"
                                 >
-                                    <Quote className="w-10 h-10 text-yellow-400/20 mb-4 absolute top-8 right-8" />
+                                    <LuQuote className="w-10 h-10 text-yellow-400/20 mb-4 absolute top-8 right-8" />
                                     <p className="text-gray-600 dark:text-gray-300 italic mb-6 relative z-10">
                                         &quot;{testimony.text}&quot;
                                     </p>

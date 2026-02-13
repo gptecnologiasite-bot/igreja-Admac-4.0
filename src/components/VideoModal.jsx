@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { LuX } from 'react-icons/lu';
 
 const VideoModal = ({ isOpen, onClose, videoUrl, videoTitle }) => {
     // Handle Esc key
@@ -56,7 +56,7 @@ const VideoModal = ({ isOpen, onClose, videoUrl, videoTitle }) => {
                             onClick={onClose}
                             className="absolute top-4 right-4 z-50 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-md transition-all group"
                         >
-                            <X size={24} className="group-hover:rotate-90 transition-transform duration-300" />
+                            <LuX size={24} className="group-hover:rotate-90 transition-transform duration-300" />
                         </button>
 
                         {/* iframe */}

@@ -22,7 +22,7 @@ export default defineConfig({
           // Vendor chunk for React and related libraries
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           // UI libraries chunk
-          'ui-vendor': ['framer-motion', 'lucide-react'],
+          'ui-vendor': ['framer-motion', 'react-icons'],
           // Charts chunk (if used)
           'charts-vendor': ['recharts'],
         },

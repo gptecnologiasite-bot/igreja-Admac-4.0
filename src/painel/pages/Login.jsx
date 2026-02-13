@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Lock, User, Eye, EyeOff, Church, ArrowRight, ShieldCheck, X, UserPlus } from 'lucide-react';
+import { LuLock, LuUser, LuEye, LuEyeOff, LuChurch, LuArrowRight, LuShieldCheck, LuX, LuUserPlus } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
 import dbService from '../../services/dbService';
 
@@ -87,7 +87,7 @@ const Login = () => {
                         </div>
                     ) : (
                         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-linear-to-tr from-blue-600 to-indigo-600 shadow-xl shadow-blue-600/20 mb-4">
-                            <Church className="text-white w-8 h-8" />
+                            <LuChurch className="text-white w-8 h-8" />
                         </div>
                     )}
                     <h1 className="text-3xl font-extrabold text-white tracking-tight">{settings.siteName} Dashboard</h1>
@@ -109,7 +109,7 @@ const Login = () => {
 
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-slate-300 flex items-center gap-2 ml-1">
-                                <User size={14} className="text-blue-500" />
+                                <LuUser size={14} className="text-blue-500" />
                                 Usuário
                             </label>
                             <div className="relative group">
@@ -126,7 +126,7 @@ const Login = () => {
 
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-slate-300 flex items-center gap-2 ml-1">
-                                <Lock size={14} className="text-blue-500" />
+                                <LuLock size={14} className="text-blue-500" />
                                 Senha
                             </label>
                             <div className="relative group">
@@ -143,7 +143,7 @@ const Login = () => {
                                     onClick={() => setShowPassword(!showPassword)}
                                     className="absolute right-3 top-3.5 text-slate-500 hover:text-white transition-colors"
                                 >
-                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    {showPassword ? <LuEyeOff size={20} /> : <LuEye size={20} />}
                                 </button>
                             </div>
                         </div>
@@ -172,14 +172,14 @@ const Login = () => {
                             ) : (
                                 <>
                                     <span>Entrar no Painel</span>
-                                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                    <LuArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </>
                             )}
                         </button>
                     </form>
 
                     <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-center gap-2 text-slate-500 text-xs">
-                        <ShieldCheck size={14} />
+                        <LuShieldCheck size={14} />
                         Acesso Restrito e Monitorado
                     </div>
                 </div>
@@ -216,12 +216,12 @@ const Login = () => {
                                 onClick={() => setShowRegisterModal(false)}
                                 className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
                             >
-                                <X size={20} />
+                                <LuX size={20} />
                             </button>
 
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2 bg-blue-600/20 rounded-lg text-blue-500">
-                                    <UserPlus size={24} />
+                                    <LuUserPlus size={24} />
                                 </div>
                                 <h3 className="text-xl font-bold text-white">Cadastrar Usuário</h3>
                             </div>
@@ -229,7 +229,7 @@ const Login = () => {
                             {regSuccess ? (
                                 <div className="text-center py-8 space-y-4">
                                     <div className="w-16 h-16 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <ShieldCheck size={32} />
+                                        <LuShieldCheck size={32} />
                                     </div>
                                     <h4 className="text-white font-bold text-lg">Sucesso!</h4>
                                     <p className="text-slate-400 text-sm">Sua conta foi criada. Redirecionando para o login...</p>

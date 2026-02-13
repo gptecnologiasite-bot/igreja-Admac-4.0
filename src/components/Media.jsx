@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaYoutube, FaInstagram, FaFacebookF, FaWhatsapp } from "react-icons/fa";
-import { Play, Video } from 'lucide-react';
+import { LuPlay, LuVideo } from 'react-icons/lu';
 import dbService from '../services/dbService';
 import VideoModal from './VideoModal';
 
@@ -163,14 +163,14 @@ const Media = () => {
                             {/* Play Button Overlay */}
                             <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors z-10">
                                 <div className="w-20 h-20 rounded-full bg-yellow-500 text-white flex items-center justify-center shadow-2xl transform transition-all duration-300 group-hover:scale-110">
-                                    <Play size={40} fill="currentColor" />
+                                    <LuPlay size={40} fill="currentColor" />
                                 </div>
                             </div>
 
                             {/* Title Banner */}
                             <div className="absolute bottom-0 left-0 right-0 p-6 bg-linear-to-t from-black/90 via-black/40 to-transparent z-20 pointer-events-none">
                                 <div className="flex items-center gap-3 drop-shadow-lg">
-                                    <Video size={18} className="text-yellow-500" fill="currentColor" />
+                                    <LuVideo size={18} className="text-yellow-500" fill="currentColor" />
                                     <h3 className="text-white font-bold text-lg tracking-tight">
                                         {videos[activeVideoIndex]?.title}
                                     </h3>
@@ -229,7 +229,7 @@ const Media = () => {
                                             alignItems: "center",
                                             justifyContent: "center"
                                         }}>
-                                            <Play size={20} fill="white" color="white" />
+                                            <LuPlay size={20} fill="white" color="white" />
                                         </div>
                                     )}
                                 </div>

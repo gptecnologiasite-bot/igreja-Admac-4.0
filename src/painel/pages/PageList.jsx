@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Search, Filter, Edit, Trash2, Eye, CheckCircle, XCircle } from 'lucide-react';
+import { LuPlus, LuSearch, LuFilter, LuPencil, LuTrash2, LuEye, LuCircleCheck, LuCircleX } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 import StatusToggle from '../../components/StatusToggle';
 
@@ -54,14 +54,14 @@ const PageList = () => {
                         }}
                         className="flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-lg transition-colors border border-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200 dark:border-slate-600"
                     >
-                        <Trash2 size={20} />
+                        <LuTrash2 size={20} />
                         <span>Redefinir Tudo</span>
                     </button>
                     <Link
                         to="/painel/paginas/nova"
                         className="flex items-center justify-center gap-2 bg-linear-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900 font-bold px-6 py-3 rounded-full transition-all shadow-xl shadow-yellow-600/30 border-2 border-yellow-300 hover:scale-105"
                     >
-                        <Plus size={20} />
+                        <LuPlus size={20} />
                         <span>Nova Página</span>
                     </Link>
                 </div>
@@ -70,7 +70,7 @@ const PageList = () => {
             {/* Filters and Search */}
             <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row gap-4 justify-between items-center">
                 <div className="relative w-full sm:w-96">
-                    <Search className="absolute left-3 top-2.5 text-slate-400" size={20} />
+                    <LuSearch className="absolute left-3 top-2.5 text-slate-400" size={20} />
                     <input
                         type="text"
                         placeholder="Buscar por título ou slug..."
@@ -83,14 +83,14 @@ const PageList = () => {
                             onClick={() => setSearchTerm('')}
                             className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                         >
-                            <XCircle size={18} />
+                            <LuCircleX size={18} />
                         </button>
                     )}
                 </div>
 
                 <div className="flex gap-2 w-full sm:w-auto">
                     <button className="flex items-center gap-2 px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">
-                        <Filter size={18} />
+                        <LuFilter size={18} />
                         <span>Filtros</span>
                     </button>
                 </div>
@@ -146,21 +146,21 @@ const PageList = () => {
                                                     }`}
                                                 title={page.status === 'Ativo' ? "Visualizar no site" : "Visualizar (Modo Preview)"}
                                             >
-                                                <Eye size={18} />
+                                                <LuEye size={18} />
                                             </button>
                                             <button
                                                 onClick={() => navigate(`/painel/paginas/editar/${page.id}`)}
                                                 className="p-2 text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
                                                 title="Editar"
                                             >
-                                                <Edit size={18} />
+                                                <LuPencil size={18} />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(page.id)}
                                                 className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                                                 title="Excluir"
                                             >
-                                                <Trash2 size={18} />
+                                                <LuTrash2 size={18} />
                                             </button>
                                         </div>
                                     </td>
@@ -170,7 +170,7 @@ const PageList = () => {
                                 <tr>
                                     <td colSpan="5" className="p-12 text-center">
                                         <div className="flex flex-col items-center gap-2 text-slate-400">
-                                            <Search size={40} className="mb-2 opacity-20" />
+                                            <LuSearch size={40} className="mb-2 opacity-20" />
                                             <p className="font-medium text-slate-500 dark:text-slate-400">Nenhuma página encontrada</p>
                                             <p className="text-sm">Tente ajustar sua busca ou limpar os filtros.</p>
                                             {searchTerm && (

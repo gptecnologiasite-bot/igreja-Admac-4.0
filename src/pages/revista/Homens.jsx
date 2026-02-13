@@ -1,25 +1,25 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Target, Anchor, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LuShield, LuTarget, LuAnchor, LuUsers, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const Homens = () => {
     const carouselRef = useRef(null);
     const [items, setItems] = useState([
         {
-            icon: <Shield className="w-10 h-10 text-church-accent" />,
+            icon: <LuShield className="w-10 h-10 text-church-accent" />,
             title: "O Sacerdote do Lar",
             desc: "O papel do homem na condução espiritual da sua família sob a luz das Escrituras.",
             className: "bg-church-primary text-white shadow-xl shadow-church-primary/20"
         },
         {
-            icon: <Target className="w-10 h-10 text-church-primary dark:text-church-accent" />,
+            icon: <LuTarget className="w-10 h-10 text-church-primary dark:text-church-accent" />,
             title: "Foco & Missão",
             desc: "Como lidar com as pressões do mundo profissional sem perder o alvo da excelência cristã.",
             className: "bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10"
         },
         {
-            icon: <Users className="w-10 h-10 text-church-primary dark:text-church-accent" />,
+            icon: <LuUsers className="w-10 h-10 text-church-primary dark:text-church-accent" />,
             title: "Mentorias",
             desc: "O valor do discipulado e da troca de experiências entre diferentes gerações de homens.",
             className: "bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10"
@@ -44,9 +44,9 @@ const Homens = () => {
                     if (content.articles && content.articles.length > 0) {
                         const articlesWithExtras = content.articles.map((art, index) => ({
                             ...art,
-                            icon: index === 0 ? <Shield className="w-10 h-10 text-church-accent" /> :
-                                (index === 1 ? <Target className="w-10 h-10 text-church-primary dark:text-church-accent" /> :
-                                    <Users className="w-10 h-10 text-church-primary dark:text-church-accent" />),
+                            icon: index === 0 ? <LuShield className="w-10 h-10 text-church-accent" /> :
+                                (index === 1 ? <LuTarget className="w-10 h-10 text-church-primary dark:text-church-accent" /> :
+                                    <LuUsers className="w-10 h-10 text-church-primary dark:text-church-accent" />),
                             className: art.className || (index === 0 ? "bg-church-primary text-white shadow-xl shadow-church-primary/20" : "bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10")
                         }));
                         setItems(articlesWithExtras);
@@ -108,7 +108,7 @@ const Homens = () => {
                             className="absolute left-0 top-1/2 -translate-y-1/2 ml-4 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 disabled:opacity-0 hidden md:block"
                             aria-label="Previous slide"
                         >
-                            <ChevronLeft className="w-6 h-6" />
+                            <LuChevronLeft className="w-6 h-6" />
                         </button>
 
                         <button
@@ -116,7 +116,7 @@ const Homens = () => {
                             className="absolute right-0 top-1/2 -translate-y-1/2 mr-4 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 hidden md:block"
                             aria-label="Next slide"
                         >
-                            <ChevronRight className="w-6 h-6" />
+                            <LuChevronRight className="w-6 h-6" />
                         </button>
 
                         <div
@@ -150,7 +150,7 @@ const Homens = () => {
                                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-black/60" />
-                            <Anchor className="absolute top-10 left-10 w-24 h-24 text-white/10 -rotate-12 z-10" />
+                            <LuAnchor className="absolute top-10 left-10 w-24 h-24 text-white/10 -rotate-12 z-10" />
                             <div className="relative z-10">
                                 <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tight">
                                     {featured.title}
@@ -167,7 +167,7 @@ const Homens = () => {
                         </div>
                     ) : (
                         <div className="relative p-12 md:p-20 rounded-[4rem] bg-gray-100 dark:bg-white/5 overflow-hidden text-center">
-                            <Anchor className="absolute top-10 left-10 w-24 h-24 text-church-primary/5 -rotate-12" />
+                            <LuAnchor className="absolute top-10 left-10 w-24 h-24 text-church-primary/5 -rotate-12" />
                             <h2 className="text-4xl md:text-5xl font-bold text-church-primary dark:text-white mb-8 tracking-tight">
                                 {featured.title}
                             </h2>

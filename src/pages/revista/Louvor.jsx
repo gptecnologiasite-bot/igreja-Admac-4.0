@@ -1,18 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Music, Mic2, Star, Play, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LuMusic, LuMic, LuStar, LuPlay, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const Louvor = () => {
     const carouselRef = useRef(null);
     const [items, setItems] = useState([
         {
-            icon: <Mic2 className="w-8 h-8 text-church-primary dark:text-church-accent mb-4" />,
+            icon: <LuMic className="w-8 h-8 text-church-primary dark:text-church-accent mb-4" />,
             title: "Técnica Vocal",
             desc: "Dicas para cuidar da voz e melhorar a performance no altar."
         },
         {
-            icon: <Music className="w-8 h-8 text-church-primary dark:text-church-accent mb-4" />,
+            icon: <LuMusic className="w-8 h-8 text-church-primary dark:text-church-accent mb-4" />,
             title: "Novos Acordes",
             desc: "Harmonias e arranjos para as músicas mais tocadas."
         }
@@ -78,7 +78,7 @@ const Louvor = () => {
                                     className="absolute left-0 top-1/2 -translate-y-1/2 ml-4 z-20 p-2 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 disabled:opacity-0 hidden md:block"
                                     aria-label="Previous slide"
                                 >
-                                    <ChevronLeft className="w-5 h-5" />
+                                    <LuChevronLeft className="w-5 h-5" />
                                 </button>
 
                                 <button
@@ -86,7 +86,7 @@ const Louvor = () => {
                                     className="absolute right-0 top-1/2 -translate-y-1/2 mr-4 z-20 p-2 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 hidden md:block"
                                     aria-label="Next slide"
                                 >
-                                    <ChevronRight className="w-5 h-5" />
+                                    <LuChevronRight className="w-5 h-5" />
                                 </button>
 
                                 <div
@@ -114,7 +114,7 @@ const Louvor = () => {
                             <div className="absolute inset-0 bg-church-primary/40 group-hover:bg-transparent transition-colors" />
                             <button className="absolute inset-0 flex items-center justify-center">
                                 <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
-                                    <Play className="w-8 h-8 text-church-primary fill-church-primary" />
+                                    <LuPlay className="w-8 h-8 text-church-primary fill-church-primary" />
                                 </div>
                             </button>
                         </div>
@@ -122,7 +122,7 @@ const Louvor = () => {
 
                     {/* Featured Quote */}
                     <div className="p-16 rounded-[4rem] bg-church-light/30 dark:bg-white/5 border border-gray-100 dark:border-white/10 text-center relative overflow-hidden">
-                        <Star className="absolute top-10 right-10 w-20 h-20 text-church-accent/10 animate-pulse" />
+                        <LuStar className="absolute top-10 right-10 w-20 h-20 text-church-accent/10 animate-pulse" />
                         <h3 className="text-4xl md:text-5xl font-bold text-church-primary dark:text-white leading-tight italic">
                             "A adoração não é o que fazemos, é quem somos diante de Deus."
                         </h3>

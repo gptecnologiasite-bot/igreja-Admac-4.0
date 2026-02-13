@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ShieldCheck, Users, Star, Quote, MessageCircle, Edit2, Check, Flame, CloudRain, X, ExternalLink } from 'lucide-react';
+import { LuShieldCheck, LuUsers, LuQuote, LuMessageCircle, LuPencil, LuCheck, LuFlame, LuCloudRain } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
@@ -111,7 +111,7 @@ const Intercessao = () => {
                     >
                         <div className="flex items-center gap-4 mb-6">
                             <div className="p-3 bg-blue-600/20 backdrop-blur-md rounded-xl border border-white/10">
-                                <ShieldCheck className="w-8 h-8 text-blue-400" />
+                                <LuShieldCheck className="w-8 h-8 text-blue-400" />
                             </div>
                             <span className="text-blue-400 font-bold text-xs tracking-widest uppercase">Sentinelas de Clamor</span>
                         </div>
@@ -140,7 +140,7 @@ const Intercessao = () => {
                     <section className="mb-32">
                         <div className="flex flex-col items-center mb-16">
                             <div className="p-3 bg-blue-600/10 rounded-2xl text-blue-400 mb-4">
-                                <Users size={32} />
+                                <LuUsers size={32} />
                             </div>
                             <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Nossa Equipe</h2>
                             <div className="w-16 h-1.5 bg-blue-500 rounded-full mt-4"></div>
@@ -182,14 +182,14 @@ const Intercessao = () => {
 
                     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-12">
                         <div className="p-10 rounded-[2.5rem] bg-blue-700 text-white space-y-4 shadow-xl">
-                            <Flame className="w-12 h-12 text-blue-300" />
+                            <LuFlame className="w-12 h-12 text-blue-300" />
                             <h2 className="text-3xl font-bold">Vigílias e Orações</h2>
                             <p className="text-white/80 leading-relaxed text-lg">
                                 Mantemos uma agenda constante de clamor e busca, pois acreditamos que nada acontece no Reino sem o poder da oração persistente.
                             </p>
                         </div>
                         <div className="p-10 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-white/10 flex flex-col justify-center text-center space-y-4">
-                            <CloudRain className="w-12 h-12 text-blue-600 mx-auto" />
+                            <LuCloudRain className="w-12 h-12 text-blue-600 mx-auto" />
                             <h2 className="text-3xl font-bold text-church-primary dark:text-white tracking-tight">Nosso Alvo</h2>
                             <p className="text-gray-500 dark:text-gray-400 text-lg italic">
                                 &quot;A oração de um justo é poderosa e eficaz.&quot; — Tiago 5:16. Cremos no poder transformador do clamor do justo.
@@ -205,7 +205,7 @@ const Intercessao = () => {
                         className="mt-20 p-8 md:p-12 rounded-4xl bg-linear-to-br from-[#1a1c23] to-[#252733] border border-white/5 relative overflow-hidden group shadow-2xl"
                     >
                         <div className="absolute top-0 right-0 p-12 opacity-5">
-                            <MessageCircle className="w-64 h-64 text-white" />
+                            <LuMessageCircle className="w-64 h-64 text-white" />
                         </div>
 
                         {/* Edit Button */}
@@ -213,13 +213,13 @@ const Intercessao = () => {
                             onClick={() => !isEditing && setIsEditing(true)}
                             className={`absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600 text-white border border-blue-600/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
                         >
-                            <Edit2 size={18} />
+                            <LuEdit2 size={18} />
                             <span className="text-sm font-bold uppercase tracking-wider">Editar Chamado</span>
                         </button>
 
                         <div className="relative z-10">
                             <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                                <MessageCircle className="text-blue-500" />
+                                <LuMessageCircle className="text-blue-500" />
                                 Visão da Intercessão
                             </h2>
 
@@ -268,7 +268,7 @@ const Intercessao = () => {
                                             onClick={handleSave}
                                             className="flex items-center gap-2 px-8 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition-all shadow-xl shadow-blue-600/20 hover:scale-105 active:scale-95"
                                         >
-                                            <Check size={20} />
+                                            <LuCheck size={20} />
                                             Publicar Agora
                                         </button>
                                     </div>
@@ -308,7 +308,7 @@ const Intercessao = () => {
                                     transition={{ delay: index * 0.1 }}
                                     className="p-8 rounded-4xl bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/5 relative"
                                 >
-                                    <Quote className="w-10 h-10 text-blue-600/20 mb-4 absolute top-8 right-8" />
+                                    <LuQuote className="w-10 h-10 text-blue-600/20 mb-4 absolute top-8 right-8" />
                                     <p className="text-gray-600 dark:text-gray-300 italic mb-6 relative z-10">
                                         &quot;{testimony.text}&quot;
                                     </p>

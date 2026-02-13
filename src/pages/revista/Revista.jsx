@@ -1,11 +1,11 @@
 import React, { cloneElement } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Book, Baby, Users, Music, Heart, Shield, Home, Compass, GraduationCap, ChevronRight } from 'lucide-react';
+import { LuBook, LuBaby, LuUsers, LuMusic, LuHeart, LuShield, LuHouse, LuCompass, LuGraduationCap, LuChevronRight } from 'react-icons/lu';
 
 const categories = [
     {
-        icon: <Baby />,
+        icon: <LuBaby />,
         title: 'Kids',
         color: 'text-yellow-500',
         bg: 'bg-yellow-500/10',
@@ -15,7 +15,7 @@ const categories = [
         edition: 'Edição Janeiro 2026'
     },
     {
-        icon: <Users />,
+        icon: <LuUsers />,
         title: 'Jovens',
         color: 'text-blue-500',
         bg: 'bg-blue-500/10',
@@ -25,7 +25,7 @@ const categories = [
         edition: 'Edição Janeiro 2026'
     },
     {
-        icon: <Music />,
+        icon: <LuMusic />,
         title: 'Louvor',
         color: 'text-purple-500',
         bg: 'bg-purple-500/10',
@@ -35,7 +35,7 @@ const categories = [
         edition: 'Edição Janeiro 2026'
     },
     {
-        icon: <Heart />,
+        icon: <LuHeart />,
         title: 'Mulheres',
         color: 'text-pink-500',
         bg: 'bg-pink-500/10',
@@ -45,7 +45,7 @@ const categories = [
         edition: 'Edição Janeiro 2026'
     },
     {
-        icon: <Shield />,
+        icon: <LuShield />,
         title: 'Homens',
         color: 'text-gray-500',
         bg: 'bg-gray-500/10',
@@ -55,7 +55,7 @@ const categories = [
         edition: 'Edição Janeiro 2026'
     },
     {
-        icon: <Home />,
+        icon: <LuHouse />,
         title: 'Lares',
         color: 'text-orange-500',
         bg: 'bg-orange-500/10',
@@ -65,7 +65,7 @@ const categories = [
         edition: 'Edição Janeiro 2026'
     },
     {
-        icon: <Compass />,
+        icon: <LuCompass />,
         title: 'Retiros',
         color: 'text-emerald-500',
         bg: 'bg-emerald-500/10',
@@ -75,7 +75,7 @@ const categories = [
         edition: 'Edição Janeiro 2026'
     },
     {
-        icon: <Heart />,
+        icon: <LuHeart />,
         title: 'Ação Social',
         color: 'text-red-500',
         bg: 'bg-red-500/10',
@@ -85,7 +85,7 @@ const categories = [
         edition: 'Edição Janeiro 2026'
     },
     {
-        icon: <GraduationCap />,
+        icon: <LuGraduationCap />,
         title: 'EBD',
         color: 'text-indigo-500',
         bg: 'bg-indigo-500/10',
@@ -108,7 +108,7 @@ const Revista = () => {
                     {/* Hero Section */}
                     <div className="text-center mb-20">
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-church-primary/10 text-church-primary dark:text-church-accent rounded-full text-sm font-bold uppercase tracking-widest mb-6">
-                            <Book className="w-4 h-4" />
+                            <LuBook className="w-4 h-4" />
                             Publicações ADMAC
                         </div>
                         <h1 className="text-5xl md:text-8xl font-black text-church-primary dark:text-white uppercase tracking-tighter mb-6 leading-none">
@@ -155,7 +155,7 @@ const Revista = () => {
                                             </div>
                                             <h3 className="text-3xl font-black text-white mb-1 flex items-center gap-2">
                                                 {cat.title}
-                                                <ChevronRight className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                                                <LuChevronRight className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
                                             </h3>
                                         </div>
                                     </div>
@@ -167,7 +167,7 @@ const Revista = () => {
                                         </p>
                                         <div className="mt-4 flex items-center gap-2 text-church-primary dark:text-church-accent font-semibold text-sm">
                                             Ler edição
-                                            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                            <LuChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                         </div>
                                     </div>
                                 </Link>

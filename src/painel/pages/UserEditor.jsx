@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Save, ArrowLeft, User, Lock, Shield, Eye, EyeOff, Camera, Link as LinkIcon } from 'lucide-react';
+import { LuSave, LuArrowLeft, LuUser, LuLock, LuShield, LuEye, LuEyeOff, LuCamera, LuLink } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const UserEditor = () => {
@@ -92,7 +92,7 @@ const UserEditor = () => {
                         onClick={() => navigate('/painel/usuarios')}
                         className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-500"
                     >
-                        <ArrowLeft size={24} />
+                        <LuArrowLeft size={24} />
                     </button>
                     <div>
                         <h1 className="text-2xl font-bold text-slate-800 dark:text-white">
@@ -111,7 +111,7 @@ const UserEditor = () => {
                     <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-4">
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                                <User size={16} className="text-emerald-500" />
+                                <LuUser size={16} className="text-emerald-500" />
                                 Nome Completo
                             </label>
                             <input
@@ -127,7 +127,7 @@ const UserEditor = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                                    <User size={16} className="text-emerald-500" />
+                                    <LuUser size={16} className="text-emerald-500" />
                                     Usuário (Login)
                                 </label>
                                 <input
@@ -142,7 +142,7 @@ const UserEditor = () => {
 
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                                    <Lock size={16} className="text-emerald-500" />
+                                    <LuLock size={16} className="text-emerald-500" />
                                     Senha
                                 </label>
                                 <div className="relative">
@@ -159,13 +159,13 @@ const UserEditor = () => {
                                         onClick={() => setShowPassword(!showPassword)}
                                         className="absolute right-3 top-2.5 text-slate-400 hover:text-emerald-500 transition-colors"
                                     >
-                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        {showPassword ? <LuEyeOff size={18} /> : <LuEye size={18} />}
                                     </button>
                                 </div>
                             </div>
                             <div className="space-y-3">
                                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                                    <Camera size={16} className="text-emerald-500" />
+                                    <LuCamera size={16} className="text-emerald-500" />
                                     Foto de Perfil
                                 </label>
 
@@ -183,7 +183,7 @@ const UserEditor = () => {
                                             htmlFor="photo-upload"
                                             className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-lg hover:bg-emerald-500 hover:text-white transition-all cursor-pointer font-medium text-sm whitespace-nowrap"
                                         >
-                                            <Camera size={18} />
+                                            <LuCamera size={18} />
                                             Selecionar Foto
                                         </label>
                                     </div>
@@ -191,7 +191,7 @@ const UserEditor = () => {
                                     {/* URL Input */}
                                     <div className="relative flex-1">
                                         <div className="absolute left-3 top-2.5 text-slate-400">
-                                            <LinkIcon size={18} />
+                                            <LuLink size={18} />
                                         </div>
                                         <input
                                             type="text"
@@ -225,14 +225,14 @@ const UserEditor = () => {
                                         }}
                                     />
                                 ) : (
-                                    <User size={40} className="text-slate-400" />
+                                    <LuUser size={40} className="text-slate-400" />
                                 )}
                             </div>
                             <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Preview do Avatar</span>
                         </div>
                         <div className="space-y-3">
                             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                                <Shield size={16} className="text-emerald-500" />
+                                <LuShield size={16} className="text-emerald-500" />
                                 Nível de Acesso
                             </label>
                             <select
@@ -250,7 +250,7 @@ const UserEditor = () => {
                                 type="submit"
                                 className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-bold transition-all shadow-lg shadow-emerald-600/20 active:scale-95"
                             >
-                                <Save size={20} />
+                                <LuSave size={20} />
                                 <span>{isEditing ? 'Salvar Alterações' : 'Cadastrar Usuário'}</span>
                             </button>
                             <button

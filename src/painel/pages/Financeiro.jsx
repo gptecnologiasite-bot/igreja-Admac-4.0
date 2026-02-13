@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Plus,
-    Search,
-    Calendar,
-    ArrowUpCircle,
-    ArrowDownCircle,
-    DollarSign,
-    Filter,
-    Droplets,
-    Zap,
-    Wifi,
-    Home,
-    Wrench,
-    MoreHorizontal,
-    Trash2,
-    Edit,
-    X
-} from 'lucide-react';
+    LuPlus,
+    LuSearch,
+    LuCalendar,
+    LuCircleArrowUp,
+    LuCircleArrowDown,
+    LuDollarSign,
+    LuFilter,
+    LuDroplets,
+    LuZap,
+    LuWifi,
+    LuHouse,
+    LuWrench,
+    LuEllipsis,
+    LuTrash2,
+    LuPencil,
+    LuX
+} from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const Financeiro = () => {
@@ -96,12 +96,12 @@ const Financeiro = () => {
 
     const getCategoryIcon = (category) => {
         switch (category) {
-            case 'Água': return <Droplets size={18} className="text-blue-500" />;
-            case 'Energia': return <Zap size={18} className="text-yellow-500" />;
-            case 'Internet': return <Wifi size={18} className="text-indigo-500" />;
-            case 'Aluguel': return <Home size={18} className="text-purple-500" />;
-            case 'Manutenção': return <Wrench size={18} className="text-slate-500" />;
-            default: return <DollarSign size={18} className="text-slate-400" />;
+            case 'Água': return <LuDroplets size={18} className="text-blue-500" />;
+            case 'Energia': return <LuZap size={18} className="text-yellow-500" />;
+            case 'Internet': return <LuWifi size={18} className="text-indigo-500" />;
+            case 'Aluguel': return <LuHouse size={18} className="text-purple-500" />;
+            case 'Manutenção': return <LuWrench size={18} className="text-slate-500" />;
+            default: return <LuDollarSign size={18} className="text-slate-400" />;
         }
     };
 
@@ -124,7 +124,7 @@ const Financeiro = () => {
                         onClick={() => setShowModal(true)}
                         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
                     >
-                        <Plus size={20} />
+                        <LuPlus size={20} />
                         Nova Transação
                     </button>
                 </div>
@@ -139,7 +139,7 @@ const Financeiro = () => {
                             <h3 className="text-2xl font-bold text-green-600 mt-1">R$ {stats.toReceive.toFixed(2)}</h3>
                         </div>
                         <div className="p-3 rounded-lg bg-green-100 text-green-600">
-                            <ArrowUpCircle size={24} />
+                            <LuCircleArrowUp size={24} />
                         </div>
                     </div>
                 </div>
@@ -151,7 +151,7 @@ const Financeiro = () => {
                             <h3 className="text-2xl font-bold text-red-600 mt-1">R$ {stats.toPay.toFixed(2)}</h3>
                         </div>
                         <div className="p-3 rounded-lg bg-red-100 text-red-600">
-                            <ArrowDownCircle size={24} />
+                            <LuCircleArrowDown size={24} />
                         </div>
                     </div>
                 </div>
@@ -165,7 +165,7 @@ const Financeiro = () => {
                             </h3>
                         </div>
                         <div className="p-3 rounded-lg bg-blue-100 text-blue-600">
-                            <DollarSign size={24} />
+                            <LuDollarSign size={24} />
                         </div>
                     </div>
                 </div>
@@ -177,7 +177,7 @@ const Financeiro = () => {
                     <h3 className="text-lg font-bold text-slate-800 dark:text-white">Transações</h3>
                     <div className="flex items-center gap-2 w-full md:w-auto">
                         <div className="relative flex-1 md:w-64">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                            <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                             <input
                                 type="text"
                                 placeholder="Buscar transação..."
@@ -185,7 +185,7 @@ const Financeiro = () => {
                             />
                         </div>
                         <button className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg">
-                            <Filter size={20} />
+                            <LuFilter size={20} />
                         </button>
                     </div>
                 </div>
@@ -225,8 +225,8 @@ const Financeiro = () => {
                                         </td>
                                         <td className="p-4">
                                             <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${t.status === 'pago'
-                                                    ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400'
-                                                    : 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400'
+                                                : 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400'
                                                 }`}>
                                                 {t.status}
                                             </span>
@@ -237,7 +237,7 @@ const Financeiro = () => {
                                                     onClick={() => handleDelete(t.id)}
                                                     className="p-1 text-slate-400 hover:text-red-500 transition-colors"
                                                 >
-                                                    <Trash2 size={16} />
+                                                    <LuTrash2 size={16} />
                                                 </button>
                                             </div>
                                         </td>
@@ -262,7 +262,7 @@ const Financeiro = () => {
                         <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
                             <h3 className="text-lg font-bold text-slate-800 dark:text-white">Nova Transação</h3>
                             <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600">
-                                <X size={20} />
+                                <LuX size={20} />
                             </button>
                         </div>
 

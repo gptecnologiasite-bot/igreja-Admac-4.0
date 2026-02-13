@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
-    LayoutDashboard,
-    FileText,
-    Settings,
-    Users,
-    BadgeDollarSign,
-    LogOut,
-    X
-} from 'lucide-react';
+    LuLayoutDashboard,
+    LuFileText,
+    LuSettings,
+    LuUsers,
+    LuBadgeDollarSign,
+    LuLogOut,
+    LuX
+} from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -33,11 +33,11 @@ const Sidebar = ({ isOpen, onClose }) => {
     };
 
     const menuItems = [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/painel' },
-        { icon: BadgeDollarSign, label: 'Financeiro', path: '/painel/financeiro' },
-        { icon: FileText, label: 'Gerenciar Páginas', path: '/painel/paginas' },
-        { icon: Users, label: 'Usuários', path: '/painel/usuarios' },
-        { icon: Settings, label: 'Configurações', path: '/painel/configuracoes' },
+        { icon: LuLayoutDashboard, label: 'Dashboard', path: '/painel' },
+        { icon: LuBadgeDollarSign, label: 'Financeiro', path: '/painel/financeiro' },
+        { icon: LuFileText, label: 'Gerenciar Páginas', path: '/painel/paginas' },
+        { icon: LuUsers, label: 'Usuários', path: '/painel/usuarios' },
+        { icon: LuSettings, label: 'Configurações', path: '/painel/configuracoes' },
     ];
 
     return (
@@ -72,7 +72,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                         )}
                     </div>
                     <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-white">
-                        <X size={24} />
+                        <LuX size={24} />
                     </button>
                 </div>
 
@@ -103,7 +103,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                         onClick={handleLogout}
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors"
                     >
-                        <LogOut size={20} />
+                        <LuLogOut size={20} />
                         <span className="font-medium">Sair</span>
                     </button>
                 </div>

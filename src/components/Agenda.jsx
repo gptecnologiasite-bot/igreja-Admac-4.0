@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Clock, Calendar as CalendarIcon } from 'lucide-react';
+import { LuClock, LuCalendar as LuCalendarIcon } from 'react-icons/lu';
 import dbService from '../services/dbService';
 
 const Agenda = () => {
@@ -78,7 +78,7 @@ const Agenda = () => {
                     </p>
                     <div className="inline-flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/10">
                         <div className="w-12 h-12 bg-church-accent rounded-xl flex items-center justify-center text-church-dark">
-                            <CalendarIcon className="w-6 h-6" />
+                            <LuCalendarIcon className="w-6 h-6" />
                         </div>
                         <div>
                             <p className="text-sm text-gray-400">{nextEvent?.label || 'Próximo Evento Especial'}</p>
@@ -99,7 +99,7 @@ const Agenda = () => {
                             className="p-6 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/8 transition-all scroll-mt-24"
                         >
                             <h3 className="text-xl font-bold text-church-accent mb-6 flex items-center gap-2">
-                                <Clock className="w-5 h-5" />
+                                <LuClock className="w-5 h-5" />
                                 {event.day}
                             </h3>
                             <div className="space-y-6">

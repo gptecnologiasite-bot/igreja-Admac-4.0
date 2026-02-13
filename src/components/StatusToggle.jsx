@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { LuCheck } from 'react-icons/lu';
 
 const StatusToggle = ({ status, onToggle }) => {
     const isActive = status === 'Ativo';
@@ -27,7 +27,7 @@ const StatusToggle = ({ status, onToggle }) => {
                 }}
             >
                 {isActive && (
-                    <Check className="w-3.5 h-3.5 text-emerald-500 font-bold" strokeWidth={3} />
+                    <LuCheck className="w-3.5 h-3.5 text-emerald-500 font-bold" strokeWidth={3} />
                 )}
             </motion.div>
         </button>

@@ -1,27 +1,27 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Headphones, MessageSquare, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LuZap, LuHeadphones, LuMessageSquare, LuGlobe, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const Jovens = () => {
     const carouselRef = useRef(null);
     const [items, setItems] = useState([
         {
-            icon: <Globe className="w-5 h-5 text-church-accent" />,
+            icon: <LuGlobe className="w-5 h-5 text-church-accent" />,
             subtitle: "TENDÊNCIAS",
             title: "Identidade Digital",
             desc: "Como manter os valores do Reino no ambiente digital.",
             className: "bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10"
         },
         {
-            icon: <Headphones className="w-5 h-5 text-church-primary" />,
+            icon: <LuHeadphones className="w-5 h-5 text-church-primary" />,
             subtitle: "PLAYLIST",
             title: "Worship do Mês",
             desc: "As músicas que estão tocando na nossa playlist.",
             className: "bg-church-accent text-church-primary"
         },
         {
-            icon: <MessageSquare className="w-5 h-5 text-church-primary dark:text-church-accent" />,
+            icon: <LuMessageSquare className="w-5 h-5 text-church-primary dark:text-church-accent" />,
             subtitle: "FALA AÍ",
             title: "Perguntas & Respostas",
             desc: "Envie sua dúvida para a próxima edição.",
@@ -48,9 +48,9 @@ const Jovens = () => {
                         // Map items to ensure they have icons and className
                         const articlesWithExtras = content.articles.map((art, index) => ({
                             ...art,
-                            icon: index === 0 ? <Globe className="w-5 h-5 text-church-accent" /> :
-                                (index === 1 ? <Headphones className="w-5 h-5 text-church-primary" /> :
-                                    <MessageSquare className="w-5 h-5 text-church-primary dark:text-church-accent" />),
+                            icon: index === 0 ? <LuGlobe className="w-5 h-5 text-church-accent" /> :
+                                (index === 1 ? <LuHeadphones className="w-5 h-5 text-church-primary" /> :
+                                    <LuMessageSquare className="w-5 h-5 text-church-primary dark:text-church-accent" />),
                             className: art.className || (index === 1 ? "bg-church-accent text-church-primary" : "bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10"),
                             subtitle: art.subtitle || (index === 0 ? "TENDÊNCIAS" : (index === 1 ? "PLAYLIST" : "FALA AÍ"))
                         }));
@@ -97,7 +97,7 @@ const Jovens = () => {
                                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-black/60" />
-                            <Zap className="absolute -top-10 -right-10 w-64 h-64 text-white/5 rotate-12" />
+                            <LuZap className="absolute -top-10 -right-10 w-64 h-64 text-white/5 rotate-12" />
                             <div className="relative z-10 h-full flex flex-col justify-end">
                                 <span className="text-church-accent font-bold tracking-widest uppercase mb-4">Revista Jovens</span>
                                 <h1 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter mb-6">
@@ -115,7 +115,7 @@ const Jovens = () => {
                         </div>
                     ) : (
                         <div className="relative py-20 px-8 rounded-[3rem] bg-linear-to-br from-church-primary to-church-secondary overflow-hidden mb-16">
-                            <Zap className="absolute -top-10 -right-10 w-64 h-64 text-white/5 rotate-12" />
+                            <LuZap className="absolute -top-10 -right-10 w-64 h-64 text-white/5 rotate-12" />
                             <div className="relative z-10">
                                 <h1 className="text-6xl md:text-8xl font-black text-white italic tracking-tighter">
                                     REVISTA <span className="text-church-accent">JOVENS</span>
@@ -135,7 +135,7 @@ const Jovens = () => {
                             className="absolute left-0 top-1/2 -translate-y-1/2 ml-4 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 disabled:opacity-0 hidden md:block"
                             aria-label="Previous slide"
                         >
-                            <ChevronLeft className="w-6 h-6" />
+                            <LuChevronLeft className="w-6 h-6" />
                         </button>
 
                         <button
@@ -143,7 +143,7 @@ const Jovens = () => {
                             className="absolute right-0 top-1/2 -translate-y-1/2 mr-4 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 hidden md:block"
                             aria-label="Next slide"
                         >
-                            <ChevronRight className="w-6 h-6" />
+                            <LuChevronRight className="w-6 h-6" />
                         </button>
 
                         <div

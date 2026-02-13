@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Users, BookOpen, Music, Heart, Baby, ShieldCheck, Star, Activity, Compass, GraduationCap, Home } from 'lucide-react';
+import { LuUsers, LuBookOpen, LuMusic, LuHeart, LuBaby, LuShieldCheck, LuStar, LuActivity, LuCompass, LuGraduationCap, LuHouse } from 'react-icons/lu';
 import dbService from '../services/dbService';
 
 const Ministries = () => {
@@ -48,31 +48,31 @@ const Ministries = () => {
     const getIcon = (item) => {
         if (item.icon) {
             switch (item.icon) {
-                case 'Users': return <Users className="w-8 h-8" />;
-                case 'Heart': return <Heart className="w-8 h-8" />;
-                case 'Baby': return <Baby className="w-8 h-8" />;
-                case 'Music': return <Music className="w-8 h-8" />;
+                case 'Users': return <LuUsers className="w-8 h-8" />;
+                case 'Heart': return <LuHeart className="w-8 h-8" />;
+                case 'Baby': return <LuBaby className="w-8 h-8" />;
+                case 'Music': return <LuMusic className="w-8 h-8" />;
                 case 'ShieldCheck':
-                case 'Shield': return <ShieldCheck className="w-8 h-8" />;
+                case 'Shield': return <LuShieldCheck className="w-8 h-8" />;
                 case 'BookOpen':
-                case 'Book': return <BookOpen className="w-8 h-8" />;
-                case 'Activity': return <Activity className="w-8 h-8" />;
-                case 'Compass': return <Compass className="w-8 h-8" />;
-                case 'GraduationCap': return <GraduationCap className="w-8 h-8" />;
-                case 'Home': return <Home className="w-8 h-8" />;
-                case 'Star': return <Star className="w-8 h-8" />;
+                case 'Book': return <LuBookOpen className="w-8 h-8" />;
+                case 'Activity': return <LuActivity className="w-8 h-8" />;
+                case 'Compass': return <LuCompass className="w-8 h-8" />;
+                case 'GraduationCap': return <LuGraduationCap className="w-8 h-8" />;
+                case 'Home': return <LuHouse className="w-8 h-8" />;
+                case 'Star': return <LuStar className="w-8 h-8" />;
                 default: break;
             }
         }
 
         const t = item.title.toLowerCase();
-        if (t.includes('lider')) return <Users className="w-8 h-8" />;
-        if (t.includes('casal') || t.includes('família')) return <Heart className="w-8 h-8" />;
-        if (t.includes('infantil') || t.includes('criança')) return <Baby className="w-8 h-8" />;
-        if (t.includes('louvor') || t.includes('música')) return <Music className="w-8 h-8" />;
-        if (t.includes('intercessão') || t.includes('oração')) return <ShieldCheck className="w-8 h-8" />;
-        if (t.includes('escola') || t.includes('bíblia') || t.includes('ebd')) return <BookOpen className="w-8 h-8" />;
-        return <Star className="w-8 h-8" />;
+        if (t.includes('lider')) return <LuUsers className="w-8 h-8" />;
+        if (t.includes('casal') || t.includes('família')) return <LuHeart className="w-8 h-8" />;
+        if (t.includes('infantil') || t.includes('criança')) return <LuBaby className="w-8 h-8" />;
+        if (t.includes('louvor') || t.includes('música')) return <LuMusic className="w-8 h-8" />;
+        if (t.includes('intercessão') || t.includes('oração')) return <LuShieldCheck className="w-8 h-8" />;
+        if (t.includes('escola') || t.includes('bíblia') || t.includes('ebd')) return <LuBookOpen className="w-8 h-8" />;
+        return <LuStar className="w-8 h-8" />;
     };
 
     return (

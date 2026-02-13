@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import {
-  Shield,
-  Target,
-  Anchor,
-  Users,
-  Calendar,
-  Clock,
-  MapPin,
-  ChevronRight,
-  ArrowRight,
-  Heart,
-  Camera
-} from "lucide-react";
+  LuShield,
+  LuTarget,
+  LuAnchor,
+  LuUsers,
+  LuCalendar,
+  LuClock,
+  LuMapPin,
+  LuChevronRight,
+  LuArrowRight,
+  LuHeart,
+  LuCamera
+} from "react-icons/lu";
 import { motion } from "framer-motion";
 import dbService from "../../services/dbService";
 
@@ -57,17 +57,17 @@ const Homem = () => {
 
   const pillars = content.pillars || [
     {
-      icon: <Shield className="w-8 h-8" />,
+      icon: <LuShield className="w-8 h-8" />,
       title: "Sacerdócio",
       desc: "Liderando a família com integridade e amor sacrificial."
     },
     {
-      icon: <Target className="w-8 h-8" />,
+      icon: <LuTarget className="w-8 h-8" />,
       title: "Paternidade",
       desc: "Deixando um legado de fé para as próximas gerações."
     },
     {
-      icon: <Users className="w-8 h-8" />,
+      icon: <LuUsers className="w-8 h-8" />,
       title: "Discipulado",
       desc: "Homens afiando homens, crescendo juntos na Palavra."
     }
@@ -144,7 +144,7 @@ const Homem = () => {
           <div className="space-y-8">
             <div>
               <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-4 uppercase tracking-tighter flex items-center gap-3">
-                <Calendar className="text-church-primary" /> Nossa Agenda
+                <LuCalendar className="text-church-primary" /> Nossa Agenda
               </h2>
               <div className="w-16 h-1.5 bg-church-primary rounded-full"></div>
             </div>
@@ -161,13 +161,13 @@ const Homem = () => {
                   <div>
                     <h4 className="font-bold text-gray-900 dark:text-white mb-2 text-lg">{item.title}</h4>
                     <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-                      <span className="flex items-center gap-1.5"><Calendar size={14} /> {item.date}</span>
-                      <span className="flex items-center gap-1.5"><Clock size={14} /> {item.time}</span>
-                      <span className="flex items-center gap-1.5"><MapPin size={14} /> {item.location}</span>
+                      <span className="flex items-center gap-1.5"><LuCalendar size={14} /> {item.date}</span>
+                      <span className="flex items-center gap-1.5"><LuClock size={14} /> {item.time}</span>
+                      <span className="flex items-center gap-1.5"><LuMapPin size={14} /> {item.location}</span>
                     </div>
                   </div>
                   <div className="p-2 rounded-full bg-gray-100 dark:bg-white/5 text-gray-400 group-hover:bg-church-primary group-hover:text-white transition-all">
-                    <ChevronRight size={20} />
+                    <LuChevronRight size={20} />
                   </div>
                 </motion.div>
               ))}
@@ -181,7 +181,7 @@ const Homem = () => {
             className="relative p-12 rounded-[3rem] bg-church-primary text-white overflow-hidden shadow-2xl flex flex-col justify-between min-h-[400px]"
           >
             <div className="absolute top-0 right-0 p-10 opacity-10">
-              <Anchor className="w-64 h-64 -rotate-12" />
+              <LuAnchor className="w-64 h-64 -rotate-12" />
             </div>
 
             <div className="relative z-10">
@@ -194,7 +194,7 @@ const Homem = () => {
             </div>
 
             <button className="relative z-10 w-fit px-8 py-4 bg-white text-church-primary font-bold rounded-2xl flex items-center gap-3 hover:gap-5 transition-all shadow-lg active:scale-95">
-              Ver Mais Estudos <ArrowRight size={20} />
+              Ver Mais Estudos <LuArrowRight size={20} />
             </button>
           </motion.div>
         </div>
@@ -203,7 +203,7 @@ const Homem = () => {
         <section className="mb-32">
           <div className="flex flex-col items-center mb-16">
             <div className="p-3 bg-church-primary/10 rounded-2xl text-church-primary mb-4">
-              <Users size={32} />
+              <LuUsers size={32} />
             </div>
             <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Nossa Equipe</h2>
             <div className="w-16 h-1.5 bg-church-primary rounded-full mt-4"></div>
@@ -251,7 +251,7 @@ const Homem = () => {
         <section className="mb-32">
           <div className="flex flex-col items-center mb-16">
             <div className="p-3 bg-church-primary/10 rounded-2xl text-church-primary mb-4">
-              <Camera size={32} />
+              <LuCamera size={32} />
             </div>
             <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Galeria de Fotos</h2>
             <div className="w-16 h-1.5 bg-church-primary rounded-full mt-4"></div>
@@ -287,7 +287,7 @@ const Homem = () => {
 
         {/* Footer Quote */}
         <div className="mt-40 text-center py-20 border-y border-gray-100 dark:border-white/5">
-          <Heart className="w-12 h-12 text-church-primary mx-auto mb-8 animate-pulse" />
+          <LuHeart className="w-12 h-12 text-church-primary mx-auto mb-8 animate-pulse" />
           <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white max-w-4xl mx-auto leading-tight uppercase tracking-tighter">
             Unidos em um só propósito: Servir ao Senhor e à sua Igreja.
           </h2>

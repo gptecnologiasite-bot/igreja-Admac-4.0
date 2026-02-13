@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Heart, Users, Star, Quote, MessageCircle, Edit2, Check, Radio, ExternalLink, X, Gift, Copy } from 'lucide-react';
+import { LuHeart, LuUsers, LuStar, LuQuote, LuMessageCircle, LuPencil, LuCheck, LuRadio, LuExternalLink, LuX, LuGift, LuCopy, LuChevronRight } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
 import dbService from '../../services/dbService';
 
@@ -148,7 +148,7 @@ const Casais = () => {
                     >
                         <div className="flex items-center gap-4 mb-6">
                             <div className="p-3 bg-pink-500/20 backdrop-blur-md rounded-xl border border-white/10">
-                                <Heart className="w-8 h-8 text-pink-500" />
+                                <LuHeart className="w-8 h-8 text-pink-500" />
                             </div>
                             <span className="text-pink-500 font-bold text-xs tracking-widest uppercase">Ministério de Casais</span>
                         </div>
@@ -177,7 +177,7 @@ const Casais = () => {
                     <section className="mb-32">
                         <div className="flex flex-col items-center mb-16">
                             <div className="p-3 bg-pink-500/10 rounded-2xl text-pink-500 mb-4">
-                                <Users size={32} />
+                                <LuUsers size={32} />
                             </div>
                             <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Nossa Equipe</h2>
                             <div className="w-16 h-1.5 bg-pink-500 rounded-full mt-4"></div>
@@ -219,14 +219,14 @@ const Casais = () => {
 
                     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-12">
                         <div className="p-10 rounded-[2.5rem] bg-pink-600 text-white space-y-4">
-                            <Users className="w-12 h-12 text-pink-100" />
+                            <LuUsers className="w-12 h-12 text-pink-100" />
                             <h2 className="text-3xl font-bold">Comunhão Familiar</h2>
                             <p className="text-white/80 leading-relaxed text-lg">
                                 Realizamos jantares, palestras e retiros exclusivos para casais, criando um ambiente saudável para o crescimento da vida a dois.
                             </p>
                         </div>
                         <div className="p-10 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-white/10 flex flex-col justify-center text-center space-y-4">
-                            <Star className="w-12 h-12 text-pink-600 dark:text-pink-400 mx-auto" />
+                            <LuStar className="w-12 h-12 text-pink-600 dark:text-pink-400 mx-auto" />
                             <h2 className="text-3xl font-bold text-church-primary dark:text-white tracking-tight">Nosso Propósito</h2>
                             <p className="text-gray-500 dark:text-gray-400 text-lg">
                                 &quot;Portanto deixará o homem o seu pai e a sua mãe, e apegar-se-á à sua mulher, e serão ambos uma carne.&quot; <br />
@@ -243,7 +243,7 @@ const Casais = () => {
                         className="mt-20 p-8 md:p-12 rounded-4xl bg-linear-to-br from-[#1a1c23] to-[#252733] border border-white/5 relative overflow-hidden group shadow-2xl"
                     >
                         <div className="absolute top-0 right-0 p-12 opacity-5">
-                            <MessageCircle className="w-64 h-64 text-white" />
+                            <LuMessageCircle className="w-64 h-64 text-white" />
                         </div>
 
                         {/* Edit Button */}
@@ -251,13 +251,13 @@ const Casais = () => {
                             onClick={() => !isEditing && setIsEditing(true)}
                             className={`absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-pink-500/20 hover:bg-pink-500 text-white border border-pink-500/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
                         >
-                            <Edit2 size={18} />
+                            <LuEdit2 size={18} />
                             <span className="text-sm font-bold uppercase tracking-wider">Editar Mensagem</span>
                         </button>
 
                         <div className="relative z-10">
                             <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                                <MessageCircle className="text-pink-500" />
+                                <LuMessageCircle className="text-pink-500" />
                                 Mensagem aos Casais
                             </h2>
 
@@ -306,7 +306,7 @@ const Casais = () => {
                                             onClick={handleSave}
                                             className="flex items-center gap-2 px-8 py-2.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-bold transition-all shadow-xl shadow-pink-500/20 hover:scale-105 active:scale-95"
                                         >
-                                            <Check size={20} />
+                                            <LuCheck size={20} />
                                             Publicar Agora
                                         </button>
                                     </div>
@@ -341,7 +341,7 @@ const Casais = () => {
                                     viewport={{ once: true }}
                                     className="p-8 rounded-4xl bg-linear-to-br from-pink-500/10 to-pink-500/5 border border-pink-500/20 relative overflow-hidden group"
                                 >
-                                    <Star className="absolute -right-4 -top-4 w-24 h-24 text-pink-500/10 rotate-12 group-hover:scale-110 transition-transform duration-500" />
+                                    <LuStar className="absolute -right-4 -top-4 w-24 h-24 text-pink-500/10 rotate-12 group-hover:scale-110 transition-transform duration-500" />
 
                                     {raffle.image && (
                                         <div className="relative h-48 mb-6 rounded-2xl overflow-hidden shadow-lg border border-pink-500/10">
@@ -356,7 +356,7 @@ const Casais = () => {
                                     <div className="relative z-10">
                                         <div className="flex items-center gap-3 mb-4">
                                             <div className="p-2 bg-pink-500 rounded-lg">
-                                                <Star className="w-5 h-5 text-white" />
+                                                <LuStar className="w-5 h-5 text-white" />
                                             </div>
                                             <h3 className="text-2xl font-bold text-church-primary dark:text-white">Sorteio Especial</h3>
                                         </div>
@@ -369,14 +369,14 @@ const Casais = () => {
                                             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-bold transition-all shadow-lg shadow-pink-500/20 hover:scale-105 active:scale-95"
                                         >
                                             Participar Agora
-                                            <ChevronRight size={18} />
+                                            <LuChevronRight size={18} />
                                         </button>
                                         {raffle.pix && (
                                             <button
                                                 onClick={() => handleCopyPix(raffle.pix)}
                                                 className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-pink-500/10 text-pink-500 font-bold hover:bg-pink-500/20 transition-all border border-pink-500/20"
                                             >
-                                                {copiedPix ? <Check size={18} /> : <Copy size={18} />}
+                                                {copiedPix ? <LuCheck size={18} /> : <LuCopy size={18} />}
                                                 {copiedPix ? 'Chave Pix Copiada!' : 'Copiar Chave Pix'}
                                             </button>
                                         )}
@@ -403,7 +403,7 @@ const Casais = () => {
                                     <div className={`p-8 md:p-12 flex flex-col justify-center ${productPromotion.image ? 'md:w-[60%]' : 'w-full'}`}>
                                         <div className="flex items-center gap-3 mb-6">
                                             <div className="p-2.5 bg-church-primary rounded-xl shadow-lg shadow-church-primary/20">
-                                                <Gift className="w-6 h-6 text-white" />
+                                                <LuGift className="w-6 h-6 text-white" />
                                             </div>
                                             <h3 className="text-xl font-bold text-church-primary dark:text-white uppercase tracking-widest">
                                                 Destaque do Ministério
@@ -432,7 +432,7 @@ const Casais = () => {
                                                     className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-church-primary text-white font-bold text-lg transition-all hover:scale-105 active:scale-95 shadow-xl shadow-church-primary/20"
                                                 >
                                                     Confira Agora
-                                                    <Radio size={20} className="animate-pulse" />
+                                                    <LuRadio size={20} className="animate-pulse" />
                                                 </button>
                                                 <div className="hidden sm:block text-right">
                                                     <p className="text-xs text-gray-400 uppercase tracking-tighter font-bold">Lançamento</p>
@@ -461,7 +461,7 @@ const Casais = () => {
                                         onClick={() => setSelectedItem(null)}
                                         className="absolute top-6 right-6 z-10 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-all backdrop-blur-md"
                                     >
-                                        <X size={24} />
+                                        <LuX size={24} />
                                     </button>
 
                                     {/* Modal Content */}
@@ -479,7 +479,7 @@ const Casais = () => {
                                         <div className="p-8 sm:p-12">
                                             <div className="flex items-center gap-3 mb-4">
                                                 <div className={`p-2 rounded-lg ${selectedItem.type === 'raffle' ? 'bg-pink-500' : 'bg-church-primary'}`}>
-                                                    {selectedItem.type === 'raffle' ? <Star className="text-white w-5 h-5" /> : <Gift className="text-white w-5 h-5" />}
+                                                    {selectedItem.type === 'raffle' ? <LuStar className="text-white w-5 h-5" /> : <LuGift className="text-white w-5 h-5" />}
                                                 </div>
                                                 <span className="text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
                                                     {selectedItem.type === 'raffle' ? 'Sorteio Especial' : 'Destaque do Ministério'}
@@ -511,14 +511,14 @@ const Casais = () => {
                                                     className={`flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-lg text-white transition-all hover:scale-105 active:scale-95 shadow-xl ${selectedItem.type === 'raffle' ? 'bg-pink-500 shadow-pink-500/20' : 'bg-church-primary shadow-church-primary/20'}`}
                                                 >
                                                     {selectedItem.type === 'raffle' ? 'Participar Agora' : 'Ir para Link'}
-                                                    <ExternalLink size={20} />
+                                                    <LuExternalLink size={20} />
                                                 </a>
                                                 {selectedItem.pix && (
                                                     <button
                                                         onClick={() => handleCopyPix(selectedItem.pix)}
                                                         className="px-8 py-4 rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-200 font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10 flex items-center gap-2"
                                                     >
-                                                        {copiedPix ? <Check size={20} className="text-green-500" /> : <Copy size={20} />}
+                                                        {copiedPix ? <LuCheck size={20} className="text-green-500" /> : <LuCopy size={20} />}
                                                         {copiedPix ? 'Copiado!' : 'Pix'}
                                                     </button>
                                                 )}
@@ -551,7 +551,7 @@ const Casais = () => {
                                     transition={{ delay: index * 0.1 }}
                                     className="p-8 rounded-4xl bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/5 relative"
                                 >
-                                    <Quote className="w-10 h-10 text-pink-500/20 mb-4 absolute top-8 right-8" />
+                                    <LuQuote className="w-10 h-10 text-pink-500/20 mb-4 absolute top-8 right-8" />
                                     <p className="text-gray-600 dark:text-gray-300 italic mb-6 relative z-10">
                                         &quot;{testimony.text}&quot;
                                     </p>

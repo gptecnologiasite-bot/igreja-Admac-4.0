@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Gift, Users, Globe } from 'lucide-react';
+import { LuHeart, LuGift, LuUsers, LuGlobe } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const AcaoSocial = () => {
@@ -48,7 +48,7 @@ const AcaoSocial = () => {
                         <div className="space-y-8">
                             <div className="flex gap-6 items-start">
                                 <div className="shrink-0 p-4 bg-red-500/10 rounded-2xl text-red-500">
-                                    <Heart className="w-8 h-8" />
+                                    <LuHeart className="w-8 h-8" />
                                 </div>
                                 <div>
                                     <h3 className="text-2xl font-bold text-church-primary dark:text-white mb-2">Amor Prático</h3>
@@ -57,7 +57,7 @@ const AcaoSocial = () => {
                             </div>
                             <div className="flex gap-6 items-start">
                                 <div className="shrink-0 p-4 bg-blue-500/10 rounded-2xl text-blue-500">
-                                    <Gift className="w-8 h-8" />
+                                    <LuGift className="w-8 h-8" />
                                 </div>
                                 <div>
                                     <h3 className="text-2xl font-bold text-church-primary dark:text-white mb-2">Doações Recorrentes</h3>
@@ -66,7 +66,7 @@ const AcaoSocial = () => {
                             </div>
                             <div className="flex gap-6 items-start">
                                 <div className="shrink-0 p-4 bg-green-500/10 rounded-2xl text-green-500">
-                                    <Globe className="w-8 h-8" />
+                                    <LuGlobe className="w-8 h-8" />
                                 </div>
                                 <div>
                                     <h3 className="text-2xl font-bold text-church-primary dark:text-white mb-2">Impacto Local</h3>
@@ -86,7 +86,7 @@ const AcaoSocial = () => {
                     </div>
 
                     <div className="p-12 rounded-[5rem] bg-church-primary text-center">
-                        <Users className="w-16 h-16 text-church-accent mx-auto mb-6" />
+                        <LuUsers className="w-16 h-16 text-church-accent mx-auto mb-6" />
                         <h2 className="text-4xl md:text-5xl font-bold text-white italic tracking-tight mb-8">Como você pode ser voluntário?</h2>
                         <button className="bg-church-accent text-church-primary px-12 py-4 rounded-full font-bold text-xl hover:scale-105 transition-transform">
                             Quero Ajudar

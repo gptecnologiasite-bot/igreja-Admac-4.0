@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
+import { LuMapPin, LuPhone, LuMail, LuClock, LuSend } from 'react-icons/lu';
 import dbService from '../services/dbService';
 
 const Contact = () => {
@@ -61,7 +61,7 @@ const Contact = () => {
                             className="p-6 rounded-2xl bg-church-light dark:bg-white/5 border border-gray-100 dark:border-white/10"
                         >
                             <div className="w-10 h-10 bg-white dark:bg-white/10 rounded-lg flex items-center justify-center text-church-primary dark:text-church-accent mb-4 shadow-sm">
-                                <MapPin className="w-5 h-5" />
+                                <LuMapPin className="w-5 h-5" />
                             </div>
                             <h4 className="font-bold text-church-primary dark:text-white mb-2">Endereço</h4>
                             <div className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -77,7 +77,7 @@ const Contact = () => {
                             className="p-6 rounded-2xl bg-church-light dark:bg-white/5 border border-gray-100 dark:border-white/10"
                         >
                             <div className="w-10 h-10 bg-white dark:bg-white/10 rounded-lg flex items-center justify-center text-church-primary dark:text-church-accent mb-4 shadow-sm">
-                                <Phone className="w-5 h-5" />
+                                <LuPhone className="w-5 h-5" />
                             </div>
                             <h4 className="font-bold text-church-primary dark:text-white mb-2">Telefone</h4>
                             <div className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -93,7 +93,7 @@ const Contact = () => {
                             className="p-6 rounded-2xl bg-church-light dark:bg-white/5 border border-gray-100 dark:border-white/10"
                         >
                             <div className="w-10 h-10 bg-white dark:bg-white/10 rounded-lg flex items-center justify-center text-church-primary dark:text-church-accent mb-4 shadow-sm">
-                                <Mail className="w-5 h-5" />
+                                <LuMail className="w-5 h-5" />
                             </div>
                             <h4 className="font-bold text-church-primary dark:text-white mb-2">E-mail</h4>
                             <div className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -109,7 +109,7 @@ const Contact = () => {
                             className="p-6 rounded-2xl bg-church-light dark:bg-white/5 border border-gray-100 dark:border-white/10"
                         >
                             <div className="w-10 h-10 bg-white dark:bg-white/10 rounded-lg flex items-center justify-center text-church-primary dark:text-church-accent mb-4 shadow-sm">
-                                <Clock className="w-5 h-5" />
+                                <LuClock className="w-5 h-5" />
                             </div>
                             <h4 className="font-bold text-church-primary dark:text-white mb-2">Horário Secretaria</h4>
                             <div className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -153,7 +153,7 @@ const Contact = () => {
                         </div>
                         <button type="submit" className="w-full btn-primary bg-church-primary dark:bg-church-accent dark:text-church-dark flex items-center justify-center gap-2 group">
                             Enviar Mensagem
-                            <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                            <LuSend className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                         </button>
                     </form>
                 </motion.div>

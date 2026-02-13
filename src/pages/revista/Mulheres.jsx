@@ -1,15 +1,15 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Flower, Coffee, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LuHeart, LuFlower, LuCoffee, LuUsers, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const Mulheres = () => {
     const carouselRef = useRef(null);
     const [items, setItems] = useState([
-        { icon: <Heart />, title: "Família", desc: "Equilíbrio emocional no lar." },
-        { icon: <Users />, title: "Comunhão", desc: "O valor da amizade cristã." },
-        { icon: <Coffee />, title: "Devocional", desc: "Sua hora especial com Deus." },
-        { icon: <Flower />, title: "Propósito", desc: "Descobrindo o plano divino." }
+        { icon: <LuHeart />, title: "Família", desc: "Equilíbrio emocional no lar." },
+        { icon: <LuUsers />, title: "Comunhão", desc: "O valor da amizade cristã." },
+        { icon: <LuCoffee />, title: "Devocional", desc: "Sua hora especial com Deus." },
+        { icon: <LuFlower />, title: "Propósito", desc: "Descobrindo o plano divino." }
     ]);
 
     const [featured, setFeatured] = useState({
@@ -64,7 +64,7 @@ const Mulheres = () => {
                             </p>
                         </div>
                         <div className="shrink-0 w-64 h-64 rounded-full bg-pink-100 dark:bg-pink-900/20 flex items-center justify-center p-8 border-4 border-white dark:border-white/10 shadow-xl">
-                            <Flower className="w-full h-full text-pink-500" />
+                            <LuFlower className="w-full h-full text-pink-500" />
                         </div>
                     </div>
 
@@ -76,7 +76,7 @@ const Mulheres = () => {
                             className="absolute left-0 top-1/2 -translate-y-1/2 ml-4 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 disabled:opacity-0 hidden md:block"
                             aria-label="Previous slide"
                         >
-                            <ChevronLeft className="w-6 h-6" />
+                            <LuChevronLeft className="w-6 h-6" />
                         </button>
 
                         <button
@@ -84,7 +84,7 @@ const Mulheres = () => {
                             className="absolute right-0 top-1/2 -translate-y-1/2 mr-4 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 hidden md:block"
                             aria-label="Next slide"
                         >
-                            <ChevronRight className="w-6 h-6" />
+                            <LuChevronRight className="w-6 h-6" />
                         </button>
 
                         <div

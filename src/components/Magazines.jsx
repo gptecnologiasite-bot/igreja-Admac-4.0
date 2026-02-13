@@ -1,7 +1,7 @@
 import React, { useState, useEffect, cloneElement } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Book, Baby, Users, Music, Heart, Shield, Home, Compass, GraduationCap, Star } from 'lucide-react';
+import { LuBook, LuBaby, LuUsers, LuMusic, LuHeart, LuShield, LuHouse, LuCompass, LuGraduationCap, LuStar } from 'react-icons/lu';
 import dbService from '../services/dbService';
 
 const Magazines = () => {
@@ -9,15 +9,15 @@ const Magazines = () => {
         title: 'Nossa Revista Digital',
         description: 'Conteúdo exclusivo dividido por áreas de interesse. Clique e mergulhe em estudos, notícias e inspiração.',
         items: [
-            { icon: <Baby />, title: 'Kids', color: 'text-yellow-500', href: '/revista/kids' },
-            { icon: <Users />, title: 'Jovens', color: 'text-blue-500', href: '/revista/jovens' },
-            { icon: <Music />, title: 'Louvor', color: 'text-purple-500', href: '/revista/louvor' },
-            { icon: <Heart />, title: 'Mulheres', color: 'text-pink-500', href: '/revista/mulheres' },
-            { icon: <Shield />, title: 'Homens', color: 'text-gray-500', href: '/revista/homens' },
-            { icon: <Home />, title: 'Lares', color: 'text-orange-500', href: '/revista/lares' },
-            { icon: <Compass />, title: 'Retiros', color: 'text-emerald-500', href: '/revista/retiros' },
-            { icon: <Heart />, title: 'Ação Social', color: 'text-red-500', href: '/revista/acao-social' },
-            { icon: <GraduationCap />, title: 'EBD', color: 'text-indigo-500', href: '/revista/ebd' }
+            { icon: <LuBaby />, title: 'Kids', color: 'text-yellow-500', href: '/revista/kids' },
+            { icon: <LuUsers />, title: 'Jovens', color: 'text-blue-500', href: '/revista/jovens' },
+            { icon: <LuMusic />, title: 'Louvor', color: 'text-purple-500', href: '/revista/louvor' },
+            { icon: <LuHeart />, title: 'Mulheres', color: 'text-pink-500', href: '/revista/mulheres' },
+            { icon: <LuShield />, title: 'Homens', color: 'text-gray-500', href: '/revista/homens' },
+            { icon: <LuHouse />, title: 'Lares', color: 'text-orange-500', href: '/revista/lares' },
+            { icon: <LuCompass />, title: 'Retiros', color: 'text-emerald-500', href: '/revista/retiros' },
+            { icon: <LuHeart />, title: 'Ação Social', color: 'text-red-500', href: '/revista/acao-social' },
+            { icon: <LuGraduationCap />, title: 'EBD', color: 'text-indigo-500', href: '/revista/ebd' }
         ]
     });
 
@@ -43,16 +43,16 @@ const Magazines = () => {
 
     const getIcon = (title) => {
         const t = title.toLowerCase();
-        if (t.includes('kids') || t.includes('infantil')) return <Baby />;
-        if (t.includes('jovens') || t.includes('adolescentes')) return <Users />;
-        if (t.includes('louvor') || t.includes('música')) return <Music />;
-        if (t.includes('mulher')) return <Heart className="text-pink-500" />;
-        if (t.includes('homem')) return <Shield />;
-        if (t.includes('lar') || t.includes('casa')) return <Home />;
-        if (t.includes('retiro')) return <Compass />;
-        if (t.includes('social')) return <Heart className="text-red-500" />;
-        if (t.includes('ebd') || t.includes('bíblia')) return <GraduationCap />;
-        return <Star />;
+        if (t.includes('kids') || t.includes('infantil')) return <LuBaby />;
+        if (t.includes('jovens') || t.includes('adolescentes')) return <LuUsers />;
+        if (t.includes('louvor') || t.includes('música')) return <LuMusic />;
+        if (t.includes('mulher')) return <LuHeart className="text-pink-500" />;
+        if (t.includes('homem')) return <LuShield />;
+        if (t.includes('lar') || t.includes('casa')) return <LuHouse />;
+        if (t.includes('retiro')) return <LuCompass />;
+        if (t.includes('social')) return <LuHeart className="text-red-500" />;
+        if (t.includes('ebd') || t.includes('bíblia')) return <LuGraduationCap />;
+        return <LuStar />;
     };
 
     return (
@@ -71,7 +71,7 @@ const Magazines = () => {
                         to="/revista"
                         className="inline-flex items-center gap-2 text-church-primary dark:text-church-accent font-bold hover:underline"
                     >
-                        Ver todas as edições <Book className="w-5 h-5" />
+                        Ver todas as edições <LuBook className="w-5 h-5" />
                     </Link>
                 </div>
 

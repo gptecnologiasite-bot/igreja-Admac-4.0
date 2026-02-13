@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Heart, Camera, BookOpen, X, Calendar, User, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LuStar, LuHeart, LuCamera, LuBookOpen, LuX, LuCalendar, LuUser, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const Kids = () => {
@@ -10,7 +10,7 @@ const Kids = () => {
     const [articles, setArticles] = useState([
         {
             id: 1,
-            icon: <Star className="w-6 h-6" />,
+            icon: <LuStar className="w-6 h-6" />,
             iconColor: 'bg-blue-500/10 text-blue-500',
             title: 'Colorindo a Fé',
             excerpt: 'Atividades lúdicas para memorização de versículos básicos de forma criativa.',
@@ -46,7 +46,7 @@ const Kids = () => {
         },
         {
             id: 2,
-            icon: <Heart className="w-6 h-6" />,
+            icon: <LuHeart className="w-6 h-6" />,
             iconColor: 'bg-pink-500/10 text-pink-500',
             title: 'Amigos de Deus',
             excerpt: 'Uma série de estudos sobre Davi, Samuel e outras crianças da Bíblia.',
@@ -83,7 +83,7 @@ const Kids = () => {
         },
         {
             id: 3,
-            icon: <BookOpen className="w-6 h-6" />,
+            icon: <LuBookOpen className="w-6 h-6" />,
             iconColor: 'bg-green-500/10 text-green-500',
             title: 'Contos Bíblicos',
             excerpt: 'Histórias adaptadas para leitura em família com ilustrações exclusivas.',
@@ -149,7 +149,7 @@ const Kids = () => {
                     if (content.articles && content.articles.length > 0) {
                         const articlesWithIcons = content.articles.map((art, index) => ({
                             ...art,
-                            icon: index === 0 ? <Star className="w-6 h-6" /> : (index === 1 ? <Heart className="w-6 h-6" /> : <BookOpen className="w-6 h-6" />)
+                            icon: index === 0 ? <LuStar className="w-6 h-6" /> : (index === 1 ? <LuHeart className="w-6 h-6" /> : <LuBookOpen className="w-6 h-6" />)
                         }));
                         setArticles(articlesWithIcons);
                     }
@@ -233,7 +233,7 @@ const Kids = () => {
                                 className="absolute left-0 top-1/2 -translate-y-1/2 ml-4 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 disabled:opacity-0 hidden md:block"
                                 aria-label="Previous slide"
                             >
-                                <ChevronLeft className="w-6 h-6" />
+                                <LuChevronLeft className="w-6 h-6" />
                             </button>
 
                             <button
@@ -241,7 +241,7 @@ const Kids = () => {
                                 className="absolute right-0 top-1/2 -translate-y-1/2 mr-4 z-20 p-3 rounded-full bg-white dark:bg-[#1a1c23] shadow-lg border border-gray-100 dark:border-white/10 text-church-primary dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 hidden md:block"
                                 aria-label="Next slide"
                             >
-                                <ChevronRight className="w-6 h-6" />
+                                <LuChevronRight className="w-6 h-6" />
                             </button>
 
                             <div
@@ -266,11 +266,11 @@ const Kids = () => {
                                             <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">{article.excerpt}</p>
                                             <div className="flex items-center gap-3 text-xs text-gray-400">
                                                 <span className="flex items-center gap-1">
-                                                    <User className="w-3 h-3" />
+                                                    <LuUser className="w-3 h-3" />
                                                     {article.author}
                                                 </span>
                                                 <span className="flex items-center gap-1">
-                                                    <Calendar className="w-3 h-3" />
+                                                    <LuCalendar className="w-3 h-3" />
                                                     {article.date}
                                                 </span>
                                             </div>
@@ -286,7 +286,7 @@ const Kids = () => {
 
                     {/* Gallery Preview */}
                     <div className="p-12 rounded-[3.5rem] bg-church-primary text-white text-center">
-                        <Camera className="w-12 h-12 text-church-accent mx-auto mb-6" />
+                        <LuCamera className="w-12 h-12 text-church-accent mx-auto mb-6" />
                         <h2 className="text-4xl font-bold mb-6 italic tracking-tight">{galleryPreview.title}</h2>
                         {galleryPreview.link ? (
                             <a
@@ -333,7 +333,7 @@ const Kids = () => {
                                     onClick={() => setSelectedArticle(null)}
                                     className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
                                 >
-                                    <X className="w-6 h-6" />
+                                    <LuX className="w-6 h-6" />
                                 </button>
                                 <div className="absolute bottom-6 left-6 right-6">
                                     <h2 className="text-3xl md:text-4xl font-black text-white mb-3">
@@ -341,11 +341,11 @@ const Kids = () => {
                                     </h2>
                                     <div className="flex items-center gap-4 text-white/80 text-sm">
                                         <span className="flex items-center gap-2">
-                                            <User className="w-4 h-4" />
+                                            <LuUser className="w-4 h-4" />
                                             {selectedArticle.author}
                                         </span>
                                         <span className="flex items-center gap-2">
-                                            <Calendar className="w-4 h-4" />
+                                            <LuCalendar className="w-4 h-4" />
                                             {selectedArticle.date}
                                         </span>
                                     </div>

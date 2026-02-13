@@ -1,5 +1,5 @@
 import React from 'react';
-import { Church, Facebook, Instagram, Youtube, MapPin, Phone, Mail } from 'lucide-react';
+import { LuChurch, LuFacebook, LuInstagram, LuYoutube, LuMapPin, LuPhone, LuMail } from 'react-icons/lu';
 import dbService from '../services/dbService';
 
 const Footer = () => {
@@ -24,14 +24,14 @@ const Footer = () => {
                                         }}
                                     />
                                     <div className="hidden p-2 bg-church-primary rounded-lg border border-white/20">
-                                        <Church className="w-8 h-8 text-white" />
+                                        <LuChurch className="w-8 h-8 text-white" />
                                     </div>
                                     <span className="text-2xl font-bold tracking-tight">{settings.siteName}</span>
                                 </>
                             ) : (
                                 <>
                                     <div className="p-2 bg-church-primary rounded-lg border border-white/20">
-                                        <Church className="w-8 h-8 text-white" />
+                                        <LuChurch className="w-8 h-8 text-white" />
                                     </div>
                                     <span className="text-2xl font-bold tracking-tight">{settings.siteName}</span>
                                 </>
@@ -42,13 +42,13 @@ const Footer = () => {
                         </p>
                         <div className="flex gap-4">
                             <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-church-primary transition-all">
-                                <Instagram className="w-5 h-5" />
+                                <LuInstagram className="w-5 h-5" />
                             </a>
                             <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-church-primary transition-all">
-                                <Facebook className="w-5 h-5" />
+                                <LuFacebook className="w-5 h-5" />
                             </a>
                             <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-church-primary transition-all">
-                                <Youtube className="w-5 h-5" />
+                                <LuYoutube className="w-5 h-5" />
                             </a>
                         </div>
                     </div>
@@ -69,15 +69,15 @@ const Footer = () => {
                         <h4 className="text-lg font-semibold mb-6">Contato</h4>
                         <ul className="space-y-4">
                             <li className="flex items-start gap-3">
-                                <MapPin className="w-5 h-5 text-church-accent shrink-0" />
+                                <LuMapPin className="w-5 h-5 text-church-accent shrink-0" />
                                 <span className="text-gray-400">Rua da Igreja, 123, Centro, Cidade-UF</span>
                             </li>
                             <li className="flex items-center gap-3">
-                                <Phone className="w-5 h-5 text-church-accent shrink-0" />
+                                <LuPhone className="w-5 h-5 text-church-accent shrink-0" />
                                 <span className="text-gray-400">(00) 1234-5678</span>
                             </li>
                             <li className="flex items-center gap-3">
-                                <Mail className="w-5 h-5 text-church-accent shrink-0" />
+                                <LuMail className="w-5 h-5 text-church-accent shrink-0" />
                                 <span className="text-gray-400">contato@admac.com.br</span>
                             </li>
                         </ul>

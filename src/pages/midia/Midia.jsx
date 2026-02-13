@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
-    Video,
-    Music,
-    Image as ImageIcon,
-    Play,
-    Headphones,
-    Maximize2,
-    Calendar,
-    User,
-    Quote,
-    Users
-} from "lucide-react";
+    LuVideo,
+    LuMusic,
+    LuImage,
+    LuPlay,
+    LuHeadphones,
+    LuMaximize2,
+    LuCalendar,
+    LuUser,
+    LuQuote,
+    LuUsers
+} from "react-icons/lu";
 import { motion, AnimatePresence } from "framer-motion";
 import dbService from "../../services/dbService";
 import VideoModal from "../../components/VideoModal";
@@ -56,9 +56,9 @@ const Midia = () => {
     const photos = Array.isArray(content.photos) ? content.photos : [];
 
     const tabs = [
-        { id: "videos", label: "Vídeos", icon: <Video className="w-4 h-4" /> },
-        { id: "audios", label: "Áudios", icon: <Music className="w-4 h-4" /> },
-        { id: "photos", label: "Fotos", icon: <ImageIcon className="w-4 h-4" /> },
+        { id: "videos", label: "Vídeos", icon: <LuVideo className="w-4 h-4" /> },
+        { id: "audios", label: "Áudios", icon: <LuMusic className="w-4 h-4" /> },
+        { id: "photos", label: "Fotos", icon: <LuImage className="w-4 h-4" /> },
     ];
 
     return (
@@ -145,7 +145,7 @@ const Midia = () => {
                                                 {/* Play Button Overlay */}
                                                 <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/50 transition-colors z-10">
                                                     <div className="w-16 h-16 rounded-full bg-yellow-500 text-white flex items-center justify-center shadow-2xl transform scale-90 group-hover:scale-100 transition-all duration-300">
-                                                        <Play size={32} fill="currentColor" />
+                                                        <LuPlay size={32} fill="currentColor" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -170,7 +170,7 @@ const Midia = () => {
                                         className="flex items-center gap-4 p-4 bg-white dark:bg-slate-900 rounded-2xl shadow-md border border-gray-100 dark:border-white/5 group hover:bg-church-primary/5 transition-colors"
                                     >
                                         <div className="w-14 h-14 bg-church-primary/10 dark:bg-church-accent/10 rounded-xl flex items-center justify-center text-church-primary dark:text-church-accent group-hover:scale-110 transition-transform">
-                                            <Headphones size={24} />
+                                            <LuHeadphones size={24} />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="font-bold text-gray-900 dark:text-white truncate">{a.titulo}</p>
@@ -198,7 +198,7 @@ const Midia = () => {
                                             className="w-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         />
                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <Maximize2 className="text-white w-8 h-8 scale-50 group-hover:scale-100 transition-transform" />
+                                            <LuMaximize2 className="text-white w-8 h-8 scale-50 group-hover:scale-100 transition-transform" />
                                         </div>
                                     </motion.div>
                                 )) : <EmptyState message="Nenhuma foto disponível no momento." />}
@@ -247,7 +247,7 @@ const TestimonialsSection = () => {
         <section className="relative py-12">
             <div className="flex flex-col items-center mb-12">
                 <div className="p-3 bg-church-primary/10 rounded-2xl text-church-primary mb-4">
-                    <Quote size={32} />
+                    <LuQuote size={32} />
                 </div>
                 <h2 className="text-3xl font-black text-gray-900 dark:text-white">Depoimentos</h2>
                 <div className="w-12 h-1.5 bg-church-primary rounded-full mt-4"></div>
@@ -289,7 +289,7 @@ const TeamSection = () => {
         <section className="relative py-12">
             <div className="flex flex-col items-center mb-12">
                 <div className="p-3 bg-church-primary/10 rounded-2xl text-church-primary mb-4">
-                    <Users size={32} />
+                    <LuUsers size={32} />
                 </div>
                 <h2 className="text-3xl font-black text-gray-900 dark:text-white">Nossa Equipe</h2>
                 <div className="w-12 h-1.5 bg-church-primary rounded-full mt-4"></div>
@@ -333,7 +333,7 @@ const TeamSection = () => {
 
 const EmptyState = ({ message }) => (
     <div className="flex flex-col items-center justify-center py-20 text-gray-500 dark:text-gray-400 bg-white/50 dark:bg-white/5 rounded-3xl border border-dashed border-gray-300 dark:border-gray-700">
-        <ImageIcon size={48} className="mb-4 opacity-20" />
+        <LuImage size={48} className="mb-4 opacity-20" />
         <p className="text-lg font-medium">{message}</p>
     </div>
 );
