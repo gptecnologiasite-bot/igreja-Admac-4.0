@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LuPlus, LuSearch, LuFilter, LuPencil, LuTrash2, LuEye, LuCircleCheck, LuCircleX } from 'react-icons/lu';
+import { LuPlus, LuSearch, LuFilter, LuPencil, LuTrash2, LuEye, LuCircleX } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 import StatusToggle from '../../components/StatusToggle';
 

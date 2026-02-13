@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LuHouse, LuCoffee, LuUsers, LuHeart, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import dbService from '../../services/dbService';
@@ -31,7 +31,12 @@ const Lares = () => {
         if (page && page.content) {
             try {
                 const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
-                if (content.articles && content.articles.length > 0) setItems(content.articles);
+                if (content.articles && content.articles.length > 0) {
+                    setItems(prev => Array.isArray(prev) ? { articles: content.articles } : { ...prev, articles: content.articles });
+                }
+                if (content.gallery) {
+                    setItems(prev => Array.isArray(prev) ? { ...prev, gallery: content.gallery } : { ...prev, gallery: content.gallery });
+                }
             } catch (e) { console.error(e); }
         }
         const handleUpdate = () => {
@@ -39,7 +44,12 @@ const Lares = () => {
             if (updatedPage && updatedPage.content) {
                 try {
                     const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
-                    if (content.articles && content.articles.length > 0) setItems(content.articles);
+                    if (content.articles && content.articles.length > 0) {
+                        setItems(prev => Array.isArray(prev) ? content.articles : { ...prev, articles: content.articles });
+                    }
+                    if (content.gallery) {
+                        setItems(prev => Array.isArray(prev) ? { articles: prev, gallery: content.gallery } : { ...prev, gallery: content.gallery });
+                    }
                 } catch (e) { console.error(e); }
             }
         };
@@ -123,6 +133,44 @@ const Lares = () => {
                     </div>
 
                     {/* CTA Section */}
+
+                    {/* Gallery Section */}
+                    <div className="mb-20">
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl font-bold text-church-primary dark:text-white tracking-tight leading-tight mb-4">
+                                Momentos em Família
+                            </h2>
+                            <div className="w-20 h-1.5 bg-church-accent rounded-full mx-auto" />
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {(items.gallery || [
+                                { url: "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=600", caption: "Culto nos Lares" },
+                                { url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=600", caption: "Comunhão" },
+                                { url: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=600", caption: "Estudo Bíblico" },
+                                { url: "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?q=80&w=600", caption: "Família ADMAC" }
+                            ]).map((photo, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: index * 0.05 }}
+                                    viewport={{ once: true }}
+                                    className="group relative aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-white/5 shadow-lg cursor-pointer"
+                                >
+                                    <img
+                                        src={photo.url}
+                                        alt={photo.caption || `Foto ${index + 1}`}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                        <p className="text-white text-xs font-bold uppercase tracking-wider">{photo.caption}</p>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+
                     <div className="bg-church-primary rounded-[3rem] p-12 md:p-16 text-center text-white">
                         <LuHeart className="w-12 h-12 text-church-accent mx-auto mb-6" />
                         <h2 className="text-3xl md:text-5xl font-bold mb-6 italic tracking-tight">Quer abrir as portas do seu lar?</h2>

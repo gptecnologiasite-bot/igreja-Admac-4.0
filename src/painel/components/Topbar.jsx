@@ -1,4 +1,3 @@
-import React from 'react';
 import { LuMenu, LuBell, LuSearch, LuUser } from 'react-icons/lu';
 import { useAuth } from '../../context/AuthContext';
 

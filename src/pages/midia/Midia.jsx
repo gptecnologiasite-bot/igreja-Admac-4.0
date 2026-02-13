@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     LuVideo,
     LuMusic,
@@ -6,8 +6,7 @@ import {
     LuPlay,
     LuHeadphones,
     LuMaximize2,
-    LuCalendar,
-    LuUser,
+
     LuQuote,
     LuUsers
 } from "react-icons/lu";

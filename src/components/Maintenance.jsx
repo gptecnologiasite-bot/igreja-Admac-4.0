@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { LuSettings, LuClock, LuArrowLeft } from 'react-icons/lu';
 import { Link } from 'react-router-dom';
 

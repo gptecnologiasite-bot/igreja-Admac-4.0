@@ -353,6 +353,12 @@ export const pagesData = [
           image: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=800',
           content: '<h2>Família Cristã</h2><p>O lar é o primeiro campo missionário.</p>'
         }
+      ],
+      gallery: [
+        { url: "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=600", caption: "Culto nos Lares" },
+        { url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=600", caption: "Comunhão" },
+        { url: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=600", caption: "Estudo Bíblico" },
+        { url: "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?q=80&w=600", caption: "Família ADMAC" }
       ]
     }
   },

@@ -1,31 +1,8 @@
-import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LuHeart, LuGift, LuUsers, LuGlobe } from 'react-icons/lu';
-import dbService from '../../services/dbService';
 
 const AcaoSocial = () => {
-    const [pageData, setPageData] = useState(null);
 
-    useEffect(() => {
-        const page = dbService.getPages().find(p => p.slug === 'revista/acao-social');
-        if (page && page.content) {
-            try {
-                const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
-                setPageData(content);
-            } catch (e) { console.error(e); }
-        }
-        const handleUpdate = () => {
-            const updatedPage = dbService.getPages().find(p => p.slug === 'revista/acao-social');
-            if (updatedPage && updatedPage.content) {
-                try {
-                    const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
-                    setPageData(content);
-                } catch (e) { console.error(e); }
-            }
-        };
-        window.addEventListener('contentUpdated', handleUpdate);
-        return () => window.removeEventListener('contentUpdated', handleUpdate);
-    }, []);
     return (
         <div className="pt-24 pb-16 min-h-screen bg-white dark:bg-church-dark transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

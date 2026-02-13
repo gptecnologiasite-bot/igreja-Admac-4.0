@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { LuMenu, LuX, LuChurch, LuChevronDown, LuLayoutDashboard } from 'react-icons/lu';
 import { Link, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';

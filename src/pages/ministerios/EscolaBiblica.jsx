@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { LuBookOpen, LuUsers, LuStar, LuQuote, LuMessageCircle, LuPencil, LuCheck, LuGraduationCap, LuBookmark, LuBook, LuLibrary, LuDownload, LuFileText, LuPresentation, LuExternalLink, LuVideo, LuCalendar } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
@@ -7,7 +7,7 @@ const EscolaBiblica = () => {
     // Get page data from central DB
     const [pageData, setPageData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const carouselRef = useRef(null);
+
     const [pastoralMessage, setPastoralMessage] = useState({
         text: "A Escola Bíblica é o coração da igreja. Aqui não apenas aprendemos sobre a Bíblia, mas somos transformados pelo conhecimento da Verdade. Convido você a mergulhar conosco neste trimestre de aprendizado profundo.",
         author: "Presb. Marcos André",
@@ -91,13 +91,7 @@ const EscolaBiblica = () => {
         ? pageData.content.lessonVideos
         : fallBackVideos;
 
-    const scroll = (direction) => {
-        if (carouselRef.current) {
-            const { current } = carouselRef;
-            const scrollAmount = direction === 'left' ? -340 : 340;
-            current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        }
-    };
+
 
     const handleSave = () => {
         setPastoralMessage(tempMessage);

@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { LuUsers, LuShield, LuStar, LuQuote, LuMessageCircle, LuPencil, LuCheck } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
 const Lideranca = () => {
-    const carouselRef = useRef(null);
+
 
     // Get page data from central DB
     const [page, setPage] = useState(null);

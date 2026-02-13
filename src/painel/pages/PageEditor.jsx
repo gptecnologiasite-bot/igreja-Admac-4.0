@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { LuArrowLeft, LuArrowUp, LuArrowDown, LuSave, LuActivity, LuCalendar, LuUsers, LuHeart, LuStar, LuMusic, LuBook, LuCamera, LuMapPin, LuPhone, LuMail, LuClock, LuBaby, LuTrash2, LuPlus, LuMessageCircle, LuShare2, LuVideo, LuX, LuCoffee, LuFlower, LuImage as ImageIcon, LuPencil } from 'react-icons/lu';
+import { LuArrowLeft, LuArrowUp, LuArrowDown, LuSave, LuActivity, LuUsers, LuHeart, LuStar, LuMusic, LuBook, LuCamera, LuBaby, LuTrash2, LuPlus, LuMessageCircle, LuVideo, LuX, LuCoffee, LuFlower, LuImage as ImageIcon } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const getYouTubeId = (url) => {
@@ -65,6 +65,7 @@ const PageEditor = () => {
     const [kidsStaff, setKidsStaff] = useState([]);
     const [lessonVideos, setLessonVideos] = useState([]);
     const [homensGallery, setHomensGallery] = useState([]);
+    const [laresGallery, setLaresGallery] = useState([]); // Revista Lares Gallery
 
     const [magazineFeatured, setMagazineFeatured] = useState({
         title: '',
@@ -231,11 +232,11 @@ const PageEditor = () => {
                             ]);
                         }
                         if (parsedContent.leaders || parsedContent.obreiros || parsedContent.chamado) {
-                            setLeadershipContent({
+                            setLeadershipContent(prev => ({
                                 leaders: parsedContent.leaders || [],
-                                obreiros: parsedContent.obreiros || leadershipContent.obreiros,
-                                chamado: parsedContent.chamado || leadershipContent.chamado
-                            });
+                                obreiros: parsedContent.obreiros || prev.obreiros,
+                                chamado: parsedContent.chamado || prev.chamado
+                            }));
                         }
                         if (parsedContent.teachers && parsedContent.teachers.length > 0) {
                             setTeachers(parsedContent.teachers);
@@ -323,6 +324,9 @@ const PageEditor = () => {
                         }
                         if (parsedContent.galleryPreview && page.slug === 'revista/kids') {
                             setKidsGalleryPreview(parsedContent.galleryPreview);
+                        }
+                        if (parsedContent.gallery && page.slug === 'revista/lares') {
+                            setLaresGallery(parsedContent.gallery);
                         }
                     } catch (e) {
                         console.error("Error parsing magazine content", e);
@@ -457,7 +461,8 @@ const PageEditor = () => {
                 ...existingContent,
                 articles: magazineArticles,
                 featured: magazineFeatured,
-                galleryPreview: checkSlug === 'revista/kids' ? kidsGalleryPreview : undefined
+                galleryPreview: checkSlug === 'revista/kids' ? kidsGalleryPreview : undefined,
+                gallery: checkSlug === 'revista/lares' ? laresGallery : undefined
             };
         }
 
@@ -2838,6 +2843,88 @@ const PageEditor = () => {
                                                     />
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {formData.slug === 'revista/lares' && (
+                                    <div className="pt-6 border-t border-purple-100 dark:border-purple-800/20">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center gap-2 text-purple-700 dark:text-purple-400">
+                                                <LuCamera size={20} />
+                                                <h3 className="font-bold">Galeria de Fotos (Lares)</h3>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setLaresGallery([...laresGallery, { url: '', caption: '' }])}
+                                                className="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-600 px-3 py-1 rounded-full hover:bg-purple-600 hover:text-white transition-all flex items-center gap-1"
+                                            >
+                                                <LuPlus size={14} />
+                                                Adicionar Foto
+                                            </button>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {laresGallery.length === 0 && (
+                                                <div className="col-span-full text-sm text-slate-500 dark:text-slate-400 text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                                                    Nenhuma foto na galeria.
+                                                </div>
+                                            )}
+                                            {laresGallery.map((photo, index) => (
+                                                <div key={index} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm space-y-3 relative group/item">
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase">URL da Imagem</label>
+                                                        <div className="flex gap-2">
+                                                            <input
+                                                                type="text"
+                                                                value={photo.url}
+                                                                onChange={(e) => {
+                                                                    const newGallery = [...laresGallery];
+                                                                    newGallery[index].url = e.target.value;
+                                                                    setLaresGallery(newGallery);
+                                                                }}
+                                                                className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded text-sm outline-none focus:border-purple-500 transition-all"
+                                                                placeholder="https://..."
+                                                            />
+                                                        </div>
+                                                        {photo.url && (
+                                                            <div className="mt-2 h-32 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                                                <img
+                                                                    src={photo.url}
+                                                                    alt="Preview"
+                                                                    className="w-full h-full object-cover"
+                                                                    onError={(e) => e.target.style.display = 'none'}
+                                                                />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase">Legenda</label>
+                                                        <input
+                                                            type="text"
+                                                            value={photo.caption}
+                                                            onChange={(e) => {
+                                                                const newGallery = [...laresGallery];
+                                                                newGallery[index].caption = e.target.value;
+                                                                setLaresGallery(newGallery);
+                                                            }}
+                                                            className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded text-sm outline-none focus:border-purple-500 transition-all"
+                                                            placeholder="Ex: Família reunida"
+                                                        />
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const newGallery = [...laresGallery];
+                                                            newGallery.splice(index, 1);
+                                                            setLaresGallery(newGallery);
+                                                        }}
+                                                        className="absolute top-2 right-2 p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover/item:opacity-100"
+                                                    >
+                                                        <LuTrash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
                                 )}

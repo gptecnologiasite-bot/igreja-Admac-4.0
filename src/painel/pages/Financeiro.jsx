@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
     LuPlus,
     LuSearch,
-    LuCalendar,
     LuCircleArrowUp,
     LuCircleArrowDown,
     LuDollarSign,
@@ -12,9 +11,7 @@ import {
     LuWifi,
     LuHouse,
     LuWrench,
-    LuEllipsis,
     LuTrash2,
-    LuPencil,
     LuX
 } from 'react-icons/lu';
 import dbService from '../../services/dbService';
@@ -44,13 +41,16 @@ const Financeiro = () => {
 
     useEffect(() => {
         loadData();
-    }, [filterPeriod]);
+    }, [loadData]);
 
-    const loadData = () => {
-        const all = dbService.getTransactions();
+    const loadData = useCallback(() => {
+        const all = dbService.getTransactions() || [];
+
+        // Validate transactions to prevent crashes
+        const validTransactions = all.filter(t => t && typeof t === 'object' && t.dueDate && t.value);
 
         // Filter by period
-        const filtered = all.filter(t => t.dueDate.startsWith(filterPeriod));
+        const filtered = validTransactions.filter(t => t.dueDate.startsWith(filterPeriod));
 
         // Sort by date desc
         filtered.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
@@ -58,7 +58,7 @@ const Financeiro = () => {
 
         // Calculate Stats
         const calcStats = filtered.reduce((acc, curr) => {
-            const val = parseFloat(curr.value);
+            const val = parseFloat(curr.value) || 0;
             if (curr.type === 'receita') {
                 acc.toReceive += val; // In a real app, check status
                 acc.balance += val;
@@ -70,7 +70,7 @@ const Financeiro = () => {
         }, { toReceive: 0, toPay: 0, balance: 0, overdue: 0 });
 
         setStats(calcStats);
-    };
+    }, [filterPeriod]);
 
     const handleSave = (e) => {
         e.preventDefault();

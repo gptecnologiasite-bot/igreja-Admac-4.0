@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+    XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     LineChart, Line, PieChart, Pie, Cell, Legend
 } from 'recharts';
 import { LuUsers, LuFileText, LuActivity, LuEye, LuArrowUp, LuArrowDown } from 'react-icons/lu';
@@ -39,8 +39,8 @@ const DashboardHome = () => {
 
     useEffect(() => {
         const fetchData = () => {
-            const p = dbService.getPages();
-            const u = dbService.getUsers();
+            const p = dbService.getPages() || [];
+            const u = dbService.getUsers() || [];
             setCounts({
                 pages: p.length,
                 activePages: p.filter(x => x.status === 'Ativo').length,

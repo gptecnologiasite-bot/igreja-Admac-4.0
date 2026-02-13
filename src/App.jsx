@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { useState, useEffect, Suspense, lazy, Component } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ScrollToTop from './components/ScrollToTop';
@@ -7,6 +7,8 @@ import PageGuard from './components/PageGuard';
 import LoadingFallback from './components/LoadingFallback';
 import SkipToContent from './components/SkipToContent';
 import useFavicon from './hooks/useFavicon';
+
+import { AuthProvider } from './context/AuthContext';
 
 // CRITICAL: Home page must NOT be lazy loaded to ensure FCP for Lighthouse
 import Home from './pages/Home';
@@ -38,37 +40,47 @@ const Media = lazy(() => import('./pages/midia/Midia'));
 // Lazy load Admin Panel
 const PainelRoutes = lazy(() => import('./painel/PainelRoutes'));
 const Login = lazy(() => import('./painel/pages/Login'));
-import { AuthProvider } from './context/AuthContext';
 
-function App() {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
-      return saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="fixed inset-0 flex items-center justify-center bg-white p-4 text-center z-[9999]">
+          <div className="max-w-lg">
+            <h2 className="text-2xl font-bold text-red-600 mb-4">Algo deu errado</h2>
+            <p className="mb-4 text-gray-600">Ocorreu um erro inesperado. Tente recarregar a página.</p>
+            <div className="bg-gray-100 p-4 rounded text-left overflow-auto max-h-40 mb-4 text-xs font-mono text-red-500 border border-red-200">
+              {this.state.error && this.state.error.toString()}
+            </div>
+            <button
+              onClick={() => {
+                localStorage.clear();
+                window.location.reload();
+              }}
+              className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+            >
+              Recarregar e Limpar Cache
+            </button>
+          </div>
+        </div>
+      );
     }
-    return false;
-  });
 
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark(!isDark);
-
-  return (
-    <AuthProvider>
-      <Router>
-        <ScrollToTop />
-        <AppContent isDark={isDark} toggleTheme={toggleTheme} />
-      </Router>
-    </AuthProvider>
-  );
+    return this.props.children;
+  }
 }
 
 const AppContent = ({ isDark, toggleTheme }) => {
@@ -121,5 +133,38 @@ const AppContent = ({ isDark, toggleTheme }) => {
     </div>
   );
 };
+
+function App() {
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme');
+      return saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
+
+  const toggleTheme = () => setIsDark(!isDark);
+
+  return (
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <ScrollToTop />
+          <AppContent isDark={isDark} toggleTheme={toggleTheme} />
+        </Router>
+      </AuthProvider>
+    </ErrorBoundary>
+  );
+}
 
 export default App;

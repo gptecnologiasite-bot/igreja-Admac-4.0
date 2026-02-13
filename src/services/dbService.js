@@ -15,40 +15,74 @@ const INITIAL_USERS = [
   },
 ];
 
+const saveToStorage = (key, data) => {
+  if (data === undefined) {
+    console.error(`Attempted to save undefined to ${key}`);
+    return false;
+  }
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+    return true;
+  } catch (e) {
+    console.error(`Error saving to ${key}:`, e);
+    return false;
+  }
+};
+
 const dbService = {
   // Initialize DB if not exists or merge new defaults
   init: () => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(initialPages));
+      saveToStorage(STORAGE_KEY, initialPages);
     } else {
-      // Smart check: if specific important slugs are missing, add them from initialPages
+      // Smart check: key exists but might be corrupted or need merging
       try {
         const pages = JSON.parse(stored);
+        
+        // Data integrity check: if not an array, reset
+        if (!Array.isArray(pages)) {
+           throw new Error("Invalid structure");
+        }
+
         let updated = false;
-        initialPages.forEach(defaultPage => {
-          if (!pages.find(p => p.slug === defaultPage.slug)) {
-            pages.push(defaultPage);
-            updated = true;
-          }
-        });
+        if (initialPages) {
+          initialPages.forEach(defaultPage => {
+            if (!pages.find(p => p.slug === defaultPage.slug)) {
+              pages.push(defaultPage);
+              updated = true;
+            }
+          });
+        }
         if (updated) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(pages));
+          saveToStorage(STORAGE_KEY, pages);
         }
       } catch (e) {
-        console.error("Error merging defaults", e);
+        console.error("Error merging defaults/corrupted data:", e);
+        // Self-healing: Reset to defaults if corrupted
+        console.warn("Resetting database due to corruption");
+        saveToStorage(STORAGE_KEY, initialPages);
       }
     }
     
-    if (!localStorage.getItem(USERS_KEY)) {
-      localStorage.setItem(USERS_KEY, JSON.stringify(INITIAL_USERS));
+    // Check Users
+    const storedUsers = localStorage.getItem(USERS_KEY);
+    if (!storedUsers) {
+      saveToStorage(USERS_KEY, INITIAL_USERS);
+    } else {
+       try {
+          JSON.parse(storedUsers);
+       } catch (e) {
+          console.warn("Resetting users due to corruption");
+          saveToStorage(USERS_KEY, INITIAL_USERS);
+       }
     }
   },
 
   // RESET DATABASE TO DEFAULTS (Requested by user for "deleta e cria outro")
   resetToDefaults: () => {
-     localStorage.setItem(STORAGE_KEY, JSON.stringify(initialPages));
-     localStorage.setItem(USERS_KEY, JSON.stringify(INITIAL_USERS));
+     saveToStorage(STORAGE_KEY, initialPages);
+     saveToStorage(USERS_KEY, INITIAL_USERS);
      window.dispatchEvent(new CustomEvent("contentUpdated"));
      return initialPages;
   },
@@ -57,7 +91,12 @@ const dbService = {
   getPages: () => {
     dbService.init();
     try {
-      const pages = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return [];
+      
+      const pages = JSON.parse(stored);
+      
+      if (!Array.isArray(pages)) return [];
 
       // Auto-fix: Remove duplicates by slug
       const seenSlugs = new Set();
@@ -75,14 +114,15 @@ const dbService = {
 
       if (hasDuplicates) {
         console.warn("Duplicates removed from database");
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(uniquePages));
+        saveToStorage(STORAGE_KEY, uniquePages);
         return uniquePages;
       }
 
       return pages;
     } catch (e) {
       console.error("Error reading database:", e);
-      return [];
+      // Fallback to initial pages (in memory) to prevent crash
+      return initialPages || [];
     }
   },
 
@@ -126,7 +166,7 @@ const dbService = {
       updatedPages = [...pages, newPage];
     }
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPages));
+    saveToStorage(STORAGE_KEY, updatedPages);
     window.dispatchEvent(new CustomEvent("contentUpdated"));
     return updatedPages;
   },
@@ -135,7 +175,7 @@ const dbService = {
   deletePage: (id) => {
     const pages = dbService.getPages();
     const updatedPages = pages.filter((p) => p.id !== parseInt(id));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPages));
+    saveToStorage(STORAGE_KEY, updatedPages);
     return updatedPages;
   },
 
@@ -144,7 +184,8 @@ const dbService = {
   getUsers: () => {
     dbService.init();
     try {
-      return JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+      const stored = localStorage.getItem(USERS_KEY);
+      return stored ? JSON.parse(stored) : [];
     } catch (e) {
       console.error("Error reading users database:", e);
       return [];
@@ -167,6 +208,7 @@ const dbService = {
           ? {
               ...u,
               ...userData,
+              password: userData.password || u.password // Maintain password if not provided
             }
           : u,
       );
@@ -183,14 +225,14 @@ const dbService = {
       updatedUsers = [...users, newUser];
     }
 
-    localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
+    saveToStorage(USERS_KEY, updatedUsers);
     return updatedUsers;
   },
 
   deleteUser: (id) => {
     const users = dbService.getUsers();
     const updatedUsers = users.filter((u) => u.id !== parseInt(id));
-    localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
+    saveToStorage(USERS_KEY, updatedUsers);
     return updatedUsers;
   },
 
@@ -215,7 +257,7 @@ const dbService = {
     const SETTINGS_KEY = "admac_settings_db";
     const current = dbService.getSettings();
     const updated = { ...current, ...newSettings };
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(updated));
+    saveToStorage(SETTINGS_KEY, updated);
     return updated;
   },
 
@@ -226,6 +268,7 @@ const dbService = {
         pages: JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"),
         users: JSON.parse(localStorage.getItem(USERS_KEY) || "[]"),
         settings: dbService.getSettings(),
+        transactions: dbService.getTransactions(),
         timestamp: new Date().toISOString(),
         version: "1.0",
       };
@@ -241,18 +284,15 @@ const dbService = {
       const data = JSON.parse(jsonString);
 
       if (data.pages)
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data.pages));
+        saveToStorage(STORAGE_KEY, data.pages);
       if (data.users)
-        localStorage.setItem(USERS_KEY, JSON.stringify(data.users));
+        saveToStorage(USERS_KEY, data.users);
       if (data.settings) {
         const SETTINGS_KEY = "admac_settings_db";
-        localStorage.setItem(SETTINGS_KEY, JSON.stringify(data.settings));
+        saveToStorage(SETTINGS_KEY, data.settings);
       }
       if (data.transactions)
-        localStorage.setItem(
-          "admac_transactions_db",
-          JSON.stringify(data.transactions),
-        );
+        saveToStorage("admac_transactions_db", data.transactions);
 
       window.dispatchEvent(new CustomEvent("contentUpdated"));
       return { success: true, message: "Dados restaurados com sucesso!" };
@@ -268,7 +308,8 @@ const dbService = {
   // --- FINANCIAL MODULE ---
   getTransactions: () => {
     try {
-      return JSON.parse(localStorage.getItem("admac_transactions_db")) || [];
+      const stored = localStorage.getItem("admac_transactions_db");
+      return stored ? JSON.parse(stored) : [];
     } catch (e) {
       return [];
     }
@@ -293,14 +334,14 @@ const dbService = {
       ];
     }
 
-    localStorage.setItem("admac_transactions_db", JSON.stringify(updated));
+    saveToStorage("admac_transactions_db", updated);
     return updated;
   },
 
   deleteTransaction: (id) => {
     const transactions = dbService.getTransactions();
     const updated = transactions.filter((t) => t.id !== parseInt(id));
-    localStorage.setItem("admac_transactions_db", JSON.stringify(updated));
+    saveToStorage("admac_transactions_db", updated);
     return updated;
   },
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { LuUsers, LuBookOpen, LuMusic, LuHeart, LuBaby, LuShieldCheck, LuStar, LuActivity, LuCompass, LuGraduationCap, LuHouse } from 'react-icons/lu';

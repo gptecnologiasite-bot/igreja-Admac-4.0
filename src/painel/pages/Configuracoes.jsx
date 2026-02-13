@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { LuSave, LuSettings, LuImage as LuImageIcon, LuGlobe } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
@@ -18,7 +18,7 @@ const Configuracoes = () => {
 
     const handleReset = () => {
         if (window.confirm('ATENÇÃO: Isso apagará todas as suas edições e voltará ao conteúdo original. Deseja continuar?')) {
-            const defaults = dbService.resetToDefaults();
+            dbService.resetToDefaults();
             setSettings(dbService.getSettings());
             setMessage({ type: 'success', text: 'Sistema restaurado aos padrões originais!' });
             setTimeout(() => window.location.reload(), 1500);

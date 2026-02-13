@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { LuHeart, LuUsers, LuStar, LuQuote, LuMessageCircle, LuPencil, LuCheck, LuRadio, LuExternalLink, LuX, LuGift, LuCopy, LuChevronRight } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
 import dbService from '../../services/dbService';
 
 const Casais = () => {
-    const carouselRef = useRef(null);
+
     const [tempMessage, setTempMessage] = useState({ text: '', author: '', role: '' });
 
     // Get page data from central DB
@@ -92,13 +92,7 @@ const Casais = () => {
     const leaders = pageData?.content?.leaders || fallBackLeaders;
     const testimonials = pageData?.content?.testimonials || fallBackTestimonials;
 
-    const scroll = (direction) => {
-        if (carouselRef.current) {
-            const { current } = carouselRef;
-            const scrollAmount = direction === 'left' ? -340 : 340;
-            current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        }
-    };
+
 
     const handleSave = () => {
         setPastoralMessage(tempMessage);

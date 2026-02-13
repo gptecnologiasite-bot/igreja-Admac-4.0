@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LuBookOpen, LuGraduationCap, LuBookmark, LuAward, LuX, LuCalendar, LuUser, LuBook, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import dbService from '../../services/dbService';

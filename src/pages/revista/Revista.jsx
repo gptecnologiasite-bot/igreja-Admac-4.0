@@ -1,4 +1,4 @@
-import React, { cloneElement } from 'react';
+import { cloneElement } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { LuBook, LuBaby, LuUsers, LuMusic, LuHeart, LuShield, LuHouse, LuCompass, LuGraduationCap, LuChevronRight } from 'react-icons/lu';

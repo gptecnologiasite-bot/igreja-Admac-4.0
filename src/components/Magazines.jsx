@@ -1,11 +1,11 @@
-import React, { useState, useEffect, cloneElement } from 'react';
+import { useState, cloneElement } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { LuBook, LuBaby, LuUsers, LuMusic, LuHeart, LuShield, LuHouse, LuCompass, LuGraduationCap, LuStar } from 'react-icons/lu';
-import dbService from '../services/dbService';
+
 
 const Magazines = () => {
-    const [magazinesData, setMagazinesData] = useState({
+    const [magazinesData] = useState({
         title: 'Nossa Revista Digital',
         description: 'Conteúdo exclusivo dividido por áreas de interesse. Clique e mergulhe em estudos, notícias e inspiração.',
         items: [

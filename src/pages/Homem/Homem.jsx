@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   LuShield,
   LuTarget,
@@ -16,14 +16,14 @@ import { motion } from "framer-motion";
 import dbService from "../../services/dbService";
 
 const Homem = () => {
-  const [page, setPage] = useState(null);
+
   const [content, setContent] = useState({});
   const [loading, setLoading] = useState(true);
 
   const loadContent = () => {
     const pageData = dbService.getPages().find(p => p.slug === 'ministerios/homens');
     if (pageData) {
-      setPage(pageData);
+
       try {
         const parsedContent = typeof pageData.content === 'string' ? JSON.parse(pageData.content) : (pageData.content || {});
         setContent(parsedContent);

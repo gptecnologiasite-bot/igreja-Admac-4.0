@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LuTarget, LuEye, LuHeart } from 'react-icons/lu';
 import dbService from '../services/dbService';
 
+// Default images for the carousel
+const defaultImages = [
+    "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=1000&auto=format&fit=crop", // Worship/Hall
+    "https://images.unsplash.com/photo-1544427920-c49ccfb85579?q=80&w=1000&auto=format&fit=crop", // Hands raised
+    "https://images.unsplash.com/photo-1510672981848-a1c4f1cb5ccf?q=80&w=1000&auto=format&fit=crop", // Bible study/Group
+    "https://images.unsplash.com/photo-1515162305285-0293e4767cc2?q=80&w=1000&auto=format&fit=crop"  // Community/Coffee
+];
+
 const About = () => {
     const [currentImage, setCurrentImage] = useState(0);
-
-    // Default images for the carousel
-    const defaultImages = [
-        "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=1000&auto=format&fit=crop", // Worship/Hall
-        "https://images.unsplash.com/photo-1544427920-c49ccfb85579?q=80&w=1000&auto=format&fit=crop", // Hands raised
-        "https://images.unsplash.com/photo-1510672981848-a1c4f1cb5ccf?q=80&w=1000&auto=format&fit=crop", // Bible study/Group
-        "https://images.unsplash.com/photo-1515162305285-0293e4767cc2?q=80&w=1000&auto=format&fit=crop"  // Community/Coffee
-    ];
 
     const [content, setContent] = useState({
         title: 'Quem Somos',

@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { LuShieldCheck, LuUsers, LuQuote, LuMessageCircle, LuPencil, LuCheck, LuFlame, LuCloudRain } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
 const Intercessao = () => {
-    const carouselRef = useRef(null);
+
 
     // Get page data from central DB
     const [pageData, setPageData] = useState(null);

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { LuChurch, LuFacebook, LuInstagram, LuYoutube, LuMapPin, LuPhone, LuMail } from 'react-icons/lu';
 import dbService from '../services/dbService';
 
