@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { LuBookOpen, LuUsers, LuStar, LuQuote, LuMessageCircle, LuPencil, LuCheck, LuGraduationCap, LuBookmark, LuBook, LuLibrary, LuDownload, LuFileText, LuPresentation, LuExternalLink, LuVideo, LuCalendar } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
@@ -7,6 +7,7 @@ const EscolaBiblica = () => {
     // Get page data from central DB
     const [pageData, setPageData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const carouselRef = useRef(null);
     const [pastoralMessage, setPastoralMessage] = useState({
         text: "A Escola Bíblica é o coração da igreja. Aqui não apenas aprendemos sobre a Bíblia, mas somos transformados pelo conhecimento da Verdade. Convido você a mergulhar conosco neste trimestre de aprendizado profundo.",
         author: "Presb. Marcos André",
@@ -361,7 +362,7 @@ const EscolaBiblica = () => {
                                 <div className="space-y-6">
                                     <div className="p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10">
                                         <p className="text-xs font-bold uppercase tracking-widest mb-2 opacity-60">Dica de hoje</p>
-                                        <p className="text-xl font-medium">"O estudo da palavra exige tempo, silêncio e um coração ensinável. Deixe o autor do livro falar com você."</p>
+                                        <p className="text-xl font-medium">&ldquo;O estudo da palavra exige tempo, silêncio e um coração ensinável. Deixe o autor do livro falar com você.&rdquo;</p>
                                     </div>
                                     <div className="flex gap-4">
                                         <div className="flex-1 p-4 rounded-xl bg-black/10">

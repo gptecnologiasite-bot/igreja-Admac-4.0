@@ -28,7 +28,7 @@ const Mulheres = () => {
                     const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
                     if (content.articles && content.articles.length > 0) setItems(content.articles);
                     if (content.featured) setFeatured(prev => ({ ...prev, ...content.featured }));
-                } catch (e) { }
+                } catch (e) { console.error("Error loading Mulheres content:", e); }
             }
         };
 

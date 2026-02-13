@@ -1,0 +1,179 @@
+﻿
+> igigreja-admac-site@0.0.0 lint
+> eslint .
+
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\App.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\About.jsx
+   1:8  warning  'React' is defined but never used                                                                                 no-unused-vars
+  53:8  warning  React Hook useEffect has a missing dependency: 'defaultImages'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\Footer.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\Hero.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\HomeCarousel.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\LoadingFallback.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\Magazines.jsx
+  1:8   warning  'React' is defined but never used                      no-unused-vars
+  1:27  warning  'useEffect' is defined but never used                  no-unused-vars
+  5:8   warning  'dbService' is defined but never used                  no-unused-vars
+  8:27  warning  'setMagazinesData' is assigned a value but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\Maintenance.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\Media.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\Ministries.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\Navbar.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\PageGuard.jsx
+  8:13  warning  'user' is assigned a value but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\PageTemplate.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\PodcastSection.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\SkipToContent.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\StatusToggle.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\ThemeToggle.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\components\VideoModal.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\context\AuthContext.jsx
+  57:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\Homem\Homem.jsx
+   1:8   warning  'React' is defined but never used          no-unused-vars
+  19:10  warning  'page' is assigned a value but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\midia\Midia.jsx
+   1:8  warning  'React' is defined but never used       no-unused-vars
+   9:5  warning  'LuCalendar' is defined but never used  no-unused-vars
+  10:5  warning  'LuUser' is defined but never used      no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\ministerios\Casais.jsx
+  95:11  warning  'scroll' is assigned a value but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\ministerios\EscolaBiblica.jsx
+   93:11   warning  'scroll' is assigned a value but never used                      no-unused-vars
+   94:13   error    'carouselRef' is not defined                                     no-undef
+   95:33   error    'carouselRef' is not defined                                     no-undef
+  364:76   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  364:181  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\ministerios\Intercessao.jsx
+  7:11  warning  'carouselRef' is assigned a value but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\ministerios\Lideranca.jsx
+  7:11  warning  'carouselRef' is assigned a value but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\ministerios\Louvor.jsx
+    2:81  warning  'LuMic' is defined but never used                          no-unused-vars
+    2:88  warning  'LuGuitar' is defined but never used                       no-unused-vars
+   73:11  warning  'fallBackTestimonials' is assigned a value but never used  no-unused-vars
+  217:30  error    'LuMic2' is not defined                                    react/jsx-no-undef
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\revista\AcaoSocial.jsx
+  1:8   warning  'React' is defined but never used              no-unused-vars
+  7:12  warning  'pageData' is assigned a value but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\revista\EBD.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\revista\Homens.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\revista\Jovens.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\revista\Kids.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\revista\Lares.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\revista\Louvor.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\revista\Mulheres.jsx
+   1:8   warning  'React' is defined but never used  no-unused-vars
+  31:29  error    Empty block statement              no-empty
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\revista\Retiros.jsx
+  1:8   warning  'React' is defined but never used              no-unused-vars
+  3:21  warning  'LuSun' is defined but never used              no-unused-vars
+  3:28  warning  'LuStar' is defined but never used             no-unused-vars
+  7:12  warning  'pageData' is assigned a value but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\pages\revista\Revista.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\painel\PainelRoutes.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\painel\components\Sidebar.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\painel\components\Topbar.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\painel\layouts\AdminLayout.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\painel\pages\Configuracoes.jsx
+   1:8   warning  'React' is defined but never used              no-unused-vars
+  21:19  warning  'defaults' is assigned a value but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\painel\pages\DashboardHome.jsx
+  1:8   warning  'React' is defined but never used     no-unused-vars
+  3:5   warning  'BarChart' is defined but never used  no-unused-vars
+  3:15  warning  'Bar' is defined but never used       no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\painel\pages\Financeiro.jsx
+   1:8  warning  'React' is defined but never used                                                                            no-unused-vars
+   5:5  warning  'LuCalendar' is defined but never used                                                                       no-unused-vars
+  15:5  warning  'LuEllipsis' is defined but never used                                                                       no-unused-vars
+  17:5  warning  'LuPencil' is defined but never used                                                                         no-unused-vars
+  47:8  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\painel\pages\PageEditor.jsx
+    1:8    warning  'React' is defined but never used                                                                                                                                                                                                                                                                                    no-unused-vars
+    3:67   warning  'LuCalendar' is defined but never used                                                                                                                                                                                                                                                                               no-unused-vars
+    3:132  warning  'LuMapPin' is defined but never used                                                                                                                                                                                                                                                                                 no-unused-vars
+    3:142  warning  'LuPhone' is defined but never used                                                                                                                                                                                                                                                                                  no-unused-vars
+    3:151  warning  'LuMail' is defined but never used                                                                                                                                                                                                                                                                                   no-unused-vars
+    3:159  warning  'LuClock' is defined but never used                                                                                                                                                                                                                                                                                  no-unused-vars
+    3:211  warning  'LuShare2' is defined but never used                                                                                                                                                                                                                                                                                 no-unused-vars
+    3:277  warning  'LuPencil' is defined but never used                                                                                                                                                                                                                                                                                 no-unused-vars
+  355:8    warning  React Hook useEffect has missing dependencies: 'leadershipContent.chamado' and 'leadershipContent.obreiros'. Either include them or remove the dependency array. You can also replace multiple useState variables with useReducer if 'setLeadershipContent' needs the current value of 'leadershipContent.obreiros'  react-hooks/exhaustive-deps
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\painel\pages\PageList.jsx
+  3:65  warning  'LuCircleCheck' is defined but never used  no-unused-vars
+
+C:\Users\humberto.freitas\Desktop\igreja-Admac-4.0\src\painel\pages\UserList.jsx
+  3:80  warning  'LuLock' is defined but never used  no-unused-vars
+
+Ô£û 80 problems (6 errors, 74 warnings)
+

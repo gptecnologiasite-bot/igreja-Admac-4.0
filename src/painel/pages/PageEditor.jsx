@@ -2561,7 +2561,6 @@ const PageEditor = () => {
                                 <div className="space-y-4">
                                     <div className="space-y-4">
                                         {magazineArticles.map((article, idx) => (
-                                            // ... existing article editor code ...
                                             <div key={article.id || idx} className="p-6 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-4">
                                                 <div className="flex items-center justify-between">
                                                     <input
@@ -2842,6 +2841,206 @@ const PageEditor = () => {
                                         </div>
                                     </div>
                                 )}
+                            </div>
+                        )
+                    }
+
+                    {/* Media Page Editor */}
+                    {
+                        formData.slug === 'midia' && (
+                            <div className="pt-6 border-t border-orange-100 dark:border-orange-800/20 space-y-8">
+                                <div className="flex items-center gap-2 text-orange-700 dark:text-orange-400">
+                                    <LuVideo size={24} />
+                                    <h3 className="font-bold text-lg">Central de Mídia</h3>
+                                </div>
+
+                                {/* Videos Section */}
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Vídeos (YouTube)</h4>
+                                        <button
+                                            type="button"
+                                            onClick={() => setMediaPageContent({
+                                                ...mediaPageContent,
+                                                videos: [...mediaPageContent.videos, { id: Date.now(), titulo: '', url: '', thumbnail: '' }]
+                                            })}
+                                            className="text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-600 px-3 py-1 rounded-full hover:bg-orange-600 hover:text-white transition-all flex items-center gap-1"
+                                        >
+                                            <LuPlus size={14} />
+                                            Adicionar Vídeo
+                                        </button>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {mediaPageContent.videos.map((video, idx) => (
+                                            <div key={video.id || idx} className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dotted border-slate-200 dark:border-slate-700 space-y-3">
+                                                <input
+                                                    type="text"
+                                                    value={video.titulo}
+                                                    onChange={(e) => {
+                                                        const newVideos = [...mediaPageContent.videos];
+                                                        newVideos[idx].titulo = e.target.value;
+                                                        setMediaPageContent({ ...mediaPageContent, videos: newVideos });
+                                                    }}
+                                                    className="w-full bg-transparent font-bold text-slate-800 dark:text-white outline-none border-b border-slate-200 dark:border-slate-700 pb-1"
+                                                    placeholder="Título do Vídeo"
+                                                />
+                                                <div className="flex gap-2">
+                                                    <input
+                                                        type="text"
+                                                        value={video.url}
+                                                        onChange={(e) => {
+                                                            const newVideos = [...mediaPageContent.videos];
+                                                            newVideos[idx].url = e.target.value;
+                                                            // Auto-thumb
+                                                            const vid = getYouTubeId(e.target.value);
+                                                            if (vid) newVideos[idx].thumbnail = getYouTubeThumbnail(vid);
+                                                            setMediaPageContent({ ...mediaPageContent, videos: newVideos });
+                                                        }}
+                                                        className="flex-1 px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                        placeholder="URL do YouTube"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const newVideos = mediaPageContent.videos.filter((_, i) => i !== idx);
+                                                            setMediaPageContent({ ...mediaPageContent, videos: newVideos });
+                                                        }}
+                                                        className="text-red-400 hover:text-red-600 p-1"
+                                                    >
+                                                        <LuTrash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Audios Section */}
+                                <div className="space-y-4 pt-6 border-t border-slate-100 dark:border-slate-800">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Áudios & Podcasts</h4>
+                                        <button
+                                            type="button"
+                                            onClick={() => setMediaPageContent({
+                                                ...mediaPageContent,
+                                                audios: [...mediaPageContent.audios, { id: Date.now(), titulo: '', url: '' }]
+                                            })}
+                                            className="text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-600 px-3 py-1 rounded-full hover:bg-orange-600 hover:text-white transition-all flex items-center gap-1"
+                                        >
+                                            <LuPlus size={14} />
+                                            Adicionar Áudio
+                                        </button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {mediaPageContent.audios.map((audio, idx) => (
+                                            <div key={audio.id || idx} className="flex gap-4 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700 items-center">
+                                                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 text-orange-600 rounded-lg">
+                                                    <LuMusic size={18} />
+                                                </div>
+                                                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                    <input
+                                                        type="text"
+                                                        value={audio.titulo}
+                                                        onChange={(e) => {
+                                                            const newAudios = [...mediaPageContent.audios];
+                                                            newAudios[idx].titulo = e.target.value;
+                                                            setMediaPageContent({ ...mediaPageContent, audios: newAudios });
+                                                        }}
+                                                        className="px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                        placeholder="Título do áudio"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        value={audio.url}
+                                                        onChange={(e) => {
+                                                            const newAudios = [...mediaPageContent.audios];
+                                                            newAudios[idx].url = e.target.value;
+                                                            setMediaPageContent({ ...mediaPageContent, audios: newAudios });
+                                                        }}
+                                                        className="px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                        placeholder="URL do arquivo (mp3)"
+                                                    />
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newAudios = mediaPageContent.audios.filter((_, i) => i !== idx);
+                                                        setMediaPageContent({ ...mediaPageContent, audios: newAudios });
+                                                    }}
+                                                    className="text-red-400 hover:text-red-600 p-2"
+                                                >
+                                                    <LuTrash2 size={18} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Photos Section */}
+                                <div className="space-y-4 pt-6 border-t border-slate-100 dark:border-slate-800">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Galeria de Fotos</h4>
+                                        <label className="cursor-pointer">
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                multiple
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    const files = Array.from(e.target.files);
+                                                    files.forEach(file => {
+                                                        const reader = new FileReader();
+                                                        reader.onloadend = () => {
+                                                            setMediaPageContent(prev => ({
+                                                                ...prev,
+                                                                photos: [...prev.photos, reader.result]
+                                                            }));
+                                                        };
+                                                        reader.readAsDataURL(file);
+                                                    });
+                                                }}
+                                            />
+                                            <div className="text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-600 px-3 py-1 rounded-full hover:bg-orange-600 hover:text-white transition-all flex items-center gap-1">
+                                                <LuPlus size={14} />
+                                                Adicionar Fotos
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                                        {mediaPageContent.photos.map((photo, idx) => (
+                                            <div key={idx} className="relative aspect-square group">
+                                                <img src={photo} className="w-full h-full object-cover rounded-lg border border-slate-200 dark:border-slate-700" alt="Preview" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newPhotos = mediaPageContent.photos.filter((_, i) => i !== idx);
+                                                        setMediaPageContent({ ...mediaPageContent, photos: newPhotos });
+                                                    }}
+                                                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    <LuX size={12} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                        {/* URL Input support */}
+                                        <div className="col-span-full mt-2">
+                                            <input
+                                                type="text"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault();
+                                                        if (e.target.value) {
+                                                            setMediaPageContent({ ...mediaPageContent, photos: [...mediaPageContent.photos, e.target.value] });
+                                                            e.target.value = '';
+                                                        }
+                                                    }
+                                                }}
+                                                className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                placeholder="Pressione Enter para adicionar foto via URL..."
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         )
                     }

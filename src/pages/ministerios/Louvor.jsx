@@ -214,7 +214,7 @@ const Louvor = () => {
 
                     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-12">
                         <div className="p-10 rounded-[2.5rem] bg-church-primary text-white space-y-4 shadow-xl">
-                            <LuMic2 className="w-12 h-12 text-church-accent" />
+                            <LuMic className="w-12 h-12 text-church-accent" />
                             <h2 className="text-3xl font-bold">Vossa Excelência</h2>
                             <p className="text-white/80 leading-relaxed text-lg italic">
                                 &quot;Cantai-lhe um cântico novo; tocai bem e com júbilo.&quot; — Salmos 33:3. Buscamos sempre a excelência técnica unida à unção espiritual.

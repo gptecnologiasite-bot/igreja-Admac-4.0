@@ -459,13 +459,20 @@ export const pagesData = [
           title: 'Conferência de Jovens', 
           url: 'https://youtube.com/watch?v=example2', 
           thumbnail: 'https://images.unsplash.com/photo-1519794206461-cccd885bf225?q=80&w=800&auto=format&fit=crop'
-        },
-        { 
-          id: 3,
-          title: 'Retiro de Mulheres', 
-          url: 'https://youtube.com/watch?v=example3', 
-          thumbnail: 'https://images.unsplash.com/photo-1523301386673-faad6c929853?q=80&w=800&auto=format&fit=crop'
         }
+      ],
+      videos: [
+        { id: 1, titulo: 'Culto de Domingo - 10/03', url: 'https://youtube.com/watch?v=example1', thumbnail: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=800&auto=format&fit=crop' },
+        { id: 2, titulo: 'Conferência de Jovens', url: 'https://youtube.com/watch?v=example2', thumbnail: 'https://images.unsplash.com/photo-1519794206461-cccd885bf225?q=80&w=800&auto=format&fit=crop' }
+      ],
+      audios: [
+        { id: 1, titulo: 'Podcast #01 - Fé e Esperança', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+        { id: 2, titulo: 'Mensagem Pastoral - Março', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' }
+      ],
+      photos: [
+        'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=800',
+        'https://images.unsplash.com/photo-1544427920-c49ccfb85579?q=80&w=800',
+        'https://images.unsplash.com/photo-1519794206461-cccd885bf225?q=80&w=800'
       ]
     }
   }
