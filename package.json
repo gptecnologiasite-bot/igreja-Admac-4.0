@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "clsx": "^2.1.1",
+    "esbuild": "^0.27.3",
     "framer-motion": "^11.0.0",
     "node": "^25.6.1",
     "react": "^18.2.0",
