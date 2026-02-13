@@ -64,6 +64,7 @@ const PageEditor = () => {
     const [teachers, setTeachers] = useState([]);
     const [kidsStaff, setKidsStaff] = useState([]);
     const [lessonVideos, setLessonVideos] = useState([]);
+    const [homensGallery, setHomensGallery] = useState([]);
 
     const [leadershipContent, setLeadershipContent] = useState({
         leaders: [],
@@ -84,14 +85,7 @@ const PageEditor = () => {
         subtitle: 'Nós acreditamos no amor que transforma e na fé que renova.'
     });
 
-    const [homeAbout, setHomeAbout] = useState({
-        title: 'Quem Somos',
-        text1: 'A ADMAC (Assembléia de Deus Ministério Aliança Comunitária) é mais do que uma igreja, é um lugar onde você encontra propósito, esperança e uma família de fé.',
-        text2: 'Fundada com o objetivo de ser um farol de luz em nossa comunidade, temos nos dedicado ao ensino das escrituras e ao cuidado mútuo.',
-        mission: 'Levar a mensagem do evangelho a todas as nações, transformando vidas através do amor de Cristo.',
-        vision: 'Ser uma igreja relevante, acolhedora e referencia na pregação da palavra e serviço social.',
-        values: 'Amor incondicional, integridade, serviço ao próximo, adoração genuína e fidelidade bíblica.'
-    });
+
 
     const [homeAgenda, setHomeAgenda] = useState({
         title: 'Programação',
@@ -114,6 +108,23 @@ const PageEditor = () => {
                     { time: '19:30', title: 'Culto de Ensino & Oração', type: 'Oração' }
                 ]
             }
+        ]
+    });
+
+    const [homeCarousel, setHomeCarousel] = useState([]);
+
+    const [homeAbout, setHomeAbout] = useState({
+        title: 'Quem Somos',
+        text1: 'A ADMAC (Assembléia de Deus Ministério Aliança Comunitária) é mais do que uma igreja, é um lugar onde você encontra propósito, esperança e uma família de fé.',
+        text2: 'Fundada com o objetivo de ser um farol de luz em nossa comunidade, temos nos dedicado ao ensino das escrituras e ao cuidado mútuo, sempre buscando a presença de Deus em tudo o que fazemos.',
+        mission: 'Levar a mensagem do evangelho a todas as nações, transformando vidas através do amor de Cristo.',
+        vision: 'Ser uma igreja relevante, acolhedora e referencia na pregação da palavra e serviço social.',
+        values: 'Amor incondicional, integridade, serviço ao próximo, adoração genuína e fidelidade bíblica.',
+        images: [
+            "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=1000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1544427920-c49ccfb85579?q=80&w=1000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1510672981848-a1c4f1cb5ccf?q=80&w=1000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1515162305285-0293e4767cc2?q=80&w=1000&auto=format&fit=crop"
         ]
     });
 
@@ -229,6 +240,17 @@ const PageEditor = () => {
                                 { name: 'Tio Paulo', role: 'Musicalização', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=400&auto=format&fit=crop' },
                             ]);
                         }
+
+                        if (parsedContent.gallery && page.slug === 'ministerios/homens') {
+                            setHomensGallery(parsedContent.gallery);
+                        } else if (page.slug === 'ministerios/homens') {
+                            setHomensGallery([
+                                { url: "https://images.unsplash.com/photo-1510003343711-64353896504a?q=80&w=600", caption: "Culto de Homens" },
+                                { url: "https://images.unsplash.com/photo-1552581234-26160f608093?q=80&w=600", caption: "Comunhão" },
+                                { url: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=600", caption: "Liderança" },
+                                { url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600", caption: "Evento Especial" }
+                            ]);
+                        }
                     } catch (e) {
                         console.error("Error parsing ministry content", e);
                     }
@@ -240,8 +262,17 @@ const PageEditor = () => {
                         if (parsedContent.hero) {
                             setHomeHero(parsedContent.hero);
                         }
+                        if (parsedContent.carousel) {
+                            setHomeCarousel(parsedContent.carousel);
+                        }
                         if (parsedContent.about) {
-                            setHomeAbout(parsedContent.about);
+                            setHomeAbout(prev => ({
+                                ...prev,
+                                ...parsedContent.about,
+                                images: (parsedContent.about.images && parsedContent.about.images.length > 0)
+                                    ? parsedContent.about.images
+                                    : prev.images
+                            }));
                         }
                         if (parsedContent.agenda) {
                             setHomeAgenda(parsedContent.agenda);
@@ -325,7 +356,8 @@ const PageEditor = () => {
                 kidsStaff: checkSlug === 'ministerios/infantil' ? kidsStaff : existingContent.kidsStaff,
                 testimonials: testimonials,
                 classes: checkSlug === 'ministerios/ebd' ? classes : undefined,
-                lessonVideos: checkSlug === 'ministerios/ebd' ? lessonVideos : undefined
+                lessonVideos: checkSlug === 'ministerios/ebd' ? lessonVideos : undefined,
+                gallery: checkSlug === 'ministerios/homens' ? homensGallery : existingContent.gallery
             };
 
             if (checkSlug === 'ministerios/lideranca') {
@@ -346,6 +378,7 @@ const PageEditor = () => {
             finalContent = {
                 ...existingContent,
                 hero: homeHero,
+                carousel: homeCarousel,
                 about: homeAbout,
                 agenda: homeAgenda,
                 ministries: homeMinistries,
@@ -1302,6 +1335,76 @@ const PageEditor = () => {
                                     </div>
                                 </div>
                             )}
+                            {/* Homens Specific: Gallery */}
+                            {formData?.slug === 'ministerios/homens' && (
+                                <div className="pt-6 border-t border-emerald-100 dark:border-emerald-800/20 space-y-6">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                                            <Camera size={20} />
+                                            <h3 className="font-bold">Galeria de Fotos (Homens)</h3>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setHomensGallery([...homensGallery, { url: '', caption: '' }])}
+                                            className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-sm font-bold hover:bg-emerald-600 transition-all"
+                                        >
+                                            <Plus size={16} />
+                                            Adicionar Foto
+                                        </button>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {homensGallery.length === 0 && (
+                                            <div className="col-span-full text-sm text-slate-500 dark:text-slate-400 text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                                                Nenhuma foto na galeria.
+                                            </div>
+                                        )}
+                                        {homensGallery.map((photo, index) => (
+                                            <div key={index} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm space-y-3 relative group">
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-bold text-slate-500 uppercase">URL da Imagem</label>
+                                                    <input
+                                                        type="text"
+                                                        value={photo.url}
+                                                        onChange={(e) => {
+                                                            const newGallery = [...homensGallery];
+                                                            newGallery[index].url = e.target.value;
+                                                            setHomensGallery(newGallery);
+                                                        }}
+                                                        className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                        placeholder="https://images.unsplash.com/..."
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-bold text-slate-500 uppercase">Legenda</label>
+                                                    <input
+                                                        type="text"
+                                                        value={photo.caption}
+                                                        onChange={(e) => {
+                                                            const newGallery = [...homensGallery];
+                                                            newGallery[index].caption = e.target.value;
+                                                            setHomensGallery(newGallery);
+                                                        }}
+                                                        className="w-full px-3 py-1 bg-slate-50 dark:bg-slate-800 border-b border-transparent focus:border-emerald-500 outline-none text-sm transition-all"
+                                                        placeholder="Ex: Culto de Homens"
+                                                    />
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newGallery = [...homensGallery];
+                                                        newGallery.splice(index, 1);
+                                                        setHomensGallery(newGallery);
+                                                    }}
+                                                    className="absolute top-2 right-2 p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -1480,12 +1583,241 @@ const PageEditor = () => {
                                     />
                                 </div>
 
+                                {/* Carousel Destaque */}
+                                <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
+                                            <Star size={20} />
+                                            <h3 className="font-bold">Carrossel de Destaques</h3>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setHomeCarousel([...homeCarousel, {
+                                                title: 'Novo Destaque',
+                                                desc: '',
+                                                image: '',
+                                                icon: 'Star',
+                                                color: 'text-blue-500',
+                                                bg: 'bg-blue-50 dark:bg-blue-900/10'
+                                            }])}
+                                            className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-600 hover:text-white transition-all flex items-center gap-1"
+                                        >
+                                            <Plus size={14} />
+                                            Adicionar Item
+                                        </button>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        {homeCarousel.map((item, idx) => (
+                                            <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-100 dark:border-slate-700 space-y-3 group">
+                                                <div className="flex items-center justify-between">
+                                                    <input
+                                                        type="text"
+                                                        value={item.title}
+                                                        onChange={(e) => {
+                                                            const newItems = [...homeCarousel];
+                                                            newItems[idx].title = e.target.value;
+                                                            setHomeCarousel(newItems);
+                                                        }}
+                                                        className="bg-transparent font-bold text-slate-800 dark:text-white outline-none w-full"
+                                                        placeholder="Título do Item"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setHomeCarousel(homeCarousel.filter((_, i) => i !== idx))}
+                                                        className="text-red-400 hover:text-red-600 transition-colors"
+                                                    >
+                                                        &times;
+                                                    </button>
+                                                </div>
+
+                                                <textarea
+                                                    value={item.desc}
+                                                    onChange={(e) => {
+                                                        const newItems = [...homeCarousel];
+                                                        newItems[idx].desc = e.target.value;
+                                                        setHomeCarousel(newItems);
+                                                    }}
+                                                    className="w-full p-2 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded resize-none"
+                                                    placeholder="Descrição curta..."
+                                                    rows="2"
+                                                />
+
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-bold text-slate-500 uppercase">Imagem de Fundo (Opcional)</label>
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            type="text"
+                                                            value={item.image || ''}
+                                                            onChange={(e) => {
+                                                                const newItems = [...homeCarousel];
+                                                                newItems[idx].image = e.target.value;
+                                                                setHomeCarousel(newItems);
+                                                            }}
+                                                            className="flex-1 px-3 py-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-700 rounded"
+                                                            placeholder="URL da Imagem"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                {!item.image && (
+                                                    <div className="flex flex-col gap-2">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase">Ícone (Se não houver imagem)</label>
+                                                        <div className="flex gap-2 p-1 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded overflow-x-auto">
+                                                            {['Heart', 'Users', 'Coffee', 'Flower', 'Star', 'Music', 'Book'].map(iconName => (
+                                                                <button
+                                                                    key={iconName}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const newItems = [...homeCarousel];
+                                                                        newItems[idx].icon = iconName;
+                                                                        setHomeCarousel(newItems);
+                                                                    }}
+                                                                    className={`p-1.5 rounded transition-all ${item.icon === iconName ? 'bg-blue-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500'}`}
+                                                                    title={iconName}
+                                                                >
+                                                                    {iconName === 'Heart' && <Heart size={12} />}
+                                                                    {iconName === 'Users' && <Users size={12} />}
+                                                                    {iconName === 'Coffee' && <Coffee size={12} />}
+                                                                    {iconName === 'Flower' && <Flower size={12} />}
+                                                                    {iconName === 'Star' && <Star size={12} />}
+                                                                    {iconName === 'Music' && <Music size={12} />}
+                                                                    {iconName === 'Book' && <Book size={12} />}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 <div className="pt-6 border-t border-blue-100 dark:border-blue-800/20">
                                     <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-4">
                                         <h3 className="font-bold">Seção Quem Somos</h3>
                                     </div>
 
                                     <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Imagens do Carrossel</label>
+                                            <div className="space-y-4">
+                                                {(homeAbout.images || []).map((img, idx) => {
+                                                    const isObj = typeof img === 'object' && img !== null;
+                                                    const url = isObj ? img.url : (img || '');
+                                                    const link = isObj ? img.link || '' : '';
+                                                    const buttonText = isObj ? img.buttonText || '' : '';
+
+                                                    const updateImage = (field, value) => {
+                                                        const newImages = [...(homeAbout.images || [])];
+                                                        const current = newImages[idx];
+                                                        const currentObj = (typeof current === 'object' && current !== null)
+                                                            ? { ...current }
+                                                            : { url: (current || ''), link: '', buttonText: '' };
+
+                                                        if (field === 'url') currentObj.url = value;
+                                                        else if (field === 'link') currentObj.link = value;
+                                                        else if (field === 'buttonText') currentObj.buttonText = value;
+
+                                                        newImages[idx] = currentObj;
+                                                        setHomeAbout({ ...homeAbout, images: newImages });
+                                                    };
+
+                                                    return (
+                                                        <div key={idx} className="p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 space-y-3">
+                                                            <div className="flex gap-2">
+                                                                <div className="flex-1 space-y-3">
+                                                                    <div className="space-y-1">
+                                                                        <label className="text-xs font-semibold text-slate-500 uppercase">URL da Imagem</label>
+                                                                        <div className="flex gap-2">
+                                                                            <input
+                                                                                type="text"
+                                                                                value={url}
+                                                                                onChange={(e) => updateImage('url', e.target.value)}
+                                                                                className="flex-1 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 dark:text-white text-sm"
+                                                                                placeholder="https://..."
+                                                                            />
+                                                                            <label className="cursor-pointer">
+                                                                                <input
+                                                                                    type="file"
+                                                                                    accept="image/*"
+                                                                                    className="hidden"
+                                                                                    onChange={(e) => {
+                                                                                        const file = e.target.files[0];
+                                                                                        if (file) {
+                                                                                            const reader = new FileReader();
+                                                                                            reader.onloadend = () => {
+                                                                                                updateImage('url', reader.result);
+                                                                                            };
+                                                                                            reader.readAsDataURL(file);
+                                                                                        }
+                                                                                    }}
+                                                                                />
+                                                                                <div className="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white transition-all flex items-center gap-2 h-full whitespace-nowrap">
+                                                                                    <ImageIcon size={18} />
+                                                                                    <span className="text-sm font-medium">Subir Foto</span>
+                                                                                </div>
+                                                                            </label>
+                                                                        </div>
+                                                                        {url && (
+                                                                            <div className="mt-2 relative h-32 w-full rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
+                                                                                <img
+                                                                                    src={url}
+                                                                                    alt="Preview"
+                                                                                    className="w-full h-full object-cover"
+                                                                                    onError={(e) => e.target.style.display = 'none'}
+                                                                                />
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="grid grid-cols-2 gap-3">
+                                                                        <div className="space-y-1">
+                                                                            <label className="text-xs font-semibold text-slate-500 uppercase">Link de Destino</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                value={link}
+                                                                                onChange={(e) => updateImage('link', e.target.value)}
+                                                                                className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 dark:text-white text-sm"
+                                                                                placeholder="Ex: /ministerios/infantil (opcional)"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="space-y-1">
+                                                                            <label className="text-xs font-semibold text-slate-500 uppercase">Texto do Botão</label>
+                                                                            <input
+                                                                                type="text"
+                                                                                value={buttonText}
+                                                                                onChange={(e) => updateImage('buttonText', e.target.value)}
+                                                                                className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 dark:text-white text-sm"
+                                                                                placeholder="Ex: Saiba Mais (opcional)"
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const newImages = (homeAbout.images || []).filter((_, i) => i !== idx);
+                                                                        setHomeAbout({ ...homeAbout, images: newImages });
+                                                                    }}
+                                                                    className="self-start p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                                                    title="Remover imagem"
+                                                                >
+                                                                    <Trash2 className="w-5 h-5" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setHomeAbout({ ...homeAbout, images: [...(homeAbout.images || []), { url: '', link: '', buttonText: '' }] })}
+                                                    className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                                                >
+                                                    <Plus className="w-4 h-4" /> Adicionar Imagem
+                                                </button>
+                                            </div>
+                                        </div>
+
                                         <div className="space-y-2">
                                             <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Título</label>
                                             <input

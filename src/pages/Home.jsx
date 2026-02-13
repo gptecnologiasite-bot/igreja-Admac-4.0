@@ -8,10 +8,12 @@ import Magazines from '../components/Magazines';
 import Media from '../components/Media';
 import Contact from '../components/Contact';
 
+
 const Home = () => {
     return (
         <div className="w-full">
             <Hero />
+
             <div id="about"><About /></div>
             <div id="ministries"><Ministries /></div>
             <div id="agenda"><Agenda /></div>

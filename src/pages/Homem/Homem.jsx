@@ -9,7 +9,8 @@ import {
   MapPin,
   ChevronRight,
   ArrowRight,
-  Heart
+  Heart,
+  Camera
 } from "lucide-react";
 import { motion } from "framer-motion";
 import dbService from "../../services/dbService";
@@ -241,6 +242,44 @@ const Homem = () => {
                 <p className="text-church-accent dark:text-church-accent font-black text-xs tracking-widest uppercase">
                   {member.role}
                 </p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* Gallery Section - NEW */}
+        <section className="mb-32">
+          <div className="flex flex-col items-center mb-16">
+            <div className="p-3 bg-church-primary/10 rounded-2xl text-church-primary mb-4">
+              <Camera size={32} />
+            </div>
+            <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Galeria de Fotos</h2>
+            <div className="w-16 h-1.5 bg-church-primary rounded-full mt-4"></div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {(content.gallery || [
+              { url: "https://images.unsplash.com/photo-1510003343711-64353896504a?q=80&w=600", caption: "Culto de Homens" },
+              { url: "https://images.unsplash.com/photo-1552581234-26160f608093?q=80&w=600", caption: "Comunhão" },
+              { url: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=600", caption: "Liderança" },
+              { url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600", caption: "Evento Especial" }
+            ]).map((photo, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+                viewport={{ once: true }}
+                className="group relative aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-white/5 shadow-lg"
+              >
+                <img
+                  src={photo.url}
+                  alt={photo.caption || `Foto ${index + 1}`}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                  <p className="text-white text-xs font-bold uppercase tracking-wider">{photo.caption}</p>
+                </div>
               </motion.div>
             ))}
           </div>
