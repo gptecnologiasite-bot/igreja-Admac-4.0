@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { LuUsers, LuShield, LuStar, LuQuote, LuMessageCircle, LuPencil, LuCheck } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
 const Lideranca = () => {
+    const carouselRef = useRef(null);
+
     // Get page data from central DB
     const [page, setPage] = useState(null);
     const [content, setContent] = useState({});
@@ -237,7 +239,7 @@ const Lideranca = () => {
                             onClick={() => !isEditing && setIsEditing(true)}
                             className={`absolute top-6 right-6 z-20 items-center gap-2 px-4 py-2 rounded-xl bg-church-primary/10 dark:bg-church-accent/20 hover:bg-church-primary dark:hover:bg-church-accent text-church-primary dark:text-white border border-church-primary/20 dark:border-church-accent/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
                         >
-                            <LuEdit2 size={18} />
+                            <LuPencil size={18} />
                             <span className="text-sm font-bold uppercase tracking-wider">Editar Mensagem</span>
                         </button>
 

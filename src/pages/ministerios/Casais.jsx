@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { LuHeart, LuUsers, LuStar, LuQuote, LuMessageCircle, LuPencil, LuCheck, LuRadio, LuExternalLink, LuX, LuGift, LuCopy, LuChevronRight } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
 import dbService from '../../services/dbService';
 
 const Casais = () => {
+    const carouselRef = useRef(null);
+    const [tempMessage, setTempMessage] = useState({ text: '', author: '', role: '' });
+
     // Get page data from central DB
     const [pageData, setPageData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -60,7 +63,6 @@ const Casais = () => {
     }, []);
 
     // Temporary state while editing
-    const [tempMessage, setTempMessage] = useState(pastoralMessage);
 
     const fallBackLeaders = [
         { name: 'Pr. João & Pra. Maria', role: 'Coordenação Geral', image: 'https://images.unsplash.com/photo-1516589174184-c68526674fd6?q=80&w=400&h=400&auto=format&fit=crop' },
@@ -251,7 +253,7 @@ const Casais = () => {
                             onClick={() => !isEditing && setIsEditing(true)}
                             className={`absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-pink-500/20 hover:bg-pink-500 text-white border border-pink-500/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
                         >
-                            <LuEdit2 size={18} />
+                            <LuPencil size={18} />
                             <span className="text-sm font-bold uppercase tracking-wider">Editar Mensagem</span>
                         </button>
 

@@ -16,6 +16,8 @@ const Infantil = () => {
         role: "Líder do Ministério Infantil"
     });
 
+    const [tempMessage, setTempMessage] = useState(pastoralMessage);
+
     // ---- EFEITO DE INICIALIZAÇÃO ----
     useEffect(() => {
         // Carrega os dados da página 'Infantil' no localStorage.
@@ -273,7 +275,7 @@ const Infantil = () => {
                             onClick={() => !isEditing && setIsEditing(true)}
                             className={`absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-yellow-400/20 hover:bg-yellow-400 text-white border border-yellow-400/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
                         >
-                            <LuEdit2 size={18} />
+                            <LuPencil size={18} />
                             <span className="text-sm font-bold uppercase tracking-wider">Editar Mensagem</span>
                         </button>
 

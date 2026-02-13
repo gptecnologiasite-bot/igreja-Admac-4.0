@@ -245,7 +245,7 @@ const Louvor = () => {
                             onClick={() => !isEditing && setIsEditing(true)}
                             className={`absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-church-accent/20 hover:bg-church-accent text-white border border-church-accent/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
                         >
-                            <LuEdit2 size={18} />
+                            <LuPencil size={18} />
                             <span className="text-sm font-bold uppercase tracking-wider">Editar Mensagem</span>
                         </button>
 

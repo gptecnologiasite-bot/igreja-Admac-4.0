@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { LuShieldCheck, LuUsers, LuQuote, LuMessageCircle, LuPencil, LuCheck, LuFlame, LuCloudRain } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import dbService from '../../services/dbService';
 
 const Intercessao = () => {
+    const carouselRef = useRef(null);
+
     // Get page data from central DB
     const [pageData, setPageData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -213,7 +215,7 @@ const Intercessao = () => {
                             onClick={() => !isEditing && setIsEditing(true)}
                             className={`absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600 text-white border border-blue-600/40 transition-all duration-300 ${isEditing ? 'hidden' : 'flex'}`}
                         >
-                            <LuEdit2 size={18} />
+                            <LuPencil size={18} />
                             <span className="text-sm font-bold uppercase tracking-wider">Editar Chamado</span>
                         </button>
 

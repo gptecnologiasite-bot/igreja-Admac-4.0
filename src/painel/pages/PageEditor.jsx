@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { LuArrowLeft, LuArrowUp, LuArrowDown, LuSave, LuActivity, LuCalendar, LuUsers, LuHeart, LuStar, LuMusic, LuBook, LuCamera, LuMapPin, LuPhone, LuMail, LuClock, LuBaby, LuTrash2, LuPlus, LuMessageCircle, LuShare2, LuVideo, LuX, LuImage as ImageIcon } from 'react-icons/lu';
+import { LuArrowLeft, LuArrowUp, LuArrowDown, LuSave, LuActivity, LuCalendar, LuUsers, LuHeart, LuStar, LuMusic, LuBook, LuCamera, LuMapPin, LuPhone, LuMail, LuClock, LuBaby, LuTrash2, LuPlus, LuMessageCircle, LuShare2, LuVideo, LuX, LuCoffee, LuFlower, LuImage as ImageIcon, LuPencil } from 'react-icons/lu';
 import dbService from '../../services/dbService';
 
 const getYouTubeId = (url) => {
@@ -366,7 +366,7 @@ const PageEditor = () => {
             let existingContent = {};
             try {
                 existingContent = typeof formData.content === 'string' && formData.content ? JSON.parse(formData.content) : (typeof formData.content === 'object' ? formData.content : {});
-            } catch (e) { }
+            } catch (e) { console.error(e); }
 
             finalContent = {
                 ...existingContent,
@@ -393,7 +393,7 @@ const PageEditor = () => {
             let existingContent = {};
             try {
                 existingContent = typeof formData.content === 'string' && formData.content ? JSON.parse(formData.content) : (typeof formData.content === 'object' ? formData.content : {});
-            } catch (e) { }
+            } catch (e) { console.error(e); }
 
             finalContent = {
                 ...existingContent,
@@ -411,7 +411,7 @@ const PageEditor = () => {
             let existingContent = {};
             try {
                 existingContent = typeof formData.content === 'string' && formData.content ? JSON.parse(formData.content) : (typeof formData.content === 'object' ? formData.content : {});
-            } catch (e) { }
+            } catch (e) { console.error(e); }
 
             finalContent = {
                 ...existingContent,
@@ -451,7 +451,7 @@ const PageEditor = () => {
             let existingContent = {};
             try {
                 existingContent = typeof formData.content === 'string' && formData.content ? JSON.parse(formData.content) : (typeof formData.content === 'object' ? formData.content : {});
-            } catch (e) { }
+            } catch (e) { console.error(e); }
 
             finalContent = {
                 ...existingContent,
@@ -576,7 +576,7 @@ const PageEditor = () => {
 
                                 {raffle.useDemo && (
                                     <div className="p-4 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 rounded-xl text-sm mb-4">
-                                        <strong>Modo Demonstração Ativo:</strong> O site exibirá automaticamente o sorteio da "Panela Elétrica" como exemplo. Os campos abaixo ficarão bloqueados.
+                                        <strong>Modo Demonstração Ativo:</strong> O site exibirá automaticamente o sorteio da &quot;Panela Elétrica&quot; como exemplo. Os campos abaixo ficarão bloqueados.
                                     </div>
                                 )}
 
@@ -1700,8 +1700,8 @@ const PageEditor = () => {
                                                                 >
                                                                     {iconName === 'Heart' && <LuHeart size={12} />}
                                                                     {iconName === 'Users' && <LuUsers size={12} />}
-                                                                    {iconName === 'Coffee' && <Coffee size={12} />}
-                                                                    {iconName === 'Flower' && <Flower size={12} />}
+                                                                    {iconName === 'Coffee' && <LuCoffee size={12} />}
+                                                                    {iconName === 'Flower' && <LuFlower size={12} />}
                                                                     {iconName === 'Star' && <LuStar size={12} />}
                                                                     {iconName === 'Music' && <LuMusic size={12} />}
                                                                     {iconName === 'Book' && <LuBook size={12} />}

@@ -24,7 +24,7 @@ const Louvor = () => {
             try {
                 const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
                 if (content.articles && content.articles.length > 0) setItems(content.articles);
-            } catch (e) { }
+            } catch (e) { console.error(e); }
         }
         const handleUpdate = () => {
             const updatedPage = dbService.getPages().find(p => p.slug === 'revista/louvor');
@@ -32,7 +32,7 @@ const Louvor = () => {
                 try {
                     const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
                     if (content.articles && content.articles.length > 0) setItems(content.articles);
-                } catch (e) { }
+                } catch (e) { console.error(e); }
             }
         };
         window.addEventListener('contentUpdated', handleUpdate);
@@ -124,7 +124,7 @@ const Louvor = () => {
                     <div className="p-16 rounded-[4rem] bg-church-light/30 dark:bg-white/5 border border-gray-100 dark:border-white/10 text-center relative overflow-hidden">
                         <LuStar className="absolute top-10 right-10 w-20 h-20 text-church-accent/10 animate-pulse" />
                         <h3 className="text-4xl md:text-5xl font-bold text-church-primary dark:text-white leading-tight italic">
-                            "A adoração não é o que fazemos, é quem somos diante de Deus."
+                            &quot;A adoração não é o que fazemos, é quem somos diante de Deus.&quot;
                         </h3>
                     </div>
                 </motion.div>

@@ -91,7 +91,7 @@ const EBD = () => {
                     }));
                     setArticles(articlesWithIcons);
                 }
-            } catch (e) { }
+            } catch (e) { console.error(e); }
         }
         const handleUpdate = () => {
             const updatedPage = dbService.getPages().find(p => p.slug === 'revista/ebd');
@@ -105,7 +105,7 @@ const EBD = () => {
                         }));
                         setArticles(articlesWithIcons);
                     }
-                } catch (e) { }
+                } catch (e) { console.error(e); }
             }
         };
         window.addEventListener('contentUpdated', handleUpdate);
@@ -241,7 +241,7 @@ const EBD = () => {
                     <div className="relative p-16 md:p-24 rounded-[4.5rem] border-2 border-church-accent/30 dark:border-church-accent/20 text-center overflow-hidden">
                         <LuBookmark className="absolute -bottom-10 -right-10 w-48 h-48 text-church-accent/5" />
                         <h2 className="text-4xl md:text-5xl font-bold text-church-primary dark:text-white leading-tight italic max-w-4xl mx-auto">
-                            "A Escritura não pode ser quebrada; o que ela diz, Deus diz."
+                            &quot;A Escritura não pode ser quebrada; o que ela diz, Deus diz.&quot;
                         </h2>
                         <div className="mt-10 inline-block px-6 py-3 bg-church-accent text-church-primary font-bold rounded-full">
                             Toda Edição de Domingo às 09h00

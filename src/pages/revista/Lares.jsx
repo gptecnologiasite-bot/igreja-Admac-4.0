@@ -32,7 +32,7 @@ const Lares = () => {
             try {
                 const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
                 if (content.articles && content.articles.length > 0) setItems(content.articles);
-            } catch (e) { }
+            } catch (e) { console.error(e); }
         }
         const handleUpdate = () => {
             const updatedPage = dbService.getPages().find(p => p.slug === 'revista/lares');
@@ -40,7 +40,7 @@ const Lares = () => {
                 try {
                     const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
                     if (content.articles && content.articles.length > 0) setItems(content.articles);
-                } catch (e) { }
+                } catch (e) { console.error(e); }
             }
         };
         window.addEventListener('contentUpdated', handleUpdate);

@@ -12,7 +12,7 @@ const AcaoSocial = () => {
             try {
                 const content = typeof page.content === 'string' ? JSON.parse(page.content) : page.content;
                 setPageData(content);
-            } catch (e) { }
+            } catch (e) { console.error(e); }
         }
         const handleUpdate = () => {
             const updatedPage = dbService.getPages().find(p => p.slug === 'revista/acao-social');
@@ -20,7 +20,7 @@ const AcaoSocial = () => {
                 try {
                     const content = typeof updatedPage.content === 'string' ? JSON.parse(updatedPage.content) : updatedPage.content;
                     setPageData(content);
-                } catch (e) { }
+                } catch (e) { console.error(e); }
             }
         };
         window.addEventListener('contentUpdated', handleUpdate);

@@ -92,7 +92,7 @@ const Homens = () => {
                         </div>
                         <div className="pb-4">
                             <p className="text-2xl font-bold text-church-primary dark:text-church-accent italic mb-2 tracking-tight">
-                                "Sede fortes, portai-vos como homens."
+                                &quot;Sede fortes, portai-vos como homens.&quot;
                             </p>
                             <p className="text-gray-500 dark:text-gray-400">
                                 Liderança bíblica, paternidade e integridade no mercado de trabalho e no lar.

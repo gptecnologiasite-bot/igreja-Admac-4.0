@@ -265,7 +265,7 @@ const TestimonialsSection = () => {
                     >
                         <div className="absolute top-0 left-0 w-full h-1 bg-church-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-t-3xl"></div>
                         <p className="text-gray-600 dark:text-gray-400 italic mb-6 leading-relaxed">
-                            “{item.text}”
+                            &ldquo;{item.text}&rdquo;
                         </p>
                         <div className="flex flex-col">
                             <strong className="text-gray-900 dark:text-white font-bold">{item.name}</strong>
